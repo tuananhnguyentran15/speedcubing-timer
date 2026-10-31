@@ -3,15 +3,15 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Speedcubing Timer - CSTimer Pro Style</title>
+  <title>Speedcubing Pro - Rubik Timer</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-color: #0f172a;
-      --card-bg: #1e293b;
-      --card-border: #334155;
+      --bg-color: #0b0f19;
+      --card-bg: rgba(30, 41, 59, 0.88);
+      --card-border: rgba(51, 65, 85, 0.8);
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
       --accent: #38bdf8;
@@ -32,6 +32,10 @@
 
     body {
       background-color: var(--bg-color);
+      background-size: cover;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-attachment: fixed;
       color: var(--text-main);
       font-family: 'Plus Jakarta Sans', sans-serif;
       height: 100vh;
@@ -47,9 +51,10 @@
       align-items: center;
       padding: 0.5rem 1.5rem;
       border-bottom: 1px solid var(--card-border);
-      background: rgba(15, 23, 42, 0.95);
-      backdrop-filter: blur(10px);
+      background: rgba(11, 15, 25, 0.92);
+      backdrop-filter: blur(12px);
       height: 60px;
+      z-index: 10;
     }
 
     .brand {
@@ -66,13 +71,13 @@
 
     .header-controls {
       display: flex;
-      gap: 0.75rem;
+      gap: 0.6rem;
       align-items: center;
       flex-wrap: wrap;
     }
 
     .select-dropdown {
-      background: var(--card-bg);
+      background: rgba(30, 41, 59, 0.9);
       border: 1px solid var(--card-border);
       color: var(--text-main);
       padding: 0.4rem 0.8rem;
@@ -87,7 +92,7 @@
     .select-dropdown:hover { border-color: var(--accent); }
 
     .btn-action {
-      background: #334155;
+      background: rgba(51, 65, 85, 0.9);
       border: 1px solid var(--card-border);
       color: var(--text-main);
       padding: 0.4rem 0.8rem;
@@ -96,8 +101,27 @@
       font-weight: 600;
       cursor: pointer;
       transition: background 0.1s;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
     }
-    .btn-action:hover { background: #475569; }
+    .btn-action:hover { background: rgba(71, 85, 105, 0.9); }
+
+    .gear-btn {
+      background: rgba(30, 41, 59, 0.9);
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      width: 36px;
+      height: 36px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      font-size: 1.1rem;
+      transition: all 0.2s;
+    }
+    .gear-btn:hover { background: rgba(51, 65, 85, 0.9); border-color: var(--accent); transform: rotate(45deg); }
 
     .toggle-container {
       display: flex;
@@ -144,6 +168,7 @@
     /* Left Sidebar History */
     .sidebar {
       background: var(--card-bg);
+      backdrop-filter: blur(12px);
       border-right: 1px solid var(--card-border);
       display: flex;
       flex-direction: column;
@@ -186,8 +211,8 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background: rgba(15, 23, 42, 0.5);
-      border: 1px solid rgba(255, 255, 255, 0.04);
+      background: rgba(15, 23, 42, 0.65);
+      border: 1px solid rgba(255, 255, 255, 0.06);
       border-radius: 6px;
       padding: 0.45rem 0.65rem;
       font-family: 'JetBrains Mono', monospace;
@@ -246,6 +271,7 @@
 
     .scramble-box {
       background: var(--card-bg);
+      backdrop-filter: blur(12px);
       border: 1px solid var(--card-border);
       padding: 0.9rem 1.5rem;
       border-radius: 10px;
@@ -256,7 +282,7 @@
       text-align: center;
       max-width: 800px;
       width: 100%;
-      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
       word-break: break-word;
     }
 
@@ -283,6 +309,7 @@
       font-size: 6rem;
       font-weight: 800;
       color: var(--text-main);
+      text-shadow: 0 4px 20px rgba(0,0,0,0.5);
       transition: color 0.1s ease;
       line-height: 1;
     }
@@ -291,7 +318,7 @@
     .timer-display.ready { color: var(--ready-color); }
     .timer-display.inspecting { color: var(--inspect-color); }
 
-    /* CSTimer Stats Grid (4 items - Mean removed) */
+    /* Stats Grid */
     .stats-grid-inline {
       display: grid;
       grid-template-columns: repeat(4, minmax(110px, 140px));
@@ -301,6 +328,7 @@
 
     .stat-card {
       background: var(--card-bg);
+      backdrop-filter: blur(12px);
       border: 1px solid var(--card-border);
       border-radius: 8px;
       padding: 0.6rem 0.8rem;
@@ -330,14 +358,15 @@
       color: var(--text-muted);
       font-size: 0.8rem;
       margin-top: 1.25rem;
+      text-shadow: 0 2px 4px rgba(0,0,0,0.5);
     }
 
     /* Modals */
     .modal-overlay {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.6);
-      backdrop-filter: blur(4px);
+      background: rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(6px);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -353,17 +382,23 @@
     }
 
     .modal-card {
-      background: var(--card-bg);
+      background: #1e293b;
       border: 1px solid var(--card-border);
       border-radius: 14px;
       padding: 1.75rem;
-      width: 400px;
+      width: 420px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.5);
       display: flex;
       flex-direction: column;
       align-items: center;
       gap: 1.1rem;
       text-align: center;
+    }
+
+    .modal-card h3 {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--text-main);
     }
 
     .modal-time {
@@ -438,13 +473,43 @@
       outline: none;
     }
     .manual-input:focus { border-color: var(--accent); }
+
+    /* Settings Option Styles */
+    .settings-group {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      text-align: left;
+    }
+
+    .settings-label {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+    }
+
+    .file-input-wrapper {
+      position: relative;
+      overflow: hidden;
+      display: inline-block;
+      width: 100%;
+    }
+
+    .file-input-wrapper input[type=file] {
+      font-size: 100px;
+      position: absolute;
+      left: 0; top: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
 
   <header>
     <div class="brand">
-      ⚡ CSTimer<span>Pro</span>
+      ⚡ Speedcubing<span>Pro</span>
     </div>
     <div class="header-controls">
       <!-- Event Selector -->
@@ -470,6 +535,9 @@
         <input type="checkbox" id="inspectionToggle">
         <span class="switch"></span>
       </label>
+
+      <!-- Gear Settings Button -->
+      <button class="gear-btn" onclick="openSettingsModal()" title="Cài đặt">⚙️</button>
     </div>
   </header>
 
@@ -491,7 +559,7 @@
         <div class="inspection-status" id="inspectionStatus"></div>
         <div class="timer-display" id="timerDisplay">0.000</div>
         
-        <!-- CSTimer Stats Grid (4 items - Mean removed) -->
+        <!-- Stats Grid -->
         <div class="stats-grid-inline">
           <div class="stat-card">
             <span class="stat-label">Lượt</span>
@@ -542,6 +610,29 @@
     </div>
   </div>
 
+  <!-- Settings Modal (Gear Menu) -->
+  <div class="modal-overlay" id="settingsModal">
+    <div class="modal-card">
+      <h3>⚙️ Cài đặt giao diện</h3>
+      
+      <div class="settings-group">
+        <span class="settings-label">Hình nền tùy chỉnh từ máy tính:</span>
+        <div class="file-input-wrapper">
+          <button class="modal-btn" style="width: 100%;">📁 Chọn ảnh từ thiết bị</button>
+          <input type="file" id="bgFileInput" accept="image/*" onchange="handleBgUpload(event)">
+        </div>
+      </div>
+
+      <div class="settings-group" style="margin-top: 0.5rem;">
+        <button class="modal-btn" onclick="resetBackground()" style="width: 100%; background: #334155; color: var(--danger);">Xóa ảnh nền (Về mặc định)</button>
+      </div>
+
+      <div class="modal-buttons" style="margin-top: 1rem;">
+        <button class="modal-btn modal-ok" onclick="closeSettingsModal()" style="grid-column: span 3;">Đóng cài đặt</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     let state = 'IDLE';
     let inspectionEnabled = false;
@@ -556,14 +647,18 @@
     let currentEvent = '333';
     let currentSession = 'Session 1';
     
-    let allData = JSON.parse(localStorage.getItem('cstimer_pro_data_v2') || '{}');
+    let allData = JSON.parse(localStorage.getItem('speedcubing_pro_data_v3') || '{}');
     if (Object.keys(allData).length === 0) {
       allData['Session 1'] = [];
     }
-    
-    // Đảm bảo session hiện tại hợp lệ
     if (!allData[currentSession]) {
       currentSession = Object.keys(allData)[0];
+    }
+
+    // Load saved background image if exists
+    const savedBg = localStorage.getItem('speedcubing_pro_bg');
+    if (savedBg) {
+      document.body.style.backgroundImage = `url(${savedBg})`;
     }
 
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -595,8 +690,32 @@
     
     const manualModal = document.getElementById('manualModal');
     const manualTimeInput = document.getElementById('manualTimeInput');
+    const settingsModal = document.getElementById('settingsModal');
 
     inspectionToggle.addEventListener('change', (e) => { inspectionEnabled = e.target.checked; });
+
+    // Settings Modal Functions
+    function openSettingsModal() { settingsModal.classList.add('active'); }
+    function closeSettingsModal() { settingsModal.classList.remove('active'); }
+
+    function handleBgUpload(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = function(e) {
+        const base64Image = e.target.result;
+        document.body.style.backgroundImage = `url(${base64Image})`;
+        localStorage.setItem('speedcubing_pro_bg', base64Image);
+        closeSettingsModal();
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function resetBackground() {
+      document.body.style.backgroundImage = 'none';
+      localStorage.removeItem('speedcubing_pro_bg');
+      closeSettingsModal();
+    }
 
     function updateSessionDropdown() {
       sessionSelect.innerHTML = '';
@@ -636,7 +755,6 @@
       newScramble();
     }
 
-    // Scramble Generator cho các môn WCA
     function generateScramble() {
       if (currentEvent === '333') {
         const moves = ["R", "L", "U", "D", "F", "B"];
@@ -783,7 +901,7 @@
     }
 
     function handleKeyDown() {
-      if (resultModal.classList.contains('active') || manualModal.classList.contains('active')) return;
+      if (resultModal.classList.contains('active') || manualModal.classList.contains('active') || settingsModal.classList.contains('active')) return;
 
       if (state === 'RUNNING') {
         stopTimer();
@@ -815,7 +933,7 @@
     }
 
     function handleKeyUp() {
-      if (resultModal.classList.contains('active') || manualModal.classList.contains('active')) return;
+      if (resultModal.classList.contains('active') || manualModal.classList.contains('active') || settingsModal.classList.contains('active')) return;
 
       if (state === 'HOLDING') {
         clearTimeout(holdingTimeout);
@@ -997,7 +1115,7 @@
     }
 
     function saveAndRender() {
-      localStorage.setItem('cstimer_pro_data_v2', JSON.stringify(allData));
+      localStorage.setItem('speedcubing_pro_data_v3', JSON.stringify(allData));
       renderHistory();
       updateStats();
     }
@@ -1017,7 +1135,7 @@
         return;
       }
 
-      if (manualModal.classList.contains('active')) return;
+      if (manualModal.classList.contains('active') || settingsModal.classList.contains('active')) return;
 
       if (e.code === 'Space' && !e.repeat) {
         e.preventDefault();
@@ -1026,7 +1144,7 @@
     });
 
     window.addEventListener('keyup', (e) => {
-      if (resultModal.classList.contains('active') || manualModal.classList.contains('active')) return;
+      if (resultModal.classList.contains('active') || manualModal.classList.contains('active') || settingsModal.classList.contains('active')) return;
       if (e.code === 'Space') {
         e.preventDefault();
         handleKeyUp();
@@ -1035,13 +1153,13 @@
 
     const timerSection = document.getElementById('timerSection');
     timerSection.addEventListener('touchstart', (e) => {
-      if (resultModal.classList.contains('active') || manualModal.classList.contains('active')) return;
+      if (resultModal.classList.contains('active') || manualModal.classList.contains('active') || settingsModal.classList.contains('active')) return;
       e.preventDefault();
       handleKeyDown();
     }, { passive: false });
 
     timerSection.addEventListener('touchend', (e) => {
-      if (resultModal.classList.contains('active') || manualModal.classList.contains('active')) return;
+      if (resultModal.classList.contains('active') || manualModal.classList.contains('active') || settingsModal.classList.contains('active')) return;
       e.preventDefault();
       handleKeyUp();
     }, { passive: false });
