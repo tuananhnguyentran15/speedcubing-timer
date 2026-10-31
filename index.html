@@ -32,8 +32,7 @@
 
     body {
       background-color: var(--bg-color);
-      background-size: cover;
-      background-position: center center;
+      background-image: none;
       background-repeat: no-repeat;
       background-attachment: fixed;
       color: var(--text-main);
@@ -42,6 +41,24 @@
       display: flex;
       flex-direction: column;
       overflow: hidden;
+      position: relative;
+    }
+
+    /* Vùng chứa ảnh nền di chuyển được bằng kéo chuột */
+    #bgContainer {
+      position: absolute;
+      top: 0; left: 0; width: 100%; height: 100%;
+      z-index: -1;
+      overflow: hidden;
+      cursor: grab;
+    }
+    #bgContainer:active { cursor: grabbing; }
+
+    #customBgImg {
+      position: absolute;
+      will-change: transform;
+      user-select: none;
+      pointer-events: none;
     }
 
     /* Top Bar Header */
@@ -129,6 +146,7 @@
       grid-template-columns: 340px 1fr;
       flex: 1;
       height: calc(100vh - 60px);
+      z-index: 2;
     }
 
     /* Left Sidebar History */
@@ -482,6 +500,11 @@
 </head>
 <body>
 
+  <!-- Background Drag Container -->
+  <div id="bgContainer">
+    <img id="customBgImg" alt="">
+  </div>
+
   <header>
     <div class="brand">
       ⚡ Speedcubing<span>Pro</span>
@@ -548,7 +571,7 @@
           </div>
         </div>
 
-        <div class="timer-hint">Nhấn giữ SPACE hoặc chạm màn hình để bắt đầu</div>
+        <div class="timer-hint">Nhấn giữ SPACE hoặc chạm màn hình để bắt đầu (Kéo chuột trực tiếp để dịch chuyển ảnh nền)</div>
       </div>
     </div>
   </div>
@@ -602,16 +625,6 @@
         </div>
       </div>
 
-      <!-- Background Position Setting -->
-      <div class="settings-group" style="margin-top: 0.2rem;">
-        <span class="settings-label">Vị trí hiển thị ảnh nền:</span>
-        <select class="select-dropdown" id="bgSizeSelect" onchange="changeBgSize()" style="width: 100%;">
-          <option value="center_cover">Phủ kín màn hình (Center Cover)</option>
-          <option value="center_contain">Hiển thị trọn vẹn ở chính giữa (Center Contain)</option>
-          <option value="repeat">Lát gạch nền (Tile Pattern)</option>
-        </select>
-      </div>
-
       <div class="settings-group" style="margin-top: 0.2rem;">
         <button class="modal-btn" onclick="resetBackground()" style="width: 100%; background: #334155; color: var(--danger);">Xóa ảnh nền (Về mặc định)</button>
       </div>
@@ -636,7 +649,7 @@
     let currentEvent = '333';
     let currentSession = 'Session 1';
     
-    let allData = JSON.parse(localStorage.getItem('speedcubing_pro_data_v4') || '{}');
+    let allData = JSON.parse(localStorage.getItem('speedcubing_pro_data_v5') || '{}');
     if (Object.keys(allData).length === 0) {
       allData['Session 1'] = [];
     }
@@ -644,35 +657,75 @@
       currentSession = Object.keys(allData)[0];
     }
 
-    // Load saved settings (Background & Inspection)
+    // Dragging Background Logic
+    let bgImg = document.getElementById('customBgImg');
+    let bgContainer = document.getElementById('bgContainer');
+    let isDragging = false;
+    let startX = 0, startY = 0;
+    let posX = parseFloat(localStorage.getItem('speedcubing_pro_bg_x') || 0);
+    let posY = parseFloat(localStorage.getItem('speedcubing_pro_bg_y') || 0);
+
     const savedBg = localStorage.getItem('speedcubing_pro_bg');
-    const savedBgMode = localStorage.getItem('speedcubing_pro_bg_mode') || 'center_cover';
     const savedInspection = localStorage.getItem('speedcubing_pro_inspection') === 'true';
 
     inspectionEnabled = savedInspection;
     document.getElementById('inspectionToggle').checked = savedInspection;
-    document.getElementById('bgSizeSelect').value = savedBgMode;
 
     if (savedBg) {
-      applyBackgroundStyle(savedBg, savedBgMode);
+      bgImg.src = savedBg;
+      bgImg.onload = () => {
+        updateBgTransform();
+      };
     }
 
-    function applyBackgroundStyle(imgUrl, mode) {
-      document.body.style.backgroundImage = `url(${imgUrl})`;
-      if (mode === 'center_cover') {
-        document.body.style.backgroundSize = 'cover';
-        document.body.style.backgroundPosition = 'center center';
-        document.body.style.backgroundRepeat = 'no-repeat';
-      } else if (mode === 'center_contain') {
-        document.body.style.backgroundSize = 'contain';
-        document.body.style.backgroundPosition = 'center center';
-        document.body.style.backgroundRepeat = 'no-repeat';
-      } else if (mode === 'repeat') {
-        document.body.style.backgroundSize = 'auto';
-        document.body.style.backgroundPosition = 'top left';
-        document.body.style.backgroundRepeat = 'repeat';
-      }
+    function updateBgTransform() {
+      bgImg.style.transform = `translate(${posX}px, ${posY}px)`;
     }
+
+    bgContainer.addEventListener('mousedown', (e) => {
+      if (!savedBg) return;
+      isDragging = true;
+      startX = e.clientX - posX;
+      startY = e.clientY - posY;
+    });
+
+    window.addEventListener('mousemove', (e) => {
+      if (!isDragging) return;
+      posX = e.clientX - startX;
+      posY = e.clientY - startY;
+      updateBgTransform();
+    });
+
+    window.addEventListener('mouseup', () => {
+      if (isDragging) {
+        isDragging = false;
+        localStorage.setItem('speedcubing_pro_bg_x', posX);
+        localStorage.setItem('speedcubing_pro_bg_y', posY);
+      }
+    });
+
+    // Touch support for dragging on mobile/tablets
+    bgContainer.addEventListener('touchstart', (e) => {
+      if (!savedBg) return;
+      isDragging = true;
+      startX = e.touches[0].clientX - posX;
+      startY = e.touches[0].clientY - posY;
+    }, {passive: true});
+
+    window.addEventListener('touchmove', (e) => {
+      if (!isDragging) return;
+      posX = e.touches[0].clientX - startX;
+      posY = e.touches[0].clientY - startY;
+      updateBgTransform();
+    }, {passive: true});
+
+    window.addEventListener('touchend', () => {
+      if (isDragging) {
+        isDragging = false;
+        localStorage.setItem('speedcubing_pro_bg_x', posX);
+        localStorage.setItem('speedcubing_pro_bg_y', posY);
+      }
+    });
 
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     function playBeep(freq = 600, duration = 0.15) {
@@ -710,7 +763,6 @@
       localStorage.setItem('speedcubing_pro_inspection', inspectionEnabled);
     });
 
-    // Settings Modal Functions
     function openSettingsModal() { settingsModal.classList.add('active'); }
     function closeSettingsModal() { settingsModal.classList.remove('active'); }
 
@@ -720,27 +772,23 @@
       const reader = new FileReader();
       reader.onload = function(e) {
         const base64Image = e.target.result;
-        const currentMode = document.getElementById('bgSizeSelect').value;
-        applyBackgroundStyle(base64Image, currentMode);
+        bgImg.src = base64Image;
+        posX = 0; posY = 0;
+        updateBgTransform();
         localStorage.setItem('speedcubing_pro_bg', base64Image);
+        localStorage.setItem('speedcubing_pro_bg_x', posX);
+        localStorage.setItem('speedcubing_pro_bg_y', posY);
         closeSettingsModal();
       };
       reader.readAsDataURL(file);
     }
 
-    function changeBgSize() {
-      const mode = document.getElementById('bgSizeSelect').value;
-      localStorage.setItem('speedcubing_pro_bg_mode', mode);
-      const bg = localStorage.getItem('speedcubing_pro_bg');
-      if (bg) {
-        applyBackgroundStyle(bg, mode);
-      }
-    }
-
     function resetBackground() {
-      document.body.style.backgroundImage = 'none';
+      bgImg.src = '';
       localStorage.removeItem('speedcubing_pro_bg');
-      localStorage.removeItem('speedcubing_pro_bg_mode');
+      localStorage.removeItem('speedcubing_pro_bg_x');
+      localStorage.removeItem('speedcubing_pro_bg_y');
+      posX = 0; posY = 0;
       closeSettingsModal();
     }
 
@@ -1142,7 +1190,7 @@
     }
 
     function saveAndRender() {
-      localStorage.setItem('speedcubing_pro_data_v4', JSON.stringify(allData));
+      localStorage.setItem('speedcubing_pro_data_v5', JSON.stringify(allData));
       renderHistory();
       updateStats();
     }
