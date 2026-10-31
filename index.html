@@ -306,6 +306,7 @@
       width: 100%;
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
       word-break: break-word;
+      cursor: pointer;
     }
 
     .timer-display-wrapper {
@@ -383,7 +384,7 @@
       text-shadow: 0 2px 4px rgba(0,0,0,0.5);
     }
 
-    /* ZEN MODE: Ẩn hoàn toàn các phần tử khác, đồng hồ cực to và căn giữa tuyệt đối */
+    /* ZEN MODE */
     body.zen-mode header,
     body.zen-mode .sidebar,
     body.zen-mode .scramble-box,
@@ -562,7 +563,6 @@
       cursor: pointer;
     }
 
-    /* Switch Style */
     .toggle-container {
       position: relative;
       display: inline-block;
@@ -600,7 +600,6 @@
 </head>
 <body>
 
-  <!-- Background Container -->
   <div id="bgContainer">
     <img id="customBgImg" alt="">
   </div>
@@ -610,7 +609,6 @@
       ⚡ Speedcubing<span>Pro</span>
     </div>
     <div class="header-controls">
-      <!-- Event Selector -->
       <select class="select-dropdown" id="eventSelect" onchange="changeEvent()">
         <option value="333">3x3x3 Cube</option>
         <option value="222">2x2x2 Cube</option>
@@ -622,19 +620,16 @@
         <option value="sq1">Square-1</option>
       </select>
 
-      <!-- Session Selector -->
       <select class="select-dropdown" id="sessionSelect" onchange="changeSession()"></select>
       
       <button class="btn-action" onclick="promptNewSession()">+ Session mới</button>
       <button class="btn-action" onclick="openManualModal()">+ Nhập tay</button>
 
-      <!-- Gear Settings Button -->
       <button class="gear-btn" onclick="openSettingsModal()" title="Cài đặt">⚙️</button>
     </div>
   </header>
 
   <div class="app-container">
-    <!-- Left Sidebar History -->
     <div class="sidebar">
       <div class="history-header">
         <span class="history-title" id="historyTitle">Lịch sử (0)</span>
@@ -643,7 +638,6 @@
       <div class="solves-list" id="solvesList"></div>
     </div>
 
-    <!-- Main Timer Area -->
     <div class="timer-section" id="timerSection">
       <div class="scramble-box" id="scrambleDisplay" onclick="newScramble()" title="Nhấn để đổi scramble khác">---</div>
 
@@ -651,7 +645,6 @@
         <div class="inspection-status" id="inspectionStatus"></div>
         <div class="timer-display" id="timerDisplay">0.00</div>
         
-        <!-- Stats Grid -->
         <div class="stats-grid-inline">
           <div class="stat-card">
             <span class="stat-label">Lượt</span>
@@ -676,7 +669,6 @@
     </div>
   </div>
 
-  <!-- Result Modal Popup -->
   <div class="modal-overlay" id="resultModal">
     <div class="modal-card">
       <div class="modal-scramble" id="modalScramble">R U R' U'...</div>
@@ -690,7 +682,6 @@
     </div>
   </div>
 
-  <!-- Manual Entry Modal -->
   <div class="modal-overlay" id="manualModal">
     <div class="modal-card">
       <h3>Nhập thời gian thủ công</h3>
@@ -702,12 +693,10 @@
     </div>
   </div>
 
-  <!-- Settings Modal (Gear Menu) -->
   <div class="modal-overlay" id="settingsModal">
     <div class="modal-card">
       <h3>⚙️ Cài đặt hệ thống</h3>
       
-      <!-- Inspection Setting -->
       <div class="settings-row">
         <span class="settings-label">Xem đề 15 giây (Inspection):</span>
         <label class="toggle-container">
@@ -716,7 +705,6 @@
         </label>
       </div>
 
-      <!-- Hide Time While Solving Setting -->
       <div class="settings-row">
         <span class="settings-label">Ẩn đồng hồ khi đang giải:</span>
         <label class="toggle-container">
@@ -725,7 +713,6 @@
         </label>
       </div>
 
-      <!-- Background Image Upload -->
       <div class="settings-group" style="margin-top: 0.5rem;">
         <span class="settings-label">Ảnh nền tùy chỉnh từ thiết bị:</span>
         <div class="file-input-wrapper">
@@ -734,7 +721,6 @@
         </div>
       </div>
 
-      <!-- Zoom Slider Setting -->
       <div class="settings-group" style="margin-top: 0.3rem;">
         <span class="settings-label" id="zoomLabel">Kích thước ảnh (Zoom): 100%</span>
         <input type="range" id="bgZoomSlider" min="20" max="400" value="100" class="zoom-slider" oninput="handleZoomChange(this.value)">
@@ -765,7 +751,7 @@
     let currentEvent = '333';
     let currentSession = 'Session 1';
     
-    let allData = JSON.parse(localStorage.getItem('speedcubing_pro_data_v15') || '{}');
+    let allData = JSON.parse(localStorage.getItem('speedcubing_pro_data_v16') || '{}');
     if (Object.keys(allData).length === 0) {
       allData['Session 1'] = [];
     }
@@ -773,10 +759,8 @@
       currentSession = Object.keys(allData)[0];
     }
 
-    // Default Rubik background image URL
     const defaultRubikBg = "https://images.unsplash.com/photo-1591991564021-056708d7d9a9?auto=format&fit=crop&w=1920&q=80";
 
-    // Background State & Dragging & Zooming Logic
     let bgImg = document.getElementById('customBgImg');
     let bgContainer = document.getElementById('bgContainer');
     let zoomSlider = document.getElementById('bgZoomSlider');
@@ -1076,7 +1060,8 @@
       scrambleDisplay.innerText = generateScramble();
     }
 
-    function retryScramble(scrambleText) {
+    // Hàm gọi khi nhấn nút Thử lại (↺)
+    function retrySolveScramble(scrambleText) {
       scrambleDisplay.innerText = scrambleText;
     }
 
@@ -1351,7 +1336,9 @@
         const wrapper = document.createElement('div');
         wrapper.className = 'solve-wrapper';
 
-        const safeScramble = solve.scramble.replace(/"/g, '&quot;');
+        // Thay thế dấu ngoặc kép hoặc ký tự đặc biệt để tránh lỗi JS
+        const safeScramble = solve.scramble.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+        
         wrapper.innerHTML = `
           <div class="solve-item" onclick="toggleSolveScramble(this)" title="Nhấp để hiện/ẩn scramble">
             <span class="solve-index">#${solves.length - index}</span>
@@ -1359,7 +1346,7 @@
             <div class="solve-actions" onclick="event.stopPropagation()">
               <button class="action-badge ${solve.penalty === 2 ? 'plus2-active' : ''}" onclick="togglePenalty(${index}, 2)">+2</button>
               <button class="action-badge ${solve.penalty === 'DNF' ? 'dnf-active' : ''}" onclick="togglePenalty(${index}, 'DNF')">DNF</button>
-              <button class="retry-solve" onclick="retryScramble('${safeScramble}')" title="Thử lại scramble này">↺</button>
+              <button class="retry-solve" onclick="retrySolveScramble('${safeScramble}')" title="Thử lại scramble này">↺</button>
               <button class="remove-solve" onclick="removeSolve(${index})" title="Xóa lượt này">✕</button>
             </div>
           </div>
@@ -1370,7 +1357,7 @@
     }
 
     function saveAndRender() {
-      localStorage.setItem('speedcubing_pro_data_v15', JSON.stringify(allData));
+      localStorage.setItem('speedcubing_pro_data_v16', JSON.stringify(allData));
       renderHistory();
       updateStats();
     }
@@ -1406,7 +1393,6 @@
       }
     });
 
-    // Hỗ trợ nhấp chuột để bắt đầu/dừng timer
     const timerSection = document.getElementById('timerSection');
     timerSection.addEventListener('mousedown', (e) => {
       if (e.target.closest('header') || e.target.closest('.scramble-box') || e.target.closest('.sidebar') || e.target.closest('.stats-grid-inline')) return;
