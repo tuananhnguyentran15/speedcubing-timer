@@ -283,11 +283,11 @@
     }
 
     .inspection-status {
-      font-size: 1.15rem;
+      font-size: 1.3rem;
       font-weight: 700;
       color: var(--inspect-color);
-      height: 24px;
-      margin-bottom: 0.2rem;
+      height: 30px;
+      margin-bottom: 0.4rem;
       letter-spacing: 1px;
     }
 
@@ -296,8 +296,8 @@
       font-size: 6rem;
       font-weight: 800;
       color: var(--text-main);
-      text-shadow: 0 4px 20px rgba(0,0,0,0.5);
-      transition: color 0.1s ease;
+      text-shadow: 0 4px 25px rgba(0,0,0,0.6);
+      transition: all 0.15s ease;
       line-height: 1;
     }
 
@@ -350,7 +350,7 @@
       transition: opacity 0.2s ease, visibility 0.2s ease;
     }
 
-    /* ZEN MODE: Ẩn mọi thứ, chỉ hiện đồng hồ */
+    /* ZEN MODE: Ẩn mọi thứ, đồng hồ cực to ở giữa */
     body.zen-mode header,
     body.zen-mode .sidebar,
     body.zen-mode .scramble-box,
@@ -359,6 +359,10 @@
       opacity: 0;
       visibility: hidden;
       pointer-events: none;
+    }
+
+    body.zen-mode .timer-display {
+      font-size: 11rem;
     }
 
     /* Modals */
@@ -522,7 +526,7 @@
 </head>
 <body>
 
-  <!-- Background Drag Container -->
+  <!-- Background Drag & Zoom Container -->
   <div id="bgContainer">
     <img id="customBgImg" alt="">
   </div>
@@ -650,11 +654,11 @@
       <!-- Zoom Slider Setting -->
       <div class="settings-group" style="margin-top: 0.3rem;">
         <span class="settings-label" id="zoomLabel">Kích thước ảnh (Zoom): 100%</span>
-        <input type="range" id="bgZoomSlider" min="20" max="300" value="100" class="zoom-slider" oninput="handleZoomChange(this.value)">
+        <input type="range" id="bgZoomSlider" min="20" max="400" value="100" class="zoom-slider" oninput="handleZoomChange(this.value)">
       </div>
 
       <div class="settings-group" style="margin-top: 0.2rem;">
-        <button class="modal-btn" onclick="resetBackground()" style="width: 100%; background: #334155; color: var(--danger);">Xóa ảnh nền (Về mặc định)</button>
+        <button class="modal-btn" onclick="resetBackground()" style="width: 100%; background: #334155; color: var(--danger);">Ảnh nền mặc định Rubik</button>
       </div>
 
       <div class="modal-buttons" style="margin-top: 0.5rem;">
@@ -677,13 +681,16 @@
     let currentEvent = '333';
     let currentSession = 'Session 1';
     
-    let allData = JSON.parse(localStorage.getItem('speedcubing_pro_data_v7') || '{}');
+    let allData = JSON.parse(localStorage.getItem('speedcubing_pro_data_v9') || '{}');
     if (Object.keys(allData).length === 0) {
       allData['Session 1'] = [];
     }
     if (!allData[currentSession]) {
       currentSession = Object.keys(allData)[0];
     }
+
+    // Default Rubik background image URL
+    const defaultRubikBg = "https://images.unsplash.com/photo-1591991564021-056708d7d9a9?auto=format&fit=crop&w=1920&q=80";
 
     // Background State & Dragging & Zooming Logic
     let bgImg = document.getElementById('customBgImg');
@@ -700,7 +707,7 @@
     zoomSlider.value = scale * 100;
     zoomLabel.innerText = `Kích thước ảnh (Zoom): ${Math.round(scale * 100)}%`;
 
-    const savedBg = localStorage.getItem('speedcubing_pro_bg');
+    const savedBg = localStorage.getItem('speedcubing_pro_bg') !== null ? localStorage.getItem('speedcubing_pro_bg') : defaultRubikBg;
     const savedInspection = localStorage.getItem('speedcubing_pro_inspection') === 'true';
 
     inspectionEnabled = savedInspection;
@@ -725,7 +732,6 @@
     }
 
     bgContainer.addEventListener('mousedown', (e) => {
-      if (!savedBg) return;
       isDragging = true;
       startX = e.clientX - posX;
       startY = e.clientY - posY;
@@ -747,7 +753,6 @@
     });
 
     bgContainer.addEventListener('touchstart', (e) => {
-      if (!savedBg) return;
       isDragging = true;
       startX = e.touches[0].clientX - posX;
       startY = e.touches[0].clientY - posY;
@@ -828,12 +833,15 @@
     }
 
     function resetBackground() {
-      bgImg.src = '';
-      localStorage.removeItem('speedcubing_pro_bg');
+      bgImg.src = defaultRubikBg;
+      localStorage.setItem('speedcubing_pro_bg', defaultRubikBg);
       localStorage.removeItem('speedcubing_pro_bg_x');
       localStorage.removeItem('speedcubing_pro_bg_y');
       localStorage.removeItem('speedcubing_pro_bg_scale');
       posX = 0; posY = 0; scale = 1;
+      zoomSlider.value = 100;
+      zoomLabel.innerText = "Kích thước ảnh (Zoom): 100%";
+      updateBgTransform();
       closeSettingsModal();
     }
 
@@ -994,7 +1002,7 @@
 
     function startInspection() {
       state = 'INSPECTING';
-      document.body.classList.add('zen-mode'); // Kích hoạt ẩn giao diện khi bắt đầu inspection
+      document.body.classList.add('zen-mode');
       inspectionTimeLeft = 15;
       inspectionPenalty = 0;
       inspectionStatus.innerText = 'INSPECTION';
@@ -1034,7 +1042,7 @@
           startInspection();
         } else {
           state = 'HOLDING';
-          document.body.classList.add('zen-mode'); // Ẩn giao diện khi bấm giữ
+          document.body.classList.add('zen-mode');
           timerDisplay.className = 'timer-display holding';
           holdingTimeout = setTimeout(() => {
             state = 'READY';
@@ -1060,7 +1068,7 @@
       if (state === 'HOLDING') {
         clearTimeout(holdingTimeout);
         state = inspectionEnabled ? 'INSPECTING' : 'IDLE';
-        if (!inspectionEnabled) document.body.classList.remove('zen-mode'); // Trả lại giao diện nếu nhả tay sớm
+        if (!inspectionEnabled) document.body.classList.remove('zen-mode');
         timerDisplay.className = inspectionEnabled ? 'timer-display inspecting' : 'timer-display';
       } else if (state === 'READY') {
         if (inspectionInterval) clearInterval(inspectionInterval);
@@ -1071,7 +1079,7 @@
 
     function startTimer() {
       state = 'RUNNING';
-      document.body.classList.add('zen-mode'); // Duy trì ẩn giao diện trong lúc giải
+      document.body.classList.add('zen-mode');
       startTime = performance.now();
       timerDisplay.className = 'timer-display';
       timerInterval = setInterval(() => {
@@ -1096,7 +1104,7 @@
       saveAndRender();
       
       state = 'IDLE';
-      document.body.classList.remove('zen-mode'); // Hiện lại giao diện khi dừng đồng hồ
+      document.body.classList.remove('zen-mode');
       timerDisplay.innerText = '0.000';
       newScramble();
       
@@ -1240,7 +1248,7 @@
     }
 
     function saveAndRender() {
-      localStorage.setItem('speedcubing_pro_data_v7', JSON.stringify(allData));
+      localStorage.setItem('speedcubing_pro_data_v9', JSON.stringify(allData));
       renderHistory();
       updateStats();
     }
