@@ -529,6 +529,41 @@
       accent-color: var(--accent);
       cursor: pointer;
     }
+
+    /* Switch Style */
+    .toggle-container {
+      position: relative;
+      display: inline-block;
+      width: 44px;
+      height: 24px;
+    }
+    .toggle-container input {
+      opacity: 0;
+      width: 0; height: 0;
+    }
+    .switch {
+      position: absolute;
+      cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #334155;
+      transition: .2s;
+      border-radius: 24px;
+    }
+    .switch:before {
+      position: absolute;
+      content: "";
+      height: 18px; width: 18px;
+      left: 3px; bottom: 3px;
+      background-color: white;
+      transition: .2s;
+      border-radius: 50%;
+    }
+    input:checked + .switch {
+      background-color: var(--accent);
+    }
+    input:checked + .switch:before {
+      transform: translateX(20px);
+    }
   </style>
 </head>
 <body>
@@ -582,7 +617,7 @@
 
       <div class="timer-display-wrapper">
         <div class="inspection-status" id="inspectionStatus"></div>
-        <div class="timer-display" id="timerDisplay">0.000</div>
+        <div class="timer-display" id="timerDisplay">0.00</div>
         
         <!-- Stats Grid -->
         <div class="stats-grid-inline">
@@ -613,7 +648,7 @@
   <div class="modal-overlay" id="resultModal">
     <div class="modal-card">
       <div class="modal-scramble" id="modalScramble">R U R' U'...</div>
-      <div class="modal-time" id="modalTime">12.345</div>
+      <div class="modal-time" id="modalTime">12.34</div>
       <div class="modal-buttons">
         <button class="modal-btn btn-plus2" id="modalBtnPlus2" onclick="setModalPenalty(2)">+2s</button>
         <button class="modal-btn btn-dnf" id="modalBtnDNF" onclick="setModalPenalty('DNF')">DNF</button>
@@ -649,6 +684,15 @@
         </label>
       </div>
 
+      <!-- Hide Time While Solving Setting -->
+      <div class="settings-row">
+        <span class="settings-label">Ẩn đồng hồ khi đang giải:</span>
+        <label class="toggle-container">
+          <input type="checkbox" id="hideTimeToggle">
+          <span class="switch"></span>
+        </label>
+      </div>
+
       <!-- Background Image Upload -->
       <div class="settings-group" style="margin-top: 0.5rem;">
         <span class="settings-label">Ảnh nền tùy chỉnh từ thiết bị:</span>
@@ -677,6 +721,7 @@
   <script>
     let state = 'IDLE';
     let inspectionEnabled = false;
+    let hideTimeSolving = false;
     let inspectionTimeLeft = 15;
     let inspectionInterval = null;
     let holdingTimeout = null;
@@ -688,7 +733,7 @@
     let currentEvent = '333';
     let currentSession = 'Session 1';
     
-    let allData = JSON.parse(localStorage.getItem('speedcubing_pro_data_v10') || '{}');
+    let allData = JSON.parse(localStorage.getItem('speedcubing_pro_data_v12') || '{}');
     if (Object.keys(allData).length === 0) {
       allData['Session 1'] = [];
     }
@@ -716,9 +761,13 @@
 
     const savedBg = localStorage.getItem('speedcubing_pro_bg') !== null ? localStorage.getItem('speedcubing_pro_bg') : defaultRubikBg;
     const savedInspection = localStorage.getItem('speedcubing_pro_inspection') === 'true';
+    const savedHideTime = localStorage.getItem('speedcubing_pro_hide_time') === 'true';
 
     inspectionEnabled = savedInspection;
+    hideTimeSolving = savedHideTime;
+    
     document.getElementById('inspectionToggle').checked = savedInspection;
+    document.getElementById('hideTimeToggle').checked = savedHideTime;
 
     if (savedBg) {
       bgImg.src = savedBg;
@@ -797,6 +846,7 @@
     const inspectionStatus = document.getElementById('inspectionStatus');
     const scrambleDisplay = document.getElementById('scrambleDisplay');
     const inspectionToggle = document.getElementById('inspectionToggle');
+    const hideTimeToggle = document.getElementById('hideTimeToggle');
     const solvesList = document.getElementById('solvesList');
     const historyTitle = document.getElementById('historyTitle');
     const sessionSelect = document.getElementById('sessionSelect');
@@ -814,6 +864,11 @@
     inspectionToggle.addEventListener('change', (e) => {
       inspectionEnabled = e.target.checked;
       localStorage.setItem('speedcubing_pro_inspection', inspectionEnabled);
+    });
+
+    hideTimeToggle.addEventListener('change', (e) => {
+      hideTimeSolving = e.target.checked;
+      localStorage.setItem('speedcubing_pro_hide_time', hideTimeSolving);
     });
 
     function openSettingsModal() { settingsModal.classList.add('active'); }
@@ -993,15 +1048,15 @@
       if (penalty === 'DNF') return 'DNF';
       let totalMs = ms + (penalty === 2 ? 2000 : 0);
       const seconds = Math.floor(totalMs / 1000);
-      const remainderMs = Math.floor(totalMs % 1000);
+      const centiseconds = Math.floor((totalMs % 1000) / 10);
       const minutes = Math.floor(seconds / 60);
       const displaySec = seconds % 60;
 
       let str = '';
       if (minutes > 0) {
-        str = `${minutes}:${displaySec < 10 ? '0' : ''}${displaySec}.${remainderMs.toString().padStart(3, '0')}`;
+        str = `${minutes}:${displaySec < 10 ? '0' : ''}${displaySec}.${centiseconds.toString().padStart(2, '0')}`;
       } else {
-        str = `${displaySec}.${remainderMs.toString().padStart(3, '0')}`;
+        str = `${displaySec}.${centiseconds.toString().padStart(2, '0')}`;
       }
       if (penalty === 2) str += ' (+2)';
       return str;
@@ -1089,9 +1144,16 @@
       document.body.classList.add('zen-mode');
       startTime = performance.now();
       timerDisplay.className = 'timer-display';
+      
+      if (hideTimeSolving) {
+        timerDisplay.innerText = 'SOLVING...';
+      }
+
       timerInterval = setInterval(() => {
         currentRawTime = performance.now() - startTime;
-        timerDisplay.innerText = formatTime(currentRawTime);
+        if (!hideTimeSolving) {
+          timerDisplay.innerText = formatTime(currentRawTime);
+        }
       }, 10);
     }
 
@@ -1112,7 +1174,7 @@
       
       state = 'IDLE';
       document.body.classList.remove('zen-mode');
-      timerDisplay.innerText = '0.000';
+      timerDisplay.innerText = '0.00';
       newScramble();
       
       openModal(newSolve);
@@ -1255,7 +1317,7 @@
     }
 
     function saveAndRender() {
-      localStorage.setItem('speedcubing_pro_data_v10', JSON.stringify(allData));
+      localStorage.setItem('speedcubing_pro_data_v12', JSON.stringify(allData));
       renderHistory();
       updateStats();
     }
