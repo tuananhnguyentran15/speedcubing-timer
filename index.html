@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Speedcubing Timer Pro</title>
+  <title>Speedcubing Timer - CSTimer Pro Style</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -40,40 +40,70 @@
       overflow: hidden;
     }
 
+    /* Top Bar Header */
     header {
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 0.75rem 2rem;
+      padding: 0.5rem 1.5rem;
       border-bottom: 1px solid var(--card-border);
-      background: rgba(15, 23, 42, 0.9);
+      background: rgba(15, 23, 42, 0.95);
       backdrop-filter: blur(10px);
       height: 60px;
     }
 
     .brand {
-      font-size: 1.2rem;
+      font-size: 1.1rem;
       font-weight: 800;
       letter-spacing: -0.5px;
       color: var(--text-main);
       display: flex;
       align-items: center;
-      gap: 0.5rem;
+      gap: 0.4rem;
     }
 
     .brand span { color: var(--accent); }
 
-    .controls-bar {
+    .header-controls {
       display: flex;
-      gap: 1.5rem;
+      gap: 0.75rem;
       align-items: center;
+      flex-wrap: wrap;
     }
+
+    .select-dropdown {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 600;
+      font-size: 0.85rem;
+      cursor: pointer;
+      outline: none;
+    }
+
+    .select-dropdown:hover { border-color: var(--accent); }
+
+    .btn-action {
+      background: #334155;
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.1s;
+    }
+    .btn-action:hover { background: #475569; }
 
     .toggle-container {
       display: flex;
       align-items: center;
-      gap: 0.6rem;
-      font-size: 0.9rem;
+      gap: 0.5rem;
+      font-size: 0.85rem;
       font-weight: 600;
       color: var(--text-muted);
       cursor: pointer;
@@ -82,8 +112,8 @@
     .toggle-container input { display: none; }
 
     .switch {
-      width: 42px;
-      height: 24px;
+      width: 36px;
+      height: 20px;
       background-color: #334155;
       border-radius: 20px;
       position: relative;
@@ -93,45 +123,141 @@
     .switch::after {
       content: '';
       position: absolute;
-      top: 3px; left: 3px;
-      width: 18px; height: 18px;
+      top: 2px; left: 2px;
+      width: 16px; height: 16px;
       border-radius: 50%;
       background-color: #fff;
       transition: transform 0.2s;
     }
 
     .toggle-container input:checked + .switch { background-color: var(--accent); }
-    .toggle-container input:checked + .switch::after { transform: translateX(18px); }
+    .toggle-container input:checked + .switch::after { transform: translateX(16px); }
 
+    /* Main Layout */
     .app-container {
       display: grid;
-      grid-template-columns: 360px 1fr;
+      grid-template-columns: 340px 1fr;
       flex: 1;
       height: calc(100vh - 60px);
     }
 
+    /* Left Sidebar History */
+    .sidebar {
+      background: var(--card-bg);
+      border-right: 1px solid var(--card-border);
+      display: flex;
+      flex-direction: column;
+      padding: 1rem;
+      gap: 0.75rem;
+      overflow-y: auto;
+    }
+
+    .history-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding-bottom: 0.5rem;
+      border-bottom: 1px solid var(--card-border);
+    }
+
+    .history-title {
+      font-size: 0.9rem;
+      font-weight: 700;
+    }
+
+    .clear-btn {
+      background: transparent;
+      border: none;
+      color: var(--danger);
+      font-size: 0.75rem;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .solves-list {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      flex: 1;
+      overflow-y: auto;
+    }
+
+    .solve-item {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      background: rgba(15, 23, 42, 0.5);
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      border-radius: 6px;
+      padding: 0.45rem 0.65rem;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+    }
+
+    .solve-index {
+      color: var(--text-muted);
+      width: 26px;
+      font-size: 0.7rem;
+    }
+
+    .solve-time {
+      font-weight: 600;
+      flex: 1;
+    }
+
+    .solve-actions {
+      display: flex;
+      gap: 0.25rem;
+    }
+
+    .action-badge {
+      background: #334155;
+      border: none;
+      color: var(--text-muted);
+      padding: 0.1rem 0.35rem;
+      border-radius: 4px;
+      font-size: 0.65rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .action-badge.plus2-active { background: var(--warning); color: #000; }
+    .action-badge.dnf-active { background: var(--danger); color: #fff; }
+
+    .remove-solve {
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      cursor: pointer;
+      margin-left: 0.15rem;
+      font-size: 0.8rem;
+    }
+    .remove-solve:hover { color: var(--danger); }
+
+    /* Timer Section */
     .timer-section {
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: space-between;
-      padding: 1.5rem 2rem;
+      padding: 1.25rem 2rem;
       position: relative;
     }
 
     .scramble-box {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
-      padding: 1rem 2rem;
-      border-radius: 12px;
+      padding: 0.9rem 1.5rem;
+      border-radius: 10px;
       font-family: 'JetBrains Mono', monospace;
-      font-size: 1.3rem;
+      font-size: 1.15rem;
       font-weight: 600;
-      letter-spacing: 2px;
+      letter-spacing: 1.5px;
       text-align: center;
-      max-width: 750px;
+      max-width: 800px;
       width: 100%;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+      word-break: break-word;
     }
 
     .timer-display-wrapper {
@@ -144,17 +270,17 @@
     }
 
     .inspection-status {
-      font-size: 1.25rem;
+      font-size: 1.15rem;
       font-weight: 700;
       color: var(--inspect-color);
-      height: 25px;
-      margin-bottom: 0.25rem;
+      height: 24px;
+      margin-bottom: 0.2rem;
       letter-spacing: 1px;
     }
 
     .timer-display {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 6.5rem;
+      font-size: 6rem;
       font-weight: 800;
       color: var(--text-main);
       transition: color 0.1s ease;
@@ -165,18 +291,19 @@
     .timer-display.ready { color: var(--ready-color); }
     .timer-display.inspecting { color: var(--inspect-color); }
 
+    /* CSTimer Stats Grid (4 items - Mean removed) */
     .stats-grid-inline {
       display: grid;
-      grid-template-columns: repeat(3, minmax(110px, 140px));
+      grid-template-columns: repeat(4, minmax(110px, 140px));
       gap: 0.75rem;
-      margin-top: 2rem;
+      margin-top: 1.75rem;
     }
 
     .stat-card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
-      border-radius: 10px;
-      padding: 0.75rem 1rem;
+      border-radius: 8px;
+      padding: 0.6rem 0.8rem;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -201,102 +328,11 @@
 
     .timer-hint {
       color: var(--text-muted);
-      font-size: 0.85rem;
-      margin-top: 1.5rem;
-    }
-
-    .sidebar {
-      background: var(--card-bg);
-      border-right: 1px solid var(--card-border);
-      display: flex;
-      flex-direction: column;
-      padding: 1.25rem;
-      gap: 1rem;
-      overflow-y: auto;
-    }
-
-    .history-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-bottom: 0.5rem;
-      border-bottom: 1px solid var(--card-border);
-    }
-
-    .history-title {
-      font-size: 0.95rem;
-      font-weight: 700;
-    }
-
-    .clear-btn {
-      background: transparent;
-      border: none;
-      color: var(--danger);
       font-size: 0.8rem;
-      font-weight: 600;
-      cursor: pointer;
+      margin-top: 1.25rem;
     }
 
-    .solves-list {
-      display: flex;
-      flex-direction: column;
-      gap: 0.4rem;
-      flex: 1;
-      overflow-y: auto;
-    }
-
-    .solve-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      background: rgba(15, 23, 42, 0.5);
-      border: 1px solid rgba(255, 255, 255, 0.04);
-      border-radius: 6px;
-      padding: 0.5rem 0.75rem;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.85rem;
-    }
-
-    .solve-index {
-      color: var(--text-muted);
-      width: 28px;
-      font-size: 0.75rem;
-    }
-
-    .solve-time {
-      font-weight: 600;
-      flex: 1;
-    }
-
-    .solve-actions {
-      display: flex;
-      gap: 0.3rem;
-    }
-
-    .action-badge {
-      background: #334155;
-      border: none;
-      color: var(--text-muted);
-      padding: 0.15rem 0.4rem;
-      border-radius: 4px;
-      font-size: 0.7rem;
-      font-weight: 700;
-      cursor: pointer;
-    }
-
-    .action-badge.plus2-active { background: var(--warning); color: #000; }
-    .action-badge.dnf-active { background: var(--danger); color: #fff; }
-
-    .remove-solve {
-      background: transparent;
-      border: none;
-      color: var(--text-muted);
-      cursor: pointer;
-      margin-left: 0.2rem;
-      font-size: 0.85rem;
-    }
-    .remove-solve:hover { color: var(--danger); }
-
+    /* Modals */
     .modal-overlay {
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
@@ -319,20 +355,20 @@
     .modal-card {
       background: var(--card-bg);
       border: 1px solid var(--card-border);
-      border-radius: 16px;
-      padding: 2rem;
-      width: 420px;
+      border-radius: 14px;
+      padding: 1.75rem;
+      width: 400px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.5);
       display: flex;
       flex-direction: column;
       align-items: center;
-      gap: 1.25rem;
+      gap: 1.1rem;
       text-align: center;
     }
 
     .modal-time {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 4rem;
+      font-size: 3.5rem;
       font-weight: 800;
       color: var(--accent);
       line-height: 1;
@@ -340,14 +376,14 @@
 
     .modal-scramble {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
       color: var(--text-muted);
     }
 
     .modal-buttons {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      gap: 0.75rem;
+      gap: 0.6rem;
       width: 100%;
     }
 
@@ -355,10 +391,10 @@
       background: #334155;
       border: 1px solid var(--card-border);
       color: var(--text-main);
-      padding: 0.75rem;
-      border-radius: 8px;
+      padding: 0.6rem;
+      border-radius: 6px;
       font-weight: 700;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       cursor: pointer;
       transition: all 0.1s;
     }
@@ -386,18 +422,51 @@
       background: var(--accent);
       color: #0f172a;
       grid-column: span 3;
-      margin-top: 0.25rem;
     }
     .modal-ok:hover { opacity: 0.9; }
+
+    .manual-input {
+      background: #0f172a;
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.5rem;
+      padding: 0.5rem;
+      border-radius: 6px;
+      width: 100%;
+      text-align: center;
+      outline: none;
+    }
+    .manual-input:focus { border-color: var(--accent); }
   </style>
 </head>
 <body>
 
   <header>
-    <div class="brand">⚡ Speedcubing<span>Timer</span></div>
-    <div class="controls-bar">
+    <div class="brand">
+      ⚡ CSTimer<span>Pro</span>
+    </div>
+    <div class="header-controls">
+      <!-- Event Selector -->
+      <select class="select-dropdown" id="eventSelect" onchange="changeEvent()">
+        <option value="333">3x3x3 Cube</option>
+        <option value="222">2x2x2 Cube</option>
+        <option value="444">4x4x4 Cube</option>
+        <option value="555">5x5x5 Cube</option>
+        <option value="pyram">Pyraminx</option>
+        <option value="skewb">Skewb</option>
+        <option value="megaminx">Megaminx</option>
+        <option value="sq1">Square-1</option>
+      </select>
+
+      <!-- Session Selector -->
+      <select class="select-dropdown" id="sessionSelect" onchange="changeSession()"></select>
+      
+      <button class="btn-action" onclick="promptNewSession()">+ Session mới</button>
+      <button class="btn-action" onclick="openManualModal()">+ Nhập tay</button>
+
       <label class="toggle-container">
-        <span>Xem đề 15s (Inspection)</span>
+        <span>Xem đề 15s</span>
         <input type="checkbox" id="inspectionToggle">
         <span class="switch"></span>
       </label>
@@ -405,24 +474,31 @@
   </header>
 
   <div class="app-container">
+    <!-- Left Sidebar History -->
     <div class="sidebar">
       <div class="history-header">
-        <span class="history-title" id="historyTitle">Lịch sử (0 lượt)</span>
-        <button class="clear-btn" onclick="clearHistory()">Xóa tất cả</button>
+        <span class="history-title" id="historyTitle">Lịch sử (0)</span>
+        <button class="clear-btn" onclick="clearHistory()">Xóa session</button>
       </div>
       <div class="solves-list" id="solvesList"></div>
     </div>
 
+    <!-- Main Timer Area -->
     <div class="timer-section" id="timerSection">
-      <div class="scramble-box" id="scrambleDisplay">---</div>
+      <div class="scramble-box" id="scrambleDisplay" onclick="newScramble()" title="Nhấn để đổi scramble khác">---</div>
 
       <div class="timer-display-wrapper">
         <div class="inspection-status" id="inspectionStatus"></div>
         <div class="timer-display" id="timerDisplay">0.000</div>
         
+        <!-- CSTimer Stats Grid (4 items - Mean removed) -->
         <div class="stats-grid-inline">
           <div class="stat-card">
-            <span class="stat-label">Best (PB)</span>
+            <span class="stat-label">Lượt</span>
+            <span class="stat-value" id="statCount">0</span>
+          </div>
+          <div class="stat-card">
+            <span class="stat-label">Best</span>
             <span class="stat-value" id="statPB">--</span>
           </div>
           <div class="stat-card">
@@ -435,11 +511,12 @@
           </div>
         </div>
 
-        <div class="timer-hint" id="timerHint">Nhấn giữ SPACE hoặc chạm màn hình để bắt đầu</div>
+        <div class="timer-hint">Nhấn giữ SPACE hoặc chạm màn hình để bắt đầu</div>
       </div>
     </div>
   </div>
 
+  <!-- Result Modal Popup -->
   <div class="modal-overlay" id="resultModal">
     <div class="modal-card">
       <div class="modal-scramble" id="modalScramble">R U R' U'...</div>
@@ -450,6 +527,18 @@
         <button class="modal-btn btn-delete" onclick="deleteModalSolve()">Xóa</button>
         <button class="modal-btn modal-ok" onclick="closeModal()">Tiếp tục (Enter)</button>
       </div>
+    </div>
+  </div>
+
+  <!-- Manual Entry Modal -->
+  <div class="modal-overlay" id="manualModal">
+    <div class="modal-card">
+      <h3>Nhập thời gian thủ công</h3>
+      <input type="text" class="manual-input" id="manualTimeInput" placeholder="Ví dụ: 12.34 hoặc 1:12.34">
+      <div class="modal-buttons">
+        <button class="modal-btn modal-ok" onclick="submitManualSolve()" style="grid-column: span 3;">Thêm lượt giải</button>
+      </div>
+      <button class="clear-btn" onclick="closeManualModal()" style="margin-top: 0.5rem;">Hủy</button>
     </div>
   </div>
 
@@ -464,7 +553,18 @@
     let currentRawTime = 0;
     let inspectionPenalty = 0;
 
-    let solves = JSON.parse(localStorage.getItem('rubik_solves') || '[]');
+    let currentEvent = '333';
+    let currentSession = 'Session 1';
+    
+    let allData = JSON.parse(localStorage.getItem('cstimer_pro_data_v2') || '{}');
+    if (Object.keys(allData).length === 0) {
+      allData['Session 1'] = [];
+    }
+    
+    // Đảm bảo session hiện tại hợp lệ
+    if (!allData[currentSession]) {
+      currentSession = Object.keys(allData)[0];
+    }
 
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     function playBeep(freq = 600, duration = 0.15) {
@@ -485,37 +585,156 @@
     const inspectionToggle = document.getElementById('inspectionToggle');
     const solvesList = document.getElementById('solvesList');
     const historyTitle = document.getElementById('historyTitle');
+    const sessionSelect = document.getElementById('sessionSelect');
+    
     const resultModal = document.getElementById('resultModal');
     const modalTime = document.getElementById('modalTime');
     const modalScramble = document.getElementById('modalScramble');
     const modalBtnPlus2 = document.getElementById('modalBtnPlus2');
     const modalBtnDNF = document.getElementById('modalBtnDNF');
+    
+    const manualModal = document.getElementById('manualModal');
+    const manualTimeInput = document.getElementById('manualTimeInput');
 
-    inspectionToggle.addEventListener('change', (e) => {
-      inspectionEnabled = e.target.checked;
-    });
+    inspectionToggle.addEventListener('change', (e) => { inspectionEnabled = e.target.checked; });
 
-    function generateScramble() {
-      const moves = ["R", "L", "U", "D", "F", "B"];
-      const modifiers = ["", "'", "2"];
-      const scramble = [];
-      let lastAxis = -1;
-
-      for (let i = 0; i < 20; i++) {
-        let moveIndex, axis;
-        do {
-          moveIndex = Math.floor(Math.random() * moves.length);
-          axis = Math.floor(moveIndex / 2);
-        } while (axis === lastAxis);
-
-        lastAxis = axis;
-        const modifier = modifiers[Math.floor(Math.random() * modifiers.length)];
-        scramble.push(moves[moveIndex] + modifier);
-      }
-      return scramble.join(" ");
+    function updateSessionDropdown() {
+      sessionSelect.innerHTML = '';
+      Object.keys(allData).forEach(sessionName => {
+        const opt = document.createElement('option');
+        opt.value = sessionName;
+        opt.innerText = sessionName;
+        if (sessionName === currentSession) opt.selected = true;
+        sessionSelect.appendChild(opt);
+      });
     }
 
-    function newScramble() { scrambleDisplay.innerText = generateScramble(); }
+    function promptNewSession() {
+      let name = prompt("Nhập tên session mới:", "Session " + (Object.keys(allData).length + 1));
+      if (!name) return;
+      name = name.trim();
+      if (allData[name]) {
+        alert("Session này đã tồn tại!");
+        return;
+      }
+      allData[name] = [];
+      currentSession = name;
+      updateSessionDropdown();
+      saveAndRender();
+      newScramble();
+    }
+
+    function changeEvent() {
+      currentEvent = document.getElementById('eventSelect').value;
+      newScramble();
+    }
+
+    function changeSession() {
+      currentSession = sessionSelect.value;
+      if (!allData[currentSession]) allData[currentSession] = [];
+      saveAndRender();
+      newScramble();
+    }
+
+    // Scramble Generator cho các môn WCA
+    function generateScramble() {
+      if (currentEvent === '333') {
+        const moves = ["R", "L", "U", "D", "F", "B"];
+        const mods = ["", "'", "2"];
+        let scramble = [], lastAxis = -1;
+        for (let i = 0; i < 20; i++) {
+          let mIdx, axis;
+          do {
+            mIdx = Math.floor(Math.random() * moves.length);
+            axis = Math.floor(mIdx / 2);
+          } while (axis === lastAxis);
+          lastAxis = axis;
+          scramble.push(moves[mIdx] + mods[Math.floor(Math.random() * mods.length)]);
+        }
+        return scramble.join(" ");
+      } else if (currentEvent === '222') {
+        const moves = ["R", "U", "F"];
+        const mods = ["", "'", "2"];
+        let scramble = [], lastMove = "";
+        for (let i = 0; i < 10; i++) {
+          let mv;
+          do { mv = moves[Math.floor(Math.random() * moves.length)]; } while (mv === lastMove);
+          lastMove = mv;
+          scramble.push(mv + mods[Math.floor(Math.random() * mods.length)]);
+        }
+        return scramble.join(" ");
+      } else if (currentEvent === '444') {
+        const moves = ["R", "L", "U", "D", "F", "B", "Rw", "Uw", "Fw"];
+        const mods = ["", "'", "2"];
+        let scramble = [], lastAxis = -1;
+        for (let i = 0; i < 40; i++) {
+          let mIdx, axis;
+          do {
+            mIdx = Math.floor(Math.random() * moves.length);
+            axis = Math.floor(mIdx / 2);
+          } while (axis === lastAxis);
+          lastAxis = axis;
+          scramble.push(moves[mIdx] + mods[Math.floor(Math.random() * mods.length)]);
+        }
+        return scramble.join(" ");
+      } else if (currentEvent === '555') {
+        const moves = ["R", "L", "U", "D", "F", "B", "Rw", "Lw", "Uw", "Dw", "Fw", "Bw"];
+        const mods = ["", "'", "2"];
+        let scramble = [], lastAxis = -1;
+        for (let i = 0; i < 60; i++) {
+          let mIdx, axis;
+          do {
+            mIdx = Math.floor(Math.random() * moves.length);
+            axis = Math.floor(mIdx / 2);
+          } while (axis === lastAxis);
+          lastAxis = axis;
+          scramble.push(moves[mIdx] + mods[Math.floor(Math.random() * mods.length)]);
+        }
+        return scramble.join(" ");
+      } else if (currentEvent === 'pyram') {
+        const moves = ["U", "L", "R", "B"];
+        const mods = ["", "'"];
+        const tips = ["u", "l", "r", "b"];
+        let scramble = [];
+        for (let i = 0; i < 8; i++) {
+          scramble.push(moves[Math.floor(Math.random() * moves.length)] + mods[Math.floor(Math.random() * mods.length)]);
+        }
+        tips.forEach(t => {
+          if (Math.random() > 0.5) scramble.push(t + (Math.random() > 0.5 ? "'" : ""));
+        });
+        return scramble.join(" ");
+      } else if (currentEvent === 'skewb') {
+        const moves = ["R", "L", "U", "B"];
+        const mods = ["", "'"];
+        let scramble = [];
+        for (let i = 0; i < 9; i++) {
+          scramble.push(moves[Math.floor(Math.random() * moves.length)] + mods[Math.floor(Math.random() * mods.length)]);
+        }
+        return scramble.join(" ");
+      } else if (currentEvent === 'megaminx') {
+        let scramble = [];
+        for (let i = 0; i < 7; i++) {
+          scramble.push("R++" + " " + "D--");
+        }
+        scramble.push("U'");
+        return scramble.join(" ");
+      } else if (currentEvent === 'sq1') {
+        const top = [-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6];
+        const bot = [-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6];
+        let scramble = [];
+        for(let i=0; i<7; i++) {
+          let t = top[Math.floor(Math.random()*top.length)];
+          let b = bot[Math.floor(Math.random()*bot.length)];
+          scramble.push(`(${t}, ${b})`);
+          if(i < 6) scramble.push("/");
+        }
+        return scramble.join(" ");
+      }
+    }
+
+    function newScramble() {
+      scrambleDisplay.innerText = generateScramble();
+    }
 
     function formatTime(ms, penalty = 0) {
       if (penalty === 'DNF') return 'DNF';
@@ -564,7 +783,7 @@
     }
 
     function handleKeyDown() {
-      if (resultModal.classList.contains('active')) return;
+      if (resultModal.classList.contains('active') || manualModal.classList.contains('active')) return;
 
       if (state === 'RUNNING') {
         stopTimer();
@@ -596,7 +815,7 @@
     }
 
     function handleKeyUp() {
-      if (resultModal.classList.contains('active')) return;
+      if (resultModal.classList.contains('active') || manualModal.classList.contains('active')) return;
 
       if (state === 'HOLDING') {
         clearTimeout(holdingTimeout);
@@ -630,7 +849,8 @@
         scramble: scrambleDisplay.innerText
       };
 
-      solves.unshift(newSolve);
+      if (!allData[currentSession]) allData[currentSession] = [];
+      allData[currentSession].unshift(newSolve);
       saveAndRender();
       
       state = 'IDLE';
@@ -650,6 +870,7 @@
     function closeModal() { resultModal.classList.remove('active'); }
 
     function setModalPenalty(type) {
+      let solves = allData[currentSession];
       if (solves.length === 0) return;
       solves[0].penalty = solves[0].penalty === type ? 0 : type;
       saveAndRender();
@@ -658,6 +879,7 @@
     }
 
     function deleteModalSolve() {
+      let solves = allData[currentSession];
       if (solves.length === 0) return;
       solves.shift();
       saveAndRender();
@@ -665,6 +887,7 @@
     }
 
     function updateModalButtonsState() {
+      let solves = allData[currentSession];
       if (solves.length === 0) return;
       const latest = solves[0];
       modalBtnPlus2.className = `modal-btn btn-plus2 ${latest.penalty === 2 ? 'active' : ''}`;
@@ -672,20 +895,57 @@
     }
 
     function togglePenalty(index, penaltyType) {
+      let solves = allData[currentSession];
       solves[index].penalty = solves[index].penalty === penaltyType ? 0 : penaltyType;
       saveAndRender();
     }
 
     function removeSolve(index) {
-      solves.splice(index, 1);
+      allData[currentSession].splice(index, 1);
       saveAndRender();
     }
 
     function clearHistory() {
-      if (confirm("Bạn có chắc chắn muốn xóa tất cả lịch sử giải?")) {
-        solves = [];
+      if (confirm(`Bạn có chắc muốn xóa sạch lịch sử của [${currentSession}]?`)) {
+        allData[currentSession] = [];
         saveAndRender();
       }
+    }
+
+    function openManualModal() {
+      manualTimeInput.value = '';
+      manualModal.classList.add('active');
+      manualTimeInput.focus();
+    }
+    function closeManualModal() { manualModal.classList.remove('active'); }
+
+    function submitManualSolve() {
+      let val = manualTimeInput.value.trim();
+      let ms = 0;
+      if (val.includes(':')) {
+        let parts = val.split(':');
+        ms = (parseInt(parts[0]) * 60 + parseFloat(parts[1])) * 1000;
+      } else {
+        ms = parseFloat(val) * 1000;
+      }
+
+      if (isNaN(ms) || ms <= 0) {
+        alert("Thời gian không hợp lệ!");
+        return;
+      }
+
+      const newSolve = {
+        id: Date.now(),
+        rawTime: ms,
+        penalty: 0,
+        scramble: scrambleDisplay.innerText
+      };
+
+      if (!allData[currentSession]) allData[currentSession] = [];
+      allData[currentSession].unshift(newSolve);
+      saveAndRender();
+      closeManualModal();
+      newScramble();
     }
 
     function calculateAverage(solveGroup) {
@@ -701,7 +961,9 @@
     }
 
     function updateStats() {
-      historyTitle.innerText = `Lịch sử (${solves.length} lượt)`;
+      let solves = allData[currentSession] || [];
+      historyTitle.innerText = `Lịch sử (${solves.length})`;
+      document.getElementById('statCount').innerText = solves.length;
 
       const validSolves = solves.filter(s => s.penalty !== 'DNF');
       if (validSolves.length > 0) {
@@ -711,23 +973,13 @@
         document.getElementById('statPB').innerText = '--';
       }
 
-      if (solves.length >= 5) {
-        const ao5 = calculateAverage(solves.slice(0, 5));
-        document.getElementById('statAo5').innerText = typeof ao5 === 'number' ? formatTime(ao5) : 'DNF';
-      } else {
-        document.getElementById('statAo5').innerText = '--';
-      }
-
-      if (solves.length >= 12) {
-        const ao12 = calculateAverage(solves.slice(0, 12));
-        document.getElementById('statAo12').innerText = typeof ao12 === 'number' ? formatTime(ao12) : 'DNF';
-      } else {
-        document.getElementById('statAo12').innerText = '--';
-      }
+      document.getElementById('statAo5').innerText = solves.length >= 5 && typeof calculateAverage(solves.slice(0, 5)) === 'number' ? formatTime(calculateAverage(solves.slice(0, 5))) : (solves.length >= 5 ? 'DNF' : '--');
+      document.getElementById('statAo12').innerText = solves.length >= 12 && typeof calculateAverage(solves.slice(0, 12)) === 'number' ? formatTime(calculateAverage(solves.slice(0, 12))) : (solves.length >= 12 ? 'DNF' : '--');
     }
 
     function renderHistory() {
       solvesList.innerHTML = '';
+      let solves = allData[currentSession] || [];
       solves.forEach((solve, index) => {
         const item = document.createElement('div');
         item.className = 'solve-item';
@@ -745,7 +997,7 @@
     }
 
     function saveAndRender() {
-      localStorage.setItem('rubik_solves', JSON.stringify(solves));
+      localStorage.setItem('cstimer_pro_data_v2', JSON.stringify(allData));
       renderHistory();
       updateStats();
     }
@@ -765,6 +1017,8 @@
         return;
       }
 
+      if (manualModal.classList.contains('active')) return;
+
       if (e.code === 'Space' && !e.repeat) {
         e.preventDefault();
         handleKeyDown();
@@ -772,7 +1026,7 @@
     });
 
     window.addEventListener('keyup', (e) => {
-      if (resultModal.classList.contains('active')) return;
+      if (resultModal.classList.contains('active') || manualModal.classList.contains('active')) return;
       if (e.code === 'Space') {
         e.preventDefault();
         handleKeyUp();
@@ -781,17 +1035,19 @@
 
     const timerSection = document.getElementById('timerSection');
     timerSection.addEventListener('touchstart', (e) => {
-      if (resultModal.classList.contains('active')) return;
+      if (resultModal.classList.contains('active') || manualModal.classList.contains('active')) return;
       e.preventDefault();
       handleKeyDown();
     }, { passive: false });
 
     timerSection.addEventListener('touchend', (e) => {
-      if (resultModal.classList.contains('active')) return;
+      if (resultModal.classList.contains('active') || manualModal.classList.contains('active')) return;
       e.preventDefault();
       handleKeyUp();
     }, { passive: false });
 
+    // Khởi tạo
+    updateSessionDropdown();
     newScramble();
     saveAndRender();
   </script>
