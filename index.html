@@ -33,7 +33,7 @@
     body {
       background-color: var(--bg-color);
       background-size: cover;
-      background-position: center;
+      background-position: center center;
       background-repeat: no-repeat;
       background-attachment: fixed;
       color: var(--text-main);
@@ -122,40 +122,6 @@
       transition: all 0.2s;
     }
     .gear-btn:hover { background: rgba(51, 65, 85, 0.9); border-color: var(--accent); transform: rotate(45deg); }
-
-    .toggle-container {
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--text-muted);
-      cursor: pointer;
-    }
-
-    .toggle-container input { display: none; }
-
-    .switch {
-      width: 36px;
-      height: 20px;
-      background-color: #334155;
-      border-radius: 20px;
-      position: relative;
-      transition: background-color 0.2s;
-    }
-
-    .switch::after {
-      content: '';
-      position: absolute;
-      top: 2px; left: 2px;
-      width: 16px; height: 16px;
-      border-radius: 50%;
-      background-color: #fff;
-      transition: transform 0.2s;
-    }
-
-    .toggle-container input:checked + .switch { background-color: var(--accent); }
-    .toggle-container input:checked + .switch::after { transform: translateX(16px); }
 
     /* Main Layout */
     .app-container {
@@ -386,7 +352,7 @@
       border: 1px solid var(--card-border);
       border-radius: 14px;
       padding: 1.75rem;
-      width: 420px;
+      width: 440px;
       box-shadow: 0 10px 30px rgba(0,0,0,0.5);
       display: flex;
       flex-direction: column;
@@ -474,7 +440,7 @@
     }
     .manual-input:focus { border-color: var(--accent); }
 
-    /* Settings Option Styles */
+    /* Settings Styles */
     .settings-group {
       width: 100%;
       display: flex;
@@ -503,6 +469,15 @@
       opacity: 0;
       cursor: pointer;
     }
+
+    .settings-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      padding: 0.4rem 0;
+      border-bottom: 1px solid rgba(51, 65, 85, 0.5);
+    }
   </style>
 </head>
 <body>
@@ -529,12 +504,6 @@
       
       <button class="btn-action" onclick="promptNewSession()">+ Session mới</button>
       <button class="btn-action" onclick="openManualModal()">+ Nhập tay</button>
-
-      <label class="toggle-container">
-        <span>Xem đề 15s</span>
-        <input type="checkbox" id="inspectionToggle">
-        <span class="switch"></span>
-      </label>
 
       <!-- Gear Settings Button -->
       <button class="gear-btn" onclick="openSettingsModal()" title="Cài đặt">⚙️</button>
@@ -613,22 +582,42 @@
   <!-- Settings Modal (Gear Menu) -->
   <div class="modal-overlay" id="settingsModal">
     <div class="modal-card">
-      <h3>⚙️ Cài đặt giao diện</h3>
+      <h3>⚙️ Cài đặt hệ thống</h3>
       
-      <div class="settings-group">
-        <span class="settings-label">Hình nền tùy chỉnh từ máy tính:</span>
+      <!-- Inspection Setting -->
+      <div class="settings-row">
+        <span class="settings-label">Xem đề 15 giây (Inspection):</span>
+        <label class="toggle-container">
+          <input type="checkbox" id="inspectionToggle">
+          <span class="switch"></span>
+        </label>
+      </div>
+
+      <!-- Background Image Upload -->
+      <div class="settings-group" style="margin-top: 0.5rem;">
+        <span class="settings-label">Ảnh nền tùy chỉnh từ thiết bị:</span>
         <div class="file-input-wrapper">
-          <button class="modal-btn" style="width: 100%;">📁 Chọn ảnh từ thiết bị</button>
+          <button class="modal-btn" style="width: 100%;">📁 Chọn ảnh từ máy tính</button>
           <input type="file" id="bgFileInput" accept="image/*" onchange="handleBgUpload(event)">
         </div>
       </div>
 
-      <div class="settings-group" style="margin-top: 0.5rem;">
+      <!-- Background Position Setting -->
+      <div class="settings-group" style="margin-top: 0.2rem;">
+        <span class="settings-label">Vị trí hiển thị ảnh nền:</span>
+        <select class="select-dropdown" id="bgSizeSelect" onchange="changeBgSize()" style="width: 100%;">
+          <option value="center_cover">Phủ kín màn hình (Center Cover)</option>
+          <option value="center_contain">Hiển thị trọn vẹn ở chính giữa (Center Contain)</option>
+          <option value="repeat">Lát gạch nền (Tile Pattern)</option>
+        </select>
+      </div>
+
+      <div class="settings-group" style="margin-top: 0.2rem;">
         <button class="modal-btn" onclick="resetBackground()" style="width: 100%; background: #334155; color: var(--danger);">Xóa ảnh nền (Về mặc định)</button>
       </div>
 
-      <div class="modal-buttons" style="margin-top: 1rem;">
-        <button class="modal-btn modal-ok" onclick="closeSettingsModal()" style="grid-column: span 3;">Đóng cài đặt</button>
+      <div class="modal-buttons" style="margin-top: 0.5rem;">
+        <button class="modal-btn modal-ok" onclick="closeSettingsModal()" style="grid-column: span 3;">Lưu & Đóng</button>
       </div>
     </div>
   </div>
@@ -647,7 +636,7 @@
     let currentEvent = '333';
     let currentSession = 'Session 1';
     
-    let allData = JSON.parse(localStorage.getItem('speedcubing_pro_data_v3') || '{}');
+    let allData = JSON.parse(localStorage.getItem('speedcubing_pro_data_v4') || '{}');
     if (Object.keys(allData).length === 0) {
       allData['Session 1'] = [];
     }
@@ -655,10 +644,34 @@
       currentSession = Object.keys(allData)[0];
     }
 
-    // Load saved background image if exists
+    // Load saved settings (Background & Inspection)
     const savedBg = localStorage.getItem('speedcubing_pro_bg');
+    const savedBgMode = localStorage.getItem('speedcubing_pro_bg_mode') || 'center_cover';
+    const savedInspection = localStorage.getItem('speedcubing_pro_inspection') === 'true';
+
+    inspectionEnabled = savedInspection;
+    document.getElementById('inspectionToggle').checked = savedInspection;
+    document.getElementById('bgSizeSelect').value = savedBgMode;
+
     if (savedBg) {
-      document.body.style.backgroundImage = `url(${savedBg})`;
+      applyBackgroundStyle(savedBg, savedBgMode);
+    }
+
+    function applyBackgroundStyle(imgUrl, mode) {
+      document.body.style.backgroundImage = `url(${imgUrl})`;
+      if (mode === 'center_cover') {
+        document.body.style.backgroundSize = 'cover';
+        document.body.style.backgroundPosition = 'center center';
+        document.body.style.backgroundRepeat = 'no-repeat';
+      } else if (mode === 'center_contain') {
+        document.body.style.backgroundSize = 'contain';
+        document.body.style.backgroundPosition = 'center center';
+        document.body.style.backgroundRepeat = 'no-repeat';
+      } else if (mode === 'repeat') {
+        document.body.style.backgroundSize = 'auto';
+        document.body.style.backgroundPosition = 'top left';
+        document.body.style.backgroundRepeat = 'repeat';
+      }
     }
 
     const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -692,7 +705,10 @@
     const manualTimeInput = document.getElementById('manualTimeInput');
     const settingsModal = document.getElementById('settingsModal');
 
-    inspectionToggle.addEventListener('change', (e) => { inspectionEnabled = e.target.checked; });
+    inspectionToggle.addEventListener('change', (e) => {
+      inspectionEnabled = e.target.checked;
+      localStorage.setItem('speedcubing_pro_inspection', inspectionEnabled);
+    });
 
     // Settings Modal Functions
     function openSettingsModal() { settingsModal.classList.add('active'); }
@@ -704,16 +720,27 @@
       const reader = new FileReader();
       reader.onload = function(e) {
         const base64Image = e.target.result;
-        document.body.style.backgroundImage = `url(${base64Image})`;
+        const currentMode = document.getElementById('bgSizeSelect').value;
+        applyBackgroundStyle(base64Image, currentMode);
         localStorage.setItem('speedcubing_pro_bg', base64Image);
         closeSettingsModal();
       };
       reader.readAsDataURL(file);
     }
 
+    function changeBgSize() {
+      const mode = document.getElementById('bgSizeSelect').value;
+      localStorage.setItem('speedcubing_pro_bg_mode', mode);
+      const bg = localStorage.getItem('speedcubing_pro_bg');
+      if (bg) {
+        applyBackgroundStyle(bg, mode);
+      }
+    }
+
     function resetBackground() {
       document.body.style.backgroundImage = 'none';
       localStorage.removeItem('speedcubing_pro_bg');
+      localStorage.removeItem('speedcubing_pro_bg_mode');
       closeSettingsModal();
     }
 
@@ -1115,7 +1142,7 @@
     }
 
     function saveAndRender() {
-      localStorage.setItem('speedcubing_pro_data_v3', JSON.stringify(allData));
+      localStorage.setItem('speedcubing_pro_data_v4', JSON.stringify(allData));
       renderHistory();
       updateStats();
     }
