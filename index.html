@@ -1,1458 +1,1037 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Speedcubing Pro - Rubik Timer</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
-  <style>
-    :root {
-      --bg-color: #070913;
-      --card-bg: rgba(15, 23, 42, 0.78);
-      --card-border: rgba(255, 255, 255, 0.08);
-      --card-border-hover: rgba(56, 189, 248, 0.3);
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-      --accent: #38bdf8;
-      --accent-glow: rgba(56, 189, 248, 0.25);
-      --ready-color: #4ade80;
-      --holding-color: #f87171;
-      --inspect-color: #facc15;
-      --danger: #fb7185;
-      --warning: #fbbf24;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Speedcubing Timer - CSTimer Pro Style</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-main: #0f172a;
+            --card-bg: #1e293b;
+            --card-border: #334155;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --accent: #38bdf8;
+            --accent-hover: #0ea5e9;
+            --danger: #f43f5e;
+            --success: #22c55e;
+            --holding-color: #fbbf24;
+            --ready-color: #22c55e;
+            --inspect-color: #f97316;
+        }
 
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      user-select: none;
-      -webkit-user-select: none;
-    }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-    body {
-      background-color: var(--bg-color);
-      background-repeat: no-repeat;
-      background-attachment: fixed;
-      color: var(--text-main);
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      position: relative;
-    }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: var(--bg-main);
+            color: var(--text-main);
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
 
-    /* Vùng chứa ảnh nền căn giữa mặc định */
-    #bgContainer {
-      position: absolute;
-      top: 0; left: 0; width: 100%; height: 100%;
-      z-index: -1;
-      overflow: hidden;
-      cursor: grab;
-    }
-    #bgContainer:active { cursor: grabbing; }
+        /* Top Bar Header */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 1.5rem;
+            border-bottom: 1px solid var(--card-border);
+            background: rgba(15, 23, 42, 0.95);
+            backdrop-filter: blur(10px);
+            height: 60px;
+        }
 
-    #customBgImg {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      min-width: 100%;
-      min-height: 100%;
-      object-fit: cover;
-      transform: translate(-50%, -50%);
-      transform-origin: center center;
-      will-change: transform;
-      user-select: none;
-      pointer-events: none;
-    }
+        .brand {
+            font-size: 1.1rem;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
 
-    /* Top Bar Header */
-    header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding: 0.6rem 1.75rem;
-      border-bottom: 1px solid var(--card-border);
-      background: rgba(7, 9, 19, 0.82);
-      backdrop-filter: blur(16px);
-      height: 65px;
-      z-index: 10;
-    }
+        .brand span { color: var(--accent); }
 
-    .brand {
-      font-size: 1.2rem;
-      font-weight: 800;
-      letter-spacing: -0.5px;
-      color: var(--text-main);
-      display: flex;
-      align-items: center;
-      gap: 0.4rem;
-    }
+        .header-controls {
+            display: flex;
+            gap: 0.75rem;
+            align-items: center;
+        }
 
-    .brand span { 
-      color: var(--accent);
-      text-shadow: 0 0 20px var(--accent-glow);
-    }
+        .select-dropdown {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            color: var(--text-main);
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            font-weight: 600;
+            font-size: 0.85rem;
+            cursor: pointer;
+            outline: none;
+        }
 
-    .header-controls {
-      display: flex;
-      gap: 0.7rem;
-      align-items: center;
-      flex-wrap: wrap;
-    }
+        .select-dropdown:hover { border-color: var(--accent); }
 
-    .select-dropdown {
-      background: rgba(15, 23, 42, 0.85);
-      border: 1px solid var(--card-border);
-      color: var(--text-main);
-      padding: 0.45rem 0.9rem;
-      border-radius: 8px;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      font-weight: 600;
-      font-size: 0.85rem;
-      cursor: pointer;
-      outline: none;
-      transition: all 0.2s;
-    }
+        .btn-action {
+            background: #334155;
+            border: 1px solid var(--card-border);
+            color: var(--text-main);
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background 0.1s;
+        }
+        .btn-action:hover { background: #475569; }
 
-    .select-dropdown:hover { border-color: var(--card-border-hover); background: rgba(30, 41, 59, 0.9); }
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-muted);
+            cursor: pointer;
+            user-select: none;
+        }
 
-    .btn-action {
-      background: rgba(30, 41, 59, 0.8);
-      border: 1px solid var(--card-border);
-      color: var(--text-main);
-      padding: 0.45rem 0.9rem;
-      border-radius: 8px;
-      font-size: 0.85rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: all 0.2s;
-      display: flex;
-      align-items: center;
-      gap: 0.3rem;
-    }
-    .btn-action:hover { background: rgba(51, 65, 85, 0.9); border-color: var(--card-border-hover); }
+        .toggle-container input { display: none; }
 
-    .gear-btn {
-      background: rgba(30, 41, 59, 0.8);
-      border: 1px solid var(--card-border);
-      color: var(--text-main);
-      width: 38px;
-      height: 38px;
-      border-radius: 8px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      font-size: 1.1rem;
-      transition: all 0.25s;
-    }
-    .gear-btn:hover { background: rgba(51, 65, 85, 0.9); border-color: var(--accent); transform: rotate(45deg); }
+        .switch {
+            width: 36px;
+            height: 20px;
+            background-color: #334155;
+            border-radius: 20px;
+            position: relative;
+            transition: background-color 0.2s;
+        }
 
-    /* Main Layout */
-    .app-container {
-      display: grid;
-      grid-template-columns: 360px 1fr;
-      flex: 1;
-      height: calc(100vh - 65px);
-      z-index: 2;
-    }
+        .switch::after {
+            content: '';
+            position: absolute;
+            top: 2px; left: 2px;
+            width: 16px; height: 16px;
+            border-radius: 50%;
+            background-color: #fff;
+            transition: transform 0.2s;
+        }
 
-    /* Left Sidebar History */
-    .sidebar {
-      background: var(--card-bg);
-      backdrop-filter: blur(16px);
-      border-right: 1px solid var(--card-border);
-      display: flex;
-      flex-direction: column;
-      padding: 1.25rem;
-      gap: 0.85rem;
-      overflow-y: auto;
-    }
+        .toggle-container input:checked + .switch { background-color: var(--accent); }
+        .toggle-container input:checked + .switch::after { transform: translateX(16px); }
 
-    .history-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      padding-bottom: 0.6rem;
-      border-bottom: 1px solid var(--card-border);
-    }
+        /* Main Layout */
+        .app-container {
+            display: grid;
+            grid-template-columns: 340px 1fr;
+            flex: 1;
+            height: calc(100vh - 60px);
+        }
 
-    .history-title {
-      font-size: 0.9rem;
-      font-weight: 700;
-      letter-spacing: 0.3px;
-    }
+        /* Left Sidebar History */
+        .sidebar {
+            background: var(--card-bg);
+            border-right: 1px solid var(--card-border);
+            display: flex;
+            flex-direction: column;
+            padding: 1rem;
+            gap: 0.75rem;
+            overflow-y: auto;
+        }
 
-    .clear-btn {
-      background: transparent;
-      border: none;
-      color: var(--danger);
-      font-size: 0.75rem;
-      font-weight: 600;
-      cursor: pointer;
-      transition: opacity 0.2s;
-    }
-    .clear-btn:hover { opacity: 0.8; text-decoration: underline; }
+        .history-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid var(--card-border);
+        }
 
-    .solves-list {
-      display: flex;
-      flex-direction: column;
-      gap: 0.45rem;
-      flex: 1;
-      overflow-y: auto;
-      padding-right: 2px;
-    }
+        .history-title {
+            font-size: 0.9rem;
+            font-weight: 700;
+        }
 
-    .solve-wrapper {
-      background: rgba(7, 9, 19, 0.5);
-      border: 1px solid var(--card-border);
-      border-radius: 8px;
-      overflow: hidden;
-      transition: all 0.2s;
-    }
-    .solve-wrapper:hover {
-      border-color: rgba(56, 189, 248, 0.2);
-    }
+        .clear-btn {
+            background: transparent;
+            border: none;
+            color: var(--danger);
+            font-size: 0.75rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+        .clear-btn:hover { text-decoration: underline; }
 
-    .solve-item {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0.55rem 0.75rem;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.85rem;
-      cursor: pointer;
-    }
-    .solve-item:hover {
-      background: rgba(30, 41, 59, 0.4);
-    }
+        /* Sidebar Stats (Lượt, Best, Ao5, Ao12 text-only) */
+        .sidebar-stats {
+            display: flex;
+            flex-direction: column;
+            gap: 0.4rem;
+            padding-bottom: 0.75rem;
+            border-bottom: 1px solid var(--card-border);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.85rem;
+        }
 
-    .solve-index {
-      color: var(--text-muted);
-      width: 28px;
-      font-size: 0.7rem;
-    }
+        .sidebar-stat-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--text-muted);
+        }
 
-    .solve-time {
-      font-weight: 700;
-      flex: 1;
-    }
+        .sidebar-stat-row span {
+            color: var(--accent);
+            font-weight: 700;
+        }
 
-    .solve-actions {
-      display: flex;
-      gap: 0.25rem;
-      align-items: center;
-    }
+        .solves-list {
+            display: flex;
+            flex-direction: column;
+            gap: 0.35rem;
+            flex: 1;
+            overflow-y: auto;
+        }
 
-    .action-badge {
-      background: rgba(51, 65, 85, 0.6);
-      border: 1px solid var(--card-border);
-      color: var(--text-muted);
-      padding: 0.15rem 0.35rem;
-      border-radius: 4px;
-      font-size: 0.65rem;
-      font-weight: 700;
-      cursor: pointer;
-      transition: all 0.15s;
-    }
-    .action-badge:hover { background: #475569; color: #fff; }
-    .action-badge.plus2-active { background: var(--warning); color: #000; border-color: var(--warning); }
-    .action-badge.dnf-active { background: var(--danger); color: #fff; border-color: var(--danger); }
+        .solve-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.04);
+            border-radius: 6px;
+            padding: 0.45rem 0.65rem;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+        }
 
-    .retry-solve {
-      background: rgba(56, 189, 248, 0.1);
-      border: 1px solid rgba(56, 189, 248, 0.25);
-      color: var(--accent);
-      padding: 0.15rem 0.4rem;
-      border-radius: 4px;
-      font-size: 0.7rem;
-      cursor: pointer;
-      font-weight: 700;
-      transition: all 0.15s;
-    }
-    .retry-solve:hover { background: var(--accent); color: #070913; }
+        .solve-index {
+            color: var(--text-muted);
+            width: 26px;
+            font-size: 0.7rem;
+        }
 
-    .remove-solve {
-      background: transparent;
-      border: none;
-      color: var(--text-muted);
-      cursor: pointer;
-      margin-left: 0.15rem;
-      font-size: 0.85rem;
-      transition: color 0.15s;
-    }
-    .remove-solve:hover { color: var(--danger); }
+        .solve-time {
+            font-weight: 700;
+            color: var(--text-main);
+            flex: 1;
+            cursor: pointer;
+        }
+        .solve-time.dnf { color: var(--danger); text-decoration: line-through; }
+        .solve-time.plus2 { color: var(--holding-color); }
 
-    .solve-scramble-preview {
-      display: none;
-      background: rgba(7, 9, 19, 0.9);
-      padding: 0.5rem 0.75rem;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.75rem;
-      color: var(--accent);
-      border-top: 1px solid var(--card-border);
-      word-break: break-word;
-      letter-spacing: 0.5px;
-    }
+        .solve-actions {
+            display: flex;
+            gap: 0.25rem;
+        }
 
-    /* Timer Section */
-    .timer-section {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: space-between;
-      padding: 1.5rem 2.5rem;
-      position: relative;
-    }
+        .action-badge {
+            background: #334155;
+            border: none;
+            color: var(--text-muted);
+            padding: 0.1rem 0.35rem;
+            border-radius: 4px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+        .action-badge.active { background: var(--accent); color: #0f172a; }
 
-    .scramble-box {
-      background: var(--card-bg);
-      backdrop-filter: blur(16px);
-      border: 1px solid var(--card-border);
-      padding: 1rem 1.75rem;
-      border-radius: 12px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 1.2rem;
-      font-weight: 600;
-      letter-spacing: 1.5px;
-      text-align: center;
-      max-width: 850px;
-      width: 100%;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
-      word-break: break-word;
-      cursor: pointer;
-      transition: border-color 0.2s;
-    }
-    .scramble-box:hover { border-color: var(--card-border-hover); }
+        .remove-solve {
+            background: transparent;
+            border: none;
+            color: var(--text-muted);
+            cursor: pointer;
+            margin-left: 0.15rem;
+            font-size: 0.8rem;
+        }
+        .remove-solve:hover { color: var(--danger); }
 
-    .timer-display-wrapper {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      flex: 1;
-      width: 100%;
-    }
+        /* Timer Section */
+        .timer-section {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1.25rem 2rem;
+            position: relative;
+        }
 
-    .inspection-status {
-      font-size: 1.4rem;
-      font-weight: 700;
-      color: var(--inspect-color);
-      height: 32px;
-      margin-bottom: 0.5rem;
-      letter-spacing: 1.5px;
-      text-shadow: 0 0 15px rgba(234, 179, 8, 0.3);
-    }
+        .scramble-box {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            padding: 0.9rem 1.5rem;
+            border-radius: 10px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.2rem;
+            font-weight: 600;
+            letter-spacing: 1.5px;
+            text-align: center;
+            max-width: 750px;
+            width: 100%;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            cursor: pointer;
+        }
+        .scramble-box:hover { border-color: var(--accent); }
 
-    .timer-display {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 6.5rem;
-      font-weight: 800;
-      color: var(--text-main);
-      text-shadow: 0 10px 30px rgba(0,0,0,0.7);
-      transition: color 0.15s ease;
-      line-height: 1;
-      letter-spacing: -2px;
-    }
+        .timer-display-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            flex: 1;
+            width: 100%;
+        }
 
-    .timer-display.holding { color: var(--holding-color); text-shadow: 0 0 35px rgba(248, 113, 113, 0.3); }
-    .timer-display.ready { color: var(--ready-color); text-shadow: 0 0 35px rgba(74, 222, 128, 0.3); }
-    .timer-display.inspecting { color: var(--inspect-color); }
+        .inspection-status {
+            font-size: 1.15rem;
+            font-weight: 700;
+            color: var(--inspect-color);
+            height: 24px;
+            margin-bottom: 0.2rem;
+            letter-spacing: 1px;
+        }
 
-    /* Stats Grid */
-    .stats-grid-inline {
-      display: grid;
-      grid-template-columns: repeat(4, minmax(110px, 140px));
-      gap: 0.85rem;
-      margin-top: 2rem;
-    }
+        .timer-display {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 6rem;
+            font-weight: 800;
+            color: var(--text-main);
+            transition: color 0.1s ease;
+            line-height: 1;
+        }
 
-    .stat-card {
-      background: var(--card-bg);
-      backdrop-filter: blur(16px);
-      border: 1px solid var(--card-border);
-      border-radius: 10px;
-      padding: 0.75rem 0.9rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      text-align: center;
-      box-shadow: 0 8px 20px rgba(0,0,0,0.25);
-    }
+        .timer-display.holding { color: var(--holding-color); }
+        .timer-display.ready { color: var(--ready-color); }
+        .timer-display.inspecting { color: var(--inspect-color); }
 
-    .stat-label {
-      font-size: 0.7rem;
-      font-weight: 700;
-      color: var(--text-muted);
-      text-transform: uppercase;
-      letter-spacing: 0.8px;
-    }
+        /* Remaining Stats Grid (Ao50, Mean) */
+        .stats-grid-inline {
+            display: grid;
+            grid-template-columns: repeat(2, minmax(100px, 120px));
+            gap: 0.75rem;
+            margin-top: 1.75rem;
+        }
 
-    .stat-value {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 1.2rem;
-      font-weight: 700;
-      color: var(--accent);
-      margin-top: 0.25rem;
-      text-shadow: 0 0 15px var(--accent-glow);
-    }
+        .stat-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 8px;
+            padding: 0.5rem 0.6rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+        }
 
-    .timer-hint {
-      color: var(--text-muted);
-      font-size: 0.82rem;
-      margin-top: 1.5rem;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-      letter-spacing: 0.3px;
-    }
+        .stat-label {
+            font-size: 0.65rem;
+            font-weight: 700;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
 
-    /* ZEN MODE */
-    body.zen-mode header,
-    body.zen-mode .sidebar,
-    body.zen-mode .scramble-box,
-    body.zen-mode .stats-grid-inline,
-    body.zen-mode .timer-hint {
-      display: none !important;
-    }
+        .stat-value {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--accent);
+            margin-top: 0.15rem;
+        }
 
-    body.zen-mode .app-container {
-      grid-template-columns: 1fr;
-    }
+        .timer-hint {
+            color: var(--text-muted);
+            font-size: 0.8rem;
+            margin-top: 1.25rem;
+        }
 
-    body.zen-mode .timer-section {
-      justify-content: center;
-    }
+        /* Modals */
+        .modal-overlay {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(15, 23, 42, 0.8);
+            backdrop-filter: blur(5px);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+            z-index: 100;
+        }
+        .modal-overlay.active { opacity: 1; pointer-events: auto; }
 
-    body.zen-mode .timer-display {
-      font-size: 12rem;
-    }
+        .modal-card {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 14px;
+            padding: 1.75rem;
+            width: 400px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 1.1rem;
+            text-align: center;
+        }
 
-    /* Modals */
-    .modal-overlay {
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.7);
-      backdrop-filter: blur(8px);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      z-index: 1000;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.2s ease;
-    }
+        .modal-time {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 3.5rem;
+            font-weight: 800;
+            color: var(--accent);
+            line-height: 1;
+        }
 
-    .modal-overlay.active {
-      opacity: 1;
-      pointer-events: auto;
-    }
+        .modal-scramble {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.8rem;
+            color: var(--text-muted);
+        }
 
-    .modal-card {
-      background: #0f172a;
-      border: 1px solid var(--card-border);
-      border-radius: 16px;
-      padding: 2rem;
-      width: 460px;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.6);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 1.25rem;
-      text-align: center;
-    }
+        .modal-buttons {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.6rem;
+            width: 100%;
+        }
 
-    .modal-card h3 {
-      font-size: 1.25rem;
-      font-weight: 700;
-      color: var(--text-main);
-    }
+        .modal-btn {
+            background: #334155;
+            border: 1px solid var(--card-border);
+            color: var(--text-main);
+            padding: 0.6rem;
+            border-radius: 6px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.1s;
+        }
+        .modal-btn:hover { background: #475569; }
+        .modal-btn.active { background: var(--accent); color: #0f172a; border-color: var(--accent); }
+        .modal-btn.btn-dnf.active { background: var(--danger); color: #fff; border-color: var(--danger); }
 
-    .modal-time {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 4rem;
-      font-weight: 800;
-      color: var(--accent);
-      line-height: 1;
-      text-shadow: 0 0 25px var(--accent-glow);
-    }
+        .modal-ok {
+            background: var(--accent);
+            color: #0f172a;
+            grid-column: span 3;
+        }
+        .modal-ok:hover { opacity: 0.9; }
 
-    .modal-scramble {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.82rem;
-      color: var(--text-muted);
-      letter-spacing: 0.5px;
-    }
-
-    .modal-buttons {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 0.7rem;
-      width: 100%;
-    }
-
-    .modal-btn {
-      background: #1e293b;
-      border: 1px solid var(--card-border);
-      color: var(--text-main);
-      padding: 0.7rem;
-      border-radius: 8px;
-      font-weight: 700;
-      font-size: 0.9rem;
-      cursor: pointer;
-      transition: all 0.15s;
-    }
-    .modal-btn:hover { background: #334155; border-color: var(--card-border-hover); }
-
-    .modal-btn.btn-plus2.active {
-      background: rgba(251, 191, 36, 0.25);
-      border-color: var(--warning);
-      color: var(--warning);
-    }
-
-    .modal-btn.btn-dnf.active {
-      background: rgba(251, 113, 133, 0.25);
-      border-color: var(--danger);
-      color: var(--danger);
-    }
-
-    .modal-btn.btn-delete:hover {
-      background: rgba(251, 113, 133, 0.2);
-      border-color: var(--danger);
-      color: var(--danger);
-    }
-
-    .modal-ok {
-      background: var(--accent);
-      color: #070913;
-      grid-column: span 3;
-    }
-    .modal-ok:hover { opacity: 0.92; background: var(--accent); }
-
-    .manual-input {
-      background: #070913;
-      border: 1px solid var(--card-border);
-      color: var(--text-main);
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 1.6rem;
-      padding: 0.6rem;
-      border-radius: 8px;
-      width: 100%;
-      text-align: center;
-      outline: none;
-    }
-    .manual-input:focus { border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
-
-    /* Settings Styles */
-    .settings-group {
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      text-align: left;
-    }
-
-    .settings-label {
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--text-muted);
-    }
-
-    .file-input-wrapper {
-      position: relative;
-      overflow: hidden;
-      display: inline-block;
-      width: 100%;
-    }
-
-    .file-input-wrapper input[type=file] {
-      font-size: 100px;
-      position: absolute;
-      left: 0; top: 0;
-      opacity: 0;
-      cursor: pointer;
-    }
-
-    .settings-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      width: 100%;
-      padding: 0.5rem 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    }
-
-    .zoom-slider {
-      width: 100%;
-      accent-color: var(--accent);
-      cursor: pointer;
-    }
-
-    .toggle-container {
-      position: relative;
-      display: inline-block;
-      width: 46px;
-      height: 24px;
-    }
-    .toggle-container input {
-      opacity: 0;
-      width: 0; height: 0;
-    }
-    .switch {
-      position: absolute;
-      cursor: pointer;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background-color: #1e293b;
-      transition: .25s;
-      border-radius: 24px;
-      border: 1px solid var(--card-border);
-    }
-    .switch:before {
-      position: absolute;
-      content: "";
-      height: 18px; width: 18px;
-      left: 2px; bottom: 2px;
-      background-color: white;
-      transition: .25s;
-      border-radius: 50%;
-    }
-    input:checked + .switch {
-      background-color: var(--accent);
-      border-color: var(--accent);
-    }
-    input:checked + .switch:before {
-      transform: translateX(22px);
-    }
-  </style>
+        .manual-input {
+            background: #0f172a;
+            border: 1px solid var(--card-border);
+            color: var(--text-main);
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.5rem;
+            padding: 0.5rem;
+            border-radius: 6px;
+            width: 100%;
+            text-align: center;
+            outline: none;
+        }
+        .manual-input:focus { border-color: var(--accent); }
+    </style>
 </head>
 <body>
 
-  <div id="bgContainer">
-    <img id="customBgImg" alt="">
-  </div>
-
-  <header>
-    <div class="brand">
-      ⚡ Speedcubing<span>Pro</span>
-    </div>
-    <div class="header-controls">
-      <select class="select-dropdown" id="eventSelect" onchange="changeEvent()">
-        <option value="333">3x3x3 Cube</option>
-        <option value="222">2x2x2 Cube</option>
-        <option value="444">4x4x4 Cube</option>
-        <option value="555">5x5x5 Cube</option>
-        <option value="pyram">Pyraminx</option>
-        <option value="skewb">Skewb</option>
-        <option value="megaminx">Megaminx</option>
-        <option value="sq1">Square-1</option>
-      </select>
-
-      <select class="select-dropdown" id="sessionSelect" onchange="changeSession()"></select>
-      
-      <button class="btn-action" onclick="promptNewSession()">+ Session mới</button>
-      <button class="btn-action" onclick="openManualModal()">+ Nhập tay</button>
-
-      <button class="gear-btn" onclick="openSettingsModal()" title="Cài đặt">⚙️</button>
-    </div>
-  </header>
-
-  <div class="app-container">
-    <div class="sidebar">
-      <div class="history-header">
-        <span class="history-title" id="historyTitle">Lịch sử (0)</span>
-        <button class="clear-btn" onclick="clearHistory()">Xóa lịch sử giải</button>
-      </div>
-      <div class="solves-list" id="solvesList"></div>
-    </div>
-
-    <div class="timer-section" id="timerSection">
-      <div class="scramble-box" id="scrambleDisplay" onclick="newScramble()" title="Nhấn để đổi scramble khác">---</div>
-
-      <div class="timer-display-wrapper">
-        <div class="inspection-status" id="inspectionStatus"></div>
-        <div class="timer-display" id="timerDisplay">0.00</div>
-        
-        <div class="stats-grid-inline">
-          <div class="stat-card">
-            <span class="stat-label">Lượt</span>
-            <span class="stat-value" id="statCount">0</span>
-          </div>
-          <div class="stat-card">
-            <span class="stat-label">Best</span>
-            <span class="stat-value" id="statPB">--</span>
-          </div>
-          <div class="stat-card">
-            <span class="stat-label">Ao5</span>
-            <span class="stat-value" id="statAo5">--</span>
-          </div>
-          <div class="stat-card">
-            <span class="stat-label">Ao12</span>
-            <span class="stat-value" id="statAo12">--</span>
-          </div>
+    <header>
+        <div class="brand">
+            ⚡ CSTimer <span>Pro</span>
         </div>
+        <div class="header-controls">
+            <!-- Event Selector -->
+            <select class="select-dropdown" id="eventSelect" onchange="changeEvent()">
+                <option value="333">3x3x3 Cube</option>
+                <option value="222">2x2x2 Cube</option>
+                <option value="pyram">Pyraminx</option>
+                <option value="skewb">Skewb</option>
+            </select>
 
-        <div class="timer-hint">Nhấn giữ SPACE hoặc nhấp chuột để bắt đầu</div>
-      </div>
-    </div>
-  </div>
+            <!-- Session Selector -->
+            <select class="select-dropdown" id="sessionSelect" onchange="changeSession()">
+                <option value="Session 1">Session 1</option>
+                <option value="Session 2">Session 2</option>
+                <option value="Session 3">Session 3</option>
+            </select>
 
-  <div class="modal-overlay" id="resultModal">
-    <div class="modal-card">
-      <div class="modal-scramble" id="modalScramble">R U R' U'...</div>
-      <div class="modal-time" id="modalTime">12.34</div>
-      <div class="modal-buttons">
-        <button class="modal-btn btn-plus2" id="modalBtnPlus2" onclick="setModalPenalty(2)">+2s</button>
-        <button class="modal-btn btn-dnf" id="modalBtnDNF" onclick="setModalPenalty('DNF')">DNF</button>
-        <button class="modal-btn btn-delete" onclick="deleteModalSolve()">Xóa</button>
-        <button class="modal-btn modal-ok" onclick="closeModal()">Tiếp tục (Enter)</button>
-      </div>
-    </div>
-  </div>
+            <button class="btn-action" onclick="openManualModal()">+ Nhập tay</button>
+            <button class="btn-action" onclick="exportData()" title="Xuất dữ liệu ra file JSON">Xuất JSON</button>
+            <button class="btn-action" onclick="triggerImport()" title="Nhập dữ liệu từ file JSON">Nhập JSON</button>
+            <input type="file" id="importFileInput" accept=".json" style="display: none;" onchange="handleFileImport(event)">
 
-  <div class="modal-overlay" id="manualModal">
-    <div class="modal-card">
-      <h3>Nhập thời gian thủ công</h3>
-      <input type="text" class="manual-input" id="manualTimeInput" placeholder="Ví dụ: 12.34 hoặc 1:12.34">
-      <div class="modal-buttons">
-        <button class="modal-btn modal-ok" onclick="submitManualSolve()" style="grid-column: span 3;">Thêm lượt giải</button>
-      </div>
-      <button class="clear-btn" onclick="closeManualModal()" style="margin-top: 0.5rem;">Hủy</button>
-    </div>
-  </div>
-
-  <div class="modal-overlay" id="settingsModal">
-    <div class="modal-card">
-      <h3>⚙️ Cài đặt hệ thống</h3>
-      
-      <div class="settings-row">
-        <span class="settings-label">Xem đề 15 giây (Inspection):</span>
-        <label class="toggle-container">
-          <input type="checkbox" id="inspectionToggle">
-          <span class="switch"></span>
-        </label>
-      </div>
-
-      <div class="settings-row">
-        <span class="settings-label">Ẩn đồng hồ khi đang giải:</span>
-        <label class="toggle-container">
-          <input type="checkbox" id="hideTimeToggle">
-          <span class="switch"></span>
-        </label>
-      </div>
-
-      <div class="settings-group" style="margin-top: 0.5rem;">
-        <span class="settings-label">Ảnh nền tùy chỉnh từ thiết bị:</span>
-        <div class="file-input-wrapper">
-          <button class="modal-btn" style="width: 100%;">📁 Chọn ảnh từ máy tính</button>
-          <input type="file" id="bgFileInput" accept="image/*" onchange="handleBgUpload(event)">
+            <label class="toggle-container">
+                <span>Xem đề 15s</span>
+                <input type="checkbox" id="inspectionToggle">
+                <span class="switch"></span>
+            </label>
         </div>
-      </div>
-
-      <div class="settings-group" style="margin-top: 0.3rem;">
-        <span class="settings-label" id="zoomLabel">Kích thước ảnh (Zoom): 100%</span>
-        <input type="range" id="bgZoomSlider" min="20" max="400" value="100" class="zoom-slider" oninput="handleZoomChange(this.value)">
-      </div>
-
-      <div class="settings-group" style="margin-top: 0.2rem;">
-        <button class="modal-btn" onclick="resetBackground()" style="width: 100%; background: #1e293b; color: var(--danger);">Ảnh nền mặc định Rubik</button>
-      </div>
-
-      <div class="modal-buttons" style="margin-top: 0.5rem;">
-        <button class="modal-btn modal-ok" onclick="closeSettingsModal()" style="grid-column: span 3;">Lưu & Đóng</button>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    let state = 'IDLE';
-    let inspectionEnabled = false;
-    let hideTimeSolving = false;
-    let inspectionTimeLeft = 15;
-    let inspectionInterval = null;
-    let holdingTimeout = null;
-    let timerInterval = null;
-    let startTime = 0;
-    let currentRawTime = 0;
-    let inspectionPenalty = 0;
-
-    let currentEvent = '333';
-    let currentSession = 'Session 1';
-    
-    let allData = JSON.parse(localStorage.getItem('speedcubing_pro_data_v17') || '{}');
-    if (Object.keys(allData).length === 0) {
-      allData['Session 1'] = [];
-    }
-    if (!allData[currentSession]) {
-      currentSession = Object.keys(allData)[0];
-    }
-
-    const defaultRubikBg = "https://images.unsplash.com/photo-1591991564021-056708d7d9a9?auto=format&fit=crop&w=1920&q=80";
-
-    let bgImg = document.getElementById('customBgImg');
-    let bgContainer = document.getElementById('bgContainer');
-    let zoomSlider = document.getElementById('bgZoomSlider');
-    let zoomLabel = document.getElementById('zoomLabel');
-
-    let isDragging = false;
-    let startX = 0, startY = 0;
-    let posX = parseFloat(localStorage.getItem('speedcubing_pro_bg_x') || 0);
-    let posY = parseFloat(localStorage.getItem('speedcubing_pro_bg_y') || 0);
-    let scale = parseFloat(localStorage.getItem('speedcubing_pro_bg_scale') || 1);
-
-    zoomSlider.value = scale * 100;
-    zoomLabel.innerText = `Kích thước ảnh (Zoom): ${Math.round(scale * 100)}%`;
-
-    const savedBg = localStorage.getItem('speedcubing_pro_bg') !== null ? localStorage.getItem('speedcubing_pro_bg') : defaultRubikBg;
-    const savedInspection = localStorage.getItem('speedcubing_pro_inspection') === 'true';
-    const savedHideTime = localStorage.getItem('speedcubing_pro_hide_time') === 'true';
-
-    inspectionEnabled = savedInspection;
-    hideTimeSolving = savedHideTime;
-    
-    document.getElementById('inspectionToggle').checked = savedInspection;
-    document.getElementById('hideTimeToggle').checked = savedHideTime;
-
-    if (savedBg) {
-      bgImg.src = savedBg;
-      bgImg.onload = () => {
-        updateBgTransform();
-      };
-    }
-
-    function updateBgTransform() {
-      bgImg.style.transform = `translate(-50%, -50%) translate(${posX}px, ${posY}px) scale(${scale})`;
-    }
-
-    function handleZoomChange(val) {
-      scale = val / 100;
-      zoomLabel.innerText = `Kích thước ảnh (Zoom): ${val}%`;
-      updateBgTransform();
-      localStorage.setItem('speedcubing_pro_bg_scale', scale);
-    }
-
-    bgContainer.addEventListener('mousedown', (e) => {
-      isDragging = true;
-      startX = e.clientX - posX;
-      startY = e.clientY - posY;
-    });
-
-    window.addEventListener('mousemove', (e) => {
-      if (!isDragging) return;
-      posX = e.clientX - startX;
-      posY = e.clientY - startY;
-      updateBgTransform();
-    });
-
-    window.addEventListener('mouseup', () => {
-      if (isDragging) {
-        isDragging = false;
-        localStorage.setItem('speedcubing_pro_bg_x', posX);
-        localStorage.setItem('speedcubing_pro_bg_y', posY);
-      }
-    });
-
-    bgContainer.addEventListener('touchstart', (e) => {
-      isDragging = true;
-      startX = e.touches[0].clientX - posX;
-      startY = e.touches[0].clientY - posY;
-    }, {passive: true});
-
-    window.addEventListener('touchmove', (e) => {
-      if (!isDragging) return;
-      posX = e.touches[0].clientX - posX; // fix touch delta
-      // keep touch logic smooth
-      posX = e.touches[0].clientX - startX;
-      posY = e.touches[0].clientY - startY;
-      updateBgTransform();
-    }, {passive: true});
-
-    window.addEventListener('touchend', () => {
-      if (isDragging) {
-        isDragging = false;
-        localStorage.setItem('speedcubing_pro_bg_x', posX);
-        localStorage.setItem('speedcubing_pro_bg_y', posY);
-      }
-    });
-
-    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    function playBeep(freq = 600, duration = 0.15) {
-      if (audioCtx.state === 'suspended') audioCtx.resume();
-      const osc = audioCtx.createOscillator();
-      const gain = audioCtx.createGain();
-      osc.frequency.value = freq;
-      osc.connect(gain);
-      gain.connect(audioCtx.destination);
-      osc.start();
-      gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + duration);
-      osc.stop(audioCtx.currentTime + duration);
-    }
-
-    const timerDisplay = document.getElementById('timerDisplay');
-    const inspectionStatus = document.getElementById('inspectionStatus');
-    const scrambleDisplay = document.getElementById('scrambleDisplay');
-    const inspectionToggle = document.getElementById('inspectionToggle');
-    const hideTimeToggle = document.getElementById('hideTimeToggle');
-    const solvesList = document.getElementById('solvesList');
-    const historyTitle = document.getElementById('historyTitle');
-    const sessionSelect = document.getElementById('sessionSelect');
-    
-    const resultModal = document.getElementById('resultModal');
-    const modalTime = document.getElementById('modalTime');
-    const modalScramble = document.getElementById('modalScramble');
-    const modalBtnPlus2 = document.getElementById('modalBtnPlus2');
-    const modalBtnDNF = document.getElementById('modalBtnDNF');
-    
-    const manualModal = document.getElementById('manualModal');
-    const manualTimeInput = document.getElementById('manualTimeInput');
-    const settingsModal = document.getElementById('settingsModal');
-
-    inspectionToggle.addEventListener('change', (e) => {
-      inspectionEnabled = e.target.checked;
-      localStorage.setItem('speedcubing_pro_inspection', inspectionEnabled);
-    });
-
-    hideTimeToggle.addEventListener('change', (e) => {
-      hideTimeSolving = e.target.checked;
-      localStorage.setItem('speedcubing_pro_hide_time', hideTimeSolving);
-    });
-
-    function openSettingsModal() { settingsModal.classList.add('active'); }
-    function closeSettingsModal() { settingsModal.classList.remove('active'); }
-
-    function handleBgUpload(event) {
-      const file = event.target.files[0];
-      if (!file) return;
-      const reader = new FileReader();
-      reader.onload = function(e) {
-        const base64Image = e.target.result;
-        bgImg.src = base64Image;
-        posX = 0; posY = 0; scale = 1;
-        zoomSlider.value = 100;
-        zoomLabel.innerText = "Kích thước ảnh (Zoom): 100%";
-        updateBgTransform();
-        localStorage.setItem('speedcubing_pro_bg', base64Image);
-        localStorage.setItem('speedcubing_pro_bg_x', posX);
-        localStorage.setItem('speedcubing_pro_bg_y', posY);
-        localStorage.setItem('speedcubing_pro_bg_scale', scale);
-        closeSettingsModal();
-      };
-      reader.readAsDataURL(file);
-    }
-
-    function resetBackground() {
-      bgImg.src = defaultRubikBg;
-      localStorage.setItem('speedcubing_pro_bg', defaultRubikBg);
-      localStorage.removeItem('speedcubing_pro_bg_x');
-      localStorage.removeItem('speedcubing_pro_bg_y');
-      localStorage.removeItem('speedcubing_pro_bg_scale');
-      posX = 0; posY = 0; scale = 1;
-      zoomSlider.value = 100;
-      zoomLabel.innerText = "Kích thước ảnh (Zoom): 100%";
-      updateBgTransform();
-      closeSettingsModal();
-    }
-
-    function updateSessionDropdown() {
-      sessionSelect.innerHTML = '';
-      Object.keys(allData).forEach(sessionName => {
-        const opt = document.createElement('option');
-        opt.value = sessionName;
-        opt.innerText = sessionName;
-        if (sessionName === currentSession) opt.selected = true;
-        sessionSelect.appendChild(opt);
-      });
-    }
-
-    function promptNewSession() {
-      let name = prompt("Nhập tên session mới:", "Session " + (Object.keys(allData).length + 1));
-      if (!name) return;
-      name = name.trim();
-      if (allData[name]) {
-        alert("Session này đã tồn tại!");
-        return;
-      }
-      allData[name] = [];
-      currentSession = name;
-      updateSessionDropdown();
-      saveAndRender();
-      newScramble();
-    }
-
-    function changeEvent() {
-      currentEvent = document.getElementById('eventSelect').value;
-      newScramble();
-    }
-
-    function changeSession() {
-      currentSession = sessionSelect.value;
-      if (!allData[currentSession]) allData[currentSession] = [];
-      saveAndRender();
-      newScramble();
-    }
-
-    function generateScramble() {
-      if (currentEvent === '333') {
-        const moves = ["R", "L", "U", "D", "F", "B"];
-        const mods = ["", "'", "2"];
-        let scramble = [], lastAxis = -1;
-        for (let i = 0; i < 20; i++) {
-          let mIdx, axis;
-          do {
-            mIdx = Math.floor(Math.random() * moves.length);
-            axis = Math.floor(mIdx / 2);
-          } while (axis === lastAxis);
-          lastAxis = axis;
-          scramble.push(moves[mIdx] + mods[Math.floor(Math.random() * mods.length)]);
-        }
-        return scramble.join(" ");
-      } else if (currentEvent === '222') {
-        const moves = ["R", "U", "F"];
-        const mods = ["", "'", "2"];
-        let scramble = [], lastMove = "";
-        for (let i = 0; i < 10; i++) {
-          let mv;
-          do { mv = moves[Math.floor(Math.random() * moves.length)]; } while (mv === lastMove);
-          lastMove = mv;
-          scramble.push(mv + mods[Math.floor(Math.random() * mods.length)]);
-        }
-        return scramble.join(" ");
-      } else if (currentEvent === '444') {
-        const moves = ["R", "L", "U", "D", "F", "B", "Rw", "Uw", "Fw"];
-        const mods = ["", "'", "2"];
-        let scramble = [], lastAxis = -1;
-        for (let i = 0; i < 40; i++) {
-          let mIdx, axis;
-          do {
-            mIdx = Math.floor(Math.random() * moves.length);
-            axis = Math.floor(mIdx / 2);
-          } while (axis === lastAxis);
-          lastAxis = axis;
-          scramble.push(moves[mIdx] + mods[Math.floor(Math.random() * mods.length)]);
-        }
-        return scramble.join(" ");
-      } else if (currentEvent === '555') {
-        const moves = ["R", "L", "U", "D", "F", "B", "Rw", "Lw", "Uw", "Dw", "Fw", "Bw"];
-        const mods = ["", "'", "2"];
-        let scramble = [], lastAxis = -1;
-        for (let i = 0; i < 60; i++) {
-          let mIdx, axis;
-          do {
-            mIdx = Math.floor(Math.random() * moves.length);
-            axis = Math.floor(mIdx / 2);
-          } while (axis === lastAxis);
-          lastAxis = axis;
-          scramble.push(moves[mIdx] + mods[Math.floor(Math.random() * mods.length)]);
-        }
-        return scramble.join(" ");
-      } else if (currentEvent === 'pyram') {
-        const moves = ["U", "L", "R", "B"];
-        const mods = ["", "'"];
-        const tips = ["u", "l", "r", "b"];
-        let scramble = [];
-        for (let i = 0; i < 8; i++) {
-          scramble.push(moves[Math.floor(Math.random() * moves.length)] + mods[Math.floor(Math.random() * mods.length)]);
-        }
-        tips.forEach(t => {
-          if (Math.random() > 0.5) scramble.push(t + (Math.random() > 0.5 ? "'" : ""));
-        });
-        return scramble.join(" ");
-      } else if (currentEvent === 'skewb') {
-        const moves = ["R", "L", "U", "B"];
-        const mods = ["", "'"];
-        let scramble = [];
-        for (let i = 0; i < 9; i++) {
-          scramble.push(moves[Math.floor(Math.random() * moves.length)] + mods[Math.floor(Math.random() * mods.length)]);
-        }
-        return scramble.join(" ");
-      } else if (currentEvent === 'megaminx') {
-        let scramble = [];
-        for (let i = 0; i < 7; i++) {
-          scramble.push("R++" + " " + "D--");
-        }
-        scramble.push("U'");
-        return scramble.join(" ");
-      } else if (currentEvent === 'sq1') {
-        const top = [-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6];
-        const bot = [-6,-5,-4,-3,-2,-1,0,1,2,3,4,5,6];
-        let scramble = [];
-        for(let i=0; i<7; i++) {
-          let t = top[Math.floor(Math.random()*top.length)];
-          let b = bot[Math.floor(Math.random()*bot.length)];
-          scramble.push(`(${t}, ${b})`);
-          if(i < 6) scramble.push("/");
-        }
-        return scramble.join(" ");
-      }
-    }
-
-    function newScramble() {
-      scrambleDisplay.innerText = generateScramble();
-    }
-
-    function retrySolveScramble(scrambleText) {
-      scrambleDisplay.innerText = scrambleText;
-    }
-
-    function toggleSolveScramble(solveItemEl) {
-      const preview = solveItemEl.nextElementSibling;
-      if (preview) {
-        if (preview.style.display === 'block') {
-          preview.style.display = 'none';
-        } else {
-          preview.style.display = 'block';
-        }
-      }
-    }
-
-    function formatTime(ms, penalty = 0) {
-      if (penalty === 'DNF') return 'DNF';
-      let totalMs = ms + (penalty === 2 ? 2000 : 0);
-      const seconds = Math.floor(totalMs / 1000);
-      const centiseconds = Math.floor((totalMs % 1000) / 10);
-      const minutes = Math.floor(seconds / 60);
-      const displaySec = seconds % 60;
-
-      let str = '';
-      if (minutes > 0) {
-        str = `${minutes}:${displaySec < 10 ? '0' : ''}${displaySec}.${centiseconds.toString().padStart(2, '0')}`;
-      } else {
-        str = `${displaySec}.${centiseconds.toString().padStart(2, '0')}`;
-      }
-      if (penalty === 2) str += ' (+2)';
-      return str;
-    }
-
-    function startInspection() {
-      state = 'INSPECTING';
-      document.body.classList.add('zen-mode');
-      inspectionTimeLeft = 15;
-      inspectionPenalty = 0;
-      inspectionStatus.innerText = 'INSPECTION';
-      timerDisplay.innerText = '15';
-      timerDisplay.className = 'timer-display inspecting';
-
-      inspectionInterval = setInterval(() => {
-        inspectionTimeLeft--;
-        if (inspectionTimeLeft === 7) playBeep(800);
-        if (inspectionTimeLeft === 3) playBeep(1000);
-
-        if (inspectionTimeLeft > 0) {
-          timerDisplay.innerText = inspectionTimeLeft;
-        } else if (inspectionTimeLeft > -2) {
-          inspectionPenalty = 2;
-          inspectionStatus.innerText = '+2 SECONDS';
-          timerDisplay.innerText = '+2';
-        } else {
-          inspectionPenalty = 'DNF';
-          inspectionStatus.innerText = 'DNF';
-          timerDisplay.innerText = 'DNF';
-          clearInterval(inspectionInterval);
-        }
-      }, 1000);
-    }
-
-    function handleTimerAction() {
-      if (resultModal.classList.contains('active') || manualModal.classList.contains('active') || settingsModal.classList.contains('active')) return;
-
-      if (state === 'RUNNING') {
-        stopTimer();
-        return;
-      }
-
-      if (state === 'IDLE') {
-        if (inspectionEnabled) {
-          startInspection();
-        } else {
-          state = 'HOLDING';
-          document.body.classList.add('zen-mode');
-          timerDisplay.className = 'timer-display holding';
-          holdingTimeout = setTimeout(() => {
-            state = 'READY';
-            timerDisplay.className = 'timer-display ready';
-          }, 300);
-        }
-        return;
-      }
-
-      if (state === 'INSPECTING') {
-        state = 'HOLDING';
-        timerDisplay.className = 'timer-display holding';
-        holdingTimeout = setTimeout(() => {
-          state = 'READY';
-          timerDisplay.className = 'timer-display ready';
-        }, 300);
-      }
-    }
-
-    function handleTimerRelease() {
-      if (resultModal.classList.contains('active') || manualModal.classList.contains('active') || settingsModal.classList.contains('active')) return;
-
-      if (state === 'HOLDING') {
-        clearTimeout(holdingTimeout);
-        state = inspectionEnabled ? 'INSPECTING' : 'IDLE';
-        if (!inspectionEnabled) document.body.classList.remove('zen-mode');
-        timerDisplay.className = inspectionEnabled ? 'timer-display inspecting' : 'timer-display';
-      } else if (state === 'READY') {
-        if (inspectionInterval) clearInterval(inspectionInterval);
-        inspectionStatus.innerText = '';
-        startTimer();
-      }
-    }
-
-    function startTimer() {
-      state = 'RUNNING';
-      document.body.classList.add('zen-mode');
-      startTime = performance.now();
-      timerDisplay.className = 'timer-display';
-      
-      if (hideTimeSolving) {
-        timerDisplay.innerText = 'SOLVING...';
-      }
-
-      timerInterval = setInterval(() => {
-        currentRawTime = performance.now() - startTime;
-        if (!hideTimeSolving) {
-          timerDisplay.innerText = formatTime(currentRawTime);
-        }
-      }, 10);
-    }
-
-    function stopTimer() {
-      clearInterval(timerInterval);
-      currentRawTime = performance.now() - startTime;
-      
-      const newSolve = {
-        id: Date.now(),
-        rawTime: currentRawTime,
-        penalty: inspectionPenalty,
-        scramble: scrambleDisplay.innerText
-      };
-
-      if (!allData[currentSession]) allData[currentSession] = [];
-      allData[currentSession].unshift(newSolve);
-      saveAndRender();
-      
-      state = 'IDLE';
-      document.body.classList.remove('zen-mode');
-      timerDisplay.innerText = '0.00';
-      newScramble();
-      
-      openModal(newSolve);
-    }
-
-    function openModal(solve) {
-      modalTime.innerText = formatTime(solve.rawTime, solve.penalty);
-      modalScramble.innerText = solve.scramble;
-      updateModalButtonsState();
-      resultModal.classList.add('active');
-    }
-
-    function closeModal() { resultModal.classList.remove('active'); }
-
-    function setModalPenalty(type) {
-      let solves = allData[currentSession];
-      if (solves.length === 0) return;
-      solves[0].penalty = solves[0].penalty === type ? 0 : type;
-      saveAndRender();
-      modalTime.innerText = formatTime(solves[0].rawTime, solves[0].penalty);
-      updateModalButtonsState();
-    }
-
-    function deleteModalSolve() {
-      let solves = allData[currentSession];
-      if (solves.length === 0) return;
-      solves.shift();
-      saveAndRender();
-      closeModal();
-    }
-
-    function updateModalButtonsState() {
-      let solves = allData[currentSession];
-      if (solves.length === 0) return;
-      const latest = solves[0];
-      modalBtnPlus2.className = `modal-btn btn-plus2 ${latest.penalty === 2 ? 'active' : ''}`;
-      modalBtnDNF.className = `modal-btn btn-dnf ${latest.penalty === 'DNF' ? 'active' : ''}`;
-    }
-
-    function togglePenalty(index, penaltyType) {
-      let solves = allData[currentSession];
-      solves[index].penalty = solves[index].penalty === penaltyType ? 0 : penaltyType;
-      saveAndRender();
-    }
-
-    function removeSolve(index) {
-      allData[currentSession].splice(index, 1);
-      saveAndRender();
-    }
-
-    function clearHistory() {
-      if (confirm(`Bạn có chắc muốn xóa sạch lịch sử giải của [${currentSession}]?`)) {
-        allData[currentSession] = [];
-        saveAndRender();
-      }
-    }
-
-    function openManualModal() {
-      manualTimeInput.value = '';
-      manualModal.classList.add('active');
-      manualTimeInput.focus();
-    }
-    function closeManualModal() { manualModal.classList.remove('active'); }
-
-    function submitManualSolve() {
-      let val = manualTimeInput.value.trim();
-      let ms = 0;
-      if (val.includes(':')) {
-        let parts = val.split(':');
-        ms = (parseInt(parts[0]) * 60 + parseFloat(parts[1])) * 1000;
-      } else {
-        ms = parseFloat(val) * 1000;
-      }
-
-      if (isNaN(ms) || ms <= 0) {
-        alert("Thời gian không hợp lệ!");
-        return;
-      }
-
-      const newSolve = {
-        id: Date.now(),
-        rawTime: ms,
-        penalty: 0,
-        scramble: scrambleDisplay.innerText
-      };
-
-      if (!allData[currentSession]) allData[currentSession] = [];
-      allData[currentSession].unshift(newSolve);
-      saveAndRender();
-      closeManualModal();
-      newScramble();
-    }
-
-    function calculateAverage(solveGroup) {
-      if (solveGroup.some(s => s.penalty === 'DNF')) {
-        const dnfCount = solveGroup.filter(s => s.penalty === 'DNF').length;
-        if (dnfCount > 1) return 'DNF';
-      }
-      const times = solveGroup.map(s => s.penalty === 'DNF' ? Infinity : s.rawTime + (s.penalty === 2 ? 2000 : 0));
-      times.sort((a, b) => a - b);
-      const trimmed = times.slice(1, -1);
-      const sum = trimmed.reduce((acc, curr) => acc + curr, 0);
-      return sum / trimmed.length;
-    }
-
-    function updateStats() {
-      let solves = allData[currentSession] || [];
-      historyTitle.innerText = `Lịch sử (${solves.length})`;
-      document.getElementById('statCount').innerText = solves.length;
-
-      const validSolves = solves.filter(s => s.penalty !== 'DNF');
-      if (validSolves.length > 0) {
-        const best = Math.min(...validSolves.map(s => s.rawTime + (s.penalty === 2 ? 2000 : 0)));
-        document.getElementById('statPB').innerText = formatTime(best);
-      } else {
-        document.getElementById('statPB').innerText = '--';
-      }
-
-      document.getElementById('statAo5').innerText = solves.length >= 5 && typeof calculateAverage(solves.slice(0, 5)) === 'number' ? formatTime(calculateAverage(solves.slice(0, 5))) : (solves.length >= 5 ? 'DNF' : '--');
-      document.getElementById('statAo12').innerText = solves.length >= 12 && typeof calculateAverage(solves.slice(0, 12)) === 'number' ? formatTime(calculateAverage(solves.slice(0, 12))) : (solves.length >= 12 ? 'DNF' : '--');
-    }
-
-    function renderHistory() {
-      solvesList.innerHTML = '';
-      let solves = allData[currentSession] || [];
-      solves.forEach((solve, index) => {
-        const wrapper = document.createElement('div');
-        wrapper.className = 'solve-wrapper';
-
-        const safeScramble = solve.scramble.replace(/\\/g, '\\\\').replace(/'/g, "\\'");
-        
-        wrapper.innerHTML = `
-          <div class="solve-item" onclick="toggleSolveScramble(this)" title="Nhấp để hiện/ẩn scramble">
-            <span class="solve-index">#${solves.length - index}</span>
-            <span class="solve-time">${formatTime(solve.rawTime, solve.penalty)}</span>
-            <div class="solve-actions" onclick="event.stopPropagation()">
-              <button class="action-badge ${solve.penalty === 2 ? 'plus2-active' : ''}" onclick="togglePenalty(${index}, 2)">+2</button>
-              <button class="action-badge ${solve.penalty === 'DNF' ? 'dnf-active' : ''}" onclick="togglePenalty(${index}, 'DNF')">DNF</button>
-              <button class="retry-solve" onclick="retrySolveScramble('${safeScramble}')" title="Thử lại scramble này">↺</button>
-              <button class="remove-solve" onclick="removeSolve(${index})" title="Xóa lượt này">✕</button>
+    </header>
+
+    <div class="app-container">
+        <!-- Left Sidebar History -->
+        <div class="sidebar">
+            <div class="history-header">
+                <span class="history-title" id="historyTitle">Lịch sử (0)</span>
+                <button class="clear-btn" onclick="clearHistory()">Xóa session</button>
             </div>
-          </div>
-          <div class="solve-scramble-preview">${solve.scramble}</div>
-        `;
-        solvesList.appendChild(wrapper);
-      });
-    }
 
-    function saveAndRender() {
-      localStorage.setItem('speedcubing_pro_data_v17', JSON.stringify(allData));
-      renderHistory();
-      updateStats();
-    }
+            <!-- Sidebar Stats (Lượt, Best, Ao5, Ao12 text-only) -->
+            <div class="sidebar-stats">
+                <div class="sidebar-stat-row">
+                    <span>Lượt giải:</span>
+                    <span id="statCount">0</span>
+                </div>
+                <div class="sidebar-stat-row">
+                    <span>Best (PB):</span>
+                    <span id="statPB">--</span>
+                </div>
+                <div class="sidebar-stat-row">
+                    <span>Ao5:</span>
+                    <span id="statAo5">--</span>
+                </div>
+                <div class="sidebar-stat-row">
+                    <span>Ao12:</span>
+                    <span id="statAo12">--</span>
+                </div>
+            </div>
 
-    window.addEventListener('keydown', (e) => {
-      if (resultModal.classList.contains('active')) {
-        if (e.code === 'Space' || e.code === 'Enter') {
-          e.preventDefault();
-          closeModal();
-        } else if (e.key === '2') {
-          setModalPenalty(2);
-        } else if (e.key.toLowerCase() === 'd') {
-          setModalPenalty('DNF');
-        } else if (e.code === 'Delete' || e.code === 'Backspace') {
-          deleteModalSolve();
+            <div class="solves-list" id="solvesList"></div>
+        </div>
+
+        <!-- Main Timer Area -->
+        <div class="timer-section" id="timerSection">
+            <div class="scramble-box" id="scrambleDisplay" title="Nhấn để đổi scramble khác" onclick="newScramble()">---</div>
+
+            <div class="timer-display-wrapper">
+                <div class="inspection-status" id="inspectionStatus"></div>
+                <div class="timer-display" id="timerDisplay">0.000</div>
+
+                <!-- Remaining Stats Grid (Ao50, Mean) -->
+                <div class="stats-grid-inline">
+                    <div class="stat-card">
+                        <span class="stat-label">Ao50</span>
+                        <span class="stat-value" id="statAo50">--</span>
+                    </div>
+                    <div class="stat-card">
+                        <span class="stat-label">Mean</span>
+                        <span class="stat-value" id="statMean">--</span>
+                    </div>
+                </div>
+
+                <div class="timer-hint">Nhấn giữ SPACE hoặc chạm màn hình để bắt đầu</div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Result Modal Popup -->
+    <div class="modal-overlay" id="resultModal">
+        <div class="modal-card">
+            <div class="modal-scramble" id="modalScramble">R U R' U'...</div>
+            <div class="modal-time" id="modalTime">0.000</div>
+            <div class="modal-buttons">
+                <button class="modal-btn" id="modalBtnPlus2" onclick="setModalPenalty(2)">+2s</button>
+                <button class="modal-btn" id="modalBtnDNF" onclick="setModalPenalty('DNF')">DNF</button>
+                <button class="modal-btn" onclick="deleteModalSolve()" style="color: var(--danger);">Xóa</button>
+                <button class="modal-btn modal-ok" onclick="closeModal()">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Manual Entry Modal -->
+    <div class="modal-overlay" id="manualModal">
+        <div class="modal-card">
+            <h3>Nhập thời gian thủ công</h3>
+            <input type="text" class="manual-input" id="manualTimeInput" placeholder="Ví dụ: 12.34 hoặc 1:12.34">
+            <div class="modal-buttons">
+                <button class="modal-btn modal-ok" onclick="submitManualSolve()">Thêm lượt giải</button>
+            </div>
+            <button class="clear-btn" onclick="closeManualModal()" style="margin-top: 0.5rem;">Hủy</button>
+        </div>
+    </div>
+
+    <script>
+        let state = 'IDLE';
+        let inspectionEnabled = false;
+        let inspectionTimer = null;
+        let inspectionStartTime = 0;
+        let timerInterval = null;
+        let startTime = 0;
+        let holdingTimeout = null;
+        let currentRawTime = 0;
+        let inspectionPenalty = 0;
+
+        let currentEvent = '333';
+        let currentSession = 'Session 1';
+
+        let allData = JSON.parse(localStorage.getItem('cstimer_pro_data') || '{}');
+        if (!allData[currentSession]) allData[currentSession] = [];
+
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playBeep(freq = 600, duration = 0.15) {
+            try {
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.type = 'sine';
+                osc.frequency.value = freq;
+                gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + duration);
+                osc.connect(gain);
+                gain.connect(osc.destination);
+                osc.start();
+                osc.stop(audioCtx.currentTime + duration);
+            } catch(e) {}
         }
-        return;
-      }
 
-      if (manualModal.classList.contains('active') || settingsModal.classList.contains('active')) return;
+        const timerDisplay = document.getElementById('timerDisplay');
+        const scrambleDisplay = document.getElementById('scrambleDisplay');
+        const inspectionStatus = document.getElementById('inspectionStatus');
+        const inspectionToggle = document.getElementById('inspectionToggle');
+        const solvesList = document.getElementById('solvesList');
+        const historyTitle = document.getElementById('historyTitle');
 
-      if (e.code === 'Space' && !e.repeat) {
-        e.preventDefault();
-        handleTimerAction();
-      }
-    });
+        const resultModal = document.getElementById('resultModal');
+        const modalTime = document.getElementById('modalTime');
+        const modalScramble = document.getElementById('modalScramble');
+        const modalBtnPlus2 = document.getElementById('modalBtnPlus2');
+        const modalBtnDNF = document.getElementById('modalBtnDNF');
 
-    window.addEventListener('keyup', (e) => {
-      if (resultModal.classList.contains('active') || manualModal.classList.contains('active') || settingsModal.classList.contains('active')) return;
-      if (e.code === 'Space') {
-        e.preventDefault();
-        handleTimerRelease();
-      }
-    });
+        const manualModal = document.getElementById('manualModal');
+        const manualTimeInput = document.getElementById('manualTimeInput');
 
-    const timerSection = document.getElementById('timerSection');
-    timerSection.addEventListener('mousedown', (e) => {
-      if (e.target.closest('header') || e.target.closest('.scramble-box') || e.target.closest('.sidebar') || e.target.closest('.stats-grid-inline')) return;
-      if (resultModal.classList.contains('active') || manualModal.classList.contains('active') || settingsModal.classList.contains('active')) return;
-      handleTimerAction();
-    });
+        inspectionToggle.addEventListener('change', (e) => { inspectionEnabled = e.target.checked; });
 
-    timerSection.addEventListener('mouseup', (e) => {
-      if (resultModal.classList.contains('active') || manualModal.classList.contains('active') || settingsModal.classList.contains('active')) return;
-      if (state === 'HOLDING' || state === 'READY' || state === 'RUNNING') {
-        handleTimerRelease();
-      }
-    });
+        function changeEvent() {
+            currentEvent = document.getElementById('eventSelect').value;
+            newScramble();
+        }
 
-    timerSection.addEventListener('touchstart', (e) => {
-      if (e.target.closest('header') || e.target.closest('.scramble-box') || e.target.closest('.sidebar')) return;
-      if (resultModal.classList.contains('active') || manualModal.classList.contains('active') || settingsModal.classList.contains('active')) return;
-      e.preventDefault();
-      handleTimerAction();
-    }, { passive: false });
+        function changeSession() {
+            currentSession = document.getElementById('sessionSelect').value;
+            if (!allData[currentSession]) allData[currentSession] = [];
+            saveAndRender();
+            newScramble();
+        }
 
-    timerSection.addEventListener('touchend', (e) => {
-      if (resultModal.classList.contains('active') || manualModal.classList.contains('active') || settingsModal.classList.contains('active')) return;
-      e.preventDefault();
-      handleTimerRelease();
-    }, { passive: false });
+        // Export and Import JSON Functions
+        function exportData() {
+            const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(allData, null, 2));
+            const downloadAnchor = document.createElement('a');
+            downloadAnchor.setAttribute("href", dataStr);
+            downloadAnchor.setAttribute("download", `speedcubing_timer_backup_${new Date().toISOString().slice(0,10)}.json`);
+            document.body.appendChild(downloadAnchor);
+            downloadAnchor.click();
+            downloadAnchor.remove();
+        }
 
-    // Khởi tạo
-    updateSessionDropdown();
-    newScramble();
-    saveAndRender();
-  </script>
+        function triggerImport() {
+            document.getElementById('importFileInput').click();
+        }
+
+        function handleFileImport(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const imported = JSON.parse(e.target.result);
+                    if (typeof imported === 'object' && imported !== null) {
+                        if (confirm("Bạn có muốn ghi đè dữ liệu hiện tại bằng file backup này không?")) {
+                            allData = imported;
+                            if (!allData[currentSession]) {
+                                currentSession = Object.keys(allData)[0] || 'Session 1';
+                                document.getElementById('sessionSelect').value = currentSession;
+                            }
+                            saveAndRender();
+                            alert("Nhập dữ liệu thành công!");
+                        }
+                    } else {
+                        alert("File JSON không hợp lệ!");
+                    }
+                } catch (err) {
+                    alert("Lỗi khi đọc file JSON: " + err.message);
+                }
+                event.target.value = '';
+            };
+            reader.readAsText(file);
+        }
+
+        function generateScramble() {
+            if (currentEvent === '333') {
+                const moves = ["R", "L", "U", "D", "F", "B"];
+                const mods = ["", "'", "2"];
+                let scramble = [], lastAxis = -1;
+                for (let i = 0; i < 20; i++) {
+                    let mIdx, axis;
+                    do {
+                        mIdx = Math.floor(Math.random() * moves.length);
+                        axis = Math.floor(mIdx / 2);
+                    } while (axis === lastAxis);
+                    lastAxis = axis;
+                    scramble.push(moves[mIdx] + mods[Math.floor(Math.random() * mods.length)]);
+                }
+                return scramble.join(" ");
+            } else if (currentEvent === '222') {
+                const moves = ["R", "U", "F"];
+                const mods = ["", "'", "2"];
+                let scramble = [], lastMove = "";
+                for (let i = 0; i < 10; i++) {
+                    let mv;
+                    do { mv = moves[Math.floor(Math.random() * moves.length)]; } while (mv === lastMove);
+                    lastMove = mv;
+                    scramble.push(mv + mods[Math.floor(Math.random() * mods.length)]);
+                }
+                return scramble.join(" ");
+            } else if (currentEvent === 'pyram') {
+                const moves = ["U", "L", "R", "B"];
+                const mods = ["", "'"];
+                const tips = ["u", "l", "r", "b"];
+                let scramble = [];
+                for (let i = 0; i < 8; i++) {
+                    scramble.push(moves[Math.floor(Math.random() * moves.length)] + mods[Math.floor(Math.random() * mods.length)]);
+                }
+                tips.forEach(t => {
+                    if (Math.random() > 0.5) scramble.push(t + (Math.random() > 0.5 ? "'" : ""));
+                });
+                return scramble.join(" ");
+            } else if (currentEvent === 'skewb') {
+                const moves = ["R", "L", "U", "B"];
+                const mods = ["", "'"];
+                let scramble = [];
+                for (let i = 0; i < 9; i++) {
+                    scramble.push(moves[Math.floor(Math.random() * moves.length)] + mods[Math.floor(Math.random() * mods.length)]);
+                }
+                return scramble.join(" ");
+            }
+        }
+
+        function newScramble() {
+            scrambleDisplay.innerText = generateScramble();
+        }
+
+        function formatTime(ms, penalty = 0) {
+            if (penalty === 'DNF') return 'DNF';
+            if (penalty === 2) ms += 2000;
+            
+            let totalSec = ms / 1000;
+            let mins = Math.floor(totalSec / 60);
+            let secs = (totalSec % 60).toFixed(2);
+            if (secs < 10) secs = '0' + secs;
+            
+            let result = (mins > 0 ? mins + ':' + (secs < 10 ? '0' : '') : '') + secs;
+            if (penalty === 2) result += '+';
+            return result;
+        }
+
+        function handleKeyDown() {
+            if (resultModal.classList.contains('active') || manualModal.classList.contains('active')) return;
+
+            if (state === 'RUNNING') {
+                stopTimer();
+            } else if (state === 'IDLE' || state === 'STOPPED') {
+                timerDisplay.className = 'timer-display holding';
+                state = 'HOLDING';
+                holdingTimeout = setTimeout(() => {
+                    timerDisplay.className = 'timer-display ready';
+                    state = 'READY';
+                    playBeep(800, 0.1);
+                }, 500);
+            }
+        }
+
+        function handleKeyUp() {
+            if (resultModal.classList.contains('active') || manualModal.classList.contains('active')) return;
+
+            if (state === 'HOLDING') {
+                clearTimeout(holdingTimeout);
+                timerDisplay.className = 'timer-display';
+                state = 'IDLE';
+            } else if (state === 'READY') {
+                if (inspectionEnabled) {
+                    state = 'INSPECTING';
+                    inspectionStartTime = Date.now();
+                    inspectionStatus.innerText = 'Inspection: 0s';
+                    timerDisplay.className = 'timer-display inspecting';
+                    inspectionPenalty = 0;
+                    
+                    inspectionTimer = setInterval(() => {
+                        let elapsed = Math.floor((Date.now() - inspectionStartTime) / 1000);
+                        if (elapsed < 8) {
+                            inspectionStatus.innerText = `Inspection: ${elapsed}s`;
+                        } else if (elapsed < 12) {
+                            inspectionStatus.innerText = `Inspection: ${elapsed}s (Warning)`;
+                            if (elapsed === 8) playBeep(500, 0.1);
+                        } else if (elapsed < 15) {
+                            inspectionStatus.innerText = `Inspection: ${elapsed}s (+2)`;
+                            inspectionPenalty = 2;
+                        } else {
+                            inspectionStatus.innerText = 'Inspection: DNF';
+                            inspectionPenalty = 'DNF';
+                            clearInterval(inspectionTimer);
+                        }
+                    }, 1000);
+                } else {
+                    startTimer();
+                }
+            } else if (state === 'INSPECTING') {
+                clearInterval(inspectionTimer);
+                inspectionStatus.innerText = '';
+                startTimer();
+            }
+        }
+
+        function startTimer() {
+            state = 'RUNNING';
+            timerDisplay.className = 'timer-display';
+            startTime = Date.now();
+            timerInterval = setInterval(() => {
+                let diff = Date.now() - startTime;
+                timerDisplay.innerText = formatTime(diff);
+            }, 10);
+        }
+
+        function stopTimer() {
+            state = 'STOPPED';
+            clearInterval(timerInterval);
+            let rawTime = Date.now() - startTime;
+            currentRawTime = rawTime;
+
+            let finalPenalty = 0;
+            if (inspectionEnabled && inspectionPenalty !== 0) {
+                finalPenalty = inspectionPenalty;
+            }
+
+            const newSolve = {
+                id: Date.now(),
+                rawTime: rawTime,
+                penalty: finalPenalty,
+                scramble: scrambleDisplay.innerText
+            };
+
+            if (!allData[currentSession]) allData[currentSession] = [];
+            allData[currentSession].unshift(newSolve);
+            saveAndRender();
+
+            state = 'IDLE';
+            newScramble();
+            openModal(newSolve);
+        }
+
+        function openModal(solve) {
+            modalTime.innerText = formatTime(solve.rawTime, solve.penalty);
+            modalScramble.innerText = solve.scramble;
+            updateModalButtonsState();
+            resultModal.classList.add('active');
+        }
+
+        function closeModal() { resultModal.classList.remove('active'); }
+
+        function setModalPenalty(type) {
+            let solves = allData[currentSession];
+            if (solves.length === 0) return;
+            solves[0].penalty = solves[0].penalty === type ? 0 : type;
+            saveAndRender();
+            modalTime.innerText = formatTime(solves[0].rawTime, solves[0].penalty);
+            updateModalButtonsState();
+        }
+
+        function deleteModalSolve() {
+            let solves = allData[currentSession];
+            if (solves.length === 0) return;
+            solves.shift();
+            saveAndRender();
+            closeModal();
+        }
+
+        function updateModalButtonsState() {
+            let solves = allData[currentSession];
+            if (solves.length === 0) return;
+            const latest = solves[0];
+            modalBtnPlus2.className = `modal-btn ${latest.penalty === 2 ? 'active' : ''}`;
+            modalBtnDNF.className = `modal-btn btn-dnf ${latest.penalty === 'DNF' ? 'active' : ''}`;
+        }
+
+        function togglePenalty(index, penaltyType) {
+            let solves = allData[currentSession];
+            solves[index].penalty = solves[index].penalty === penaltyType ? 0 : penaltyType;
+            saveAndRender();
+        }
+
+        function removeSolve(index) {
+            allData[currentSession].splice(index, 1);
+            saveAndRender();
+        }
+
+        function clearHistory() {
+            if (confirm(`Bạn có chắc muốn xóa sạch lịch sử của [${currentSession}]?`)) {
+                allData[currentSession] = [];
+                saveAndRender();
+            }
+        }
+
+        function openManualModal() {
+            manualTimeInput.value = '';
+            manualModal.classList.add('active');
+            manualTimeInput.focus();
+        }
+        function closeManualModal() { manualModal.classList.remove('active'); }
+
+        function submitManualSolve() {
+            let val = manualTimeInput.value.trim();
+            let ms = 0;
+            if (val.includes(':')) {
+                let parts = val.split(':');
+                ms = (parseInt(parts[0]) * 60 + parseFloat(parts[1])) * 1000;
+            } else {
+                ms = parseFloat(val) * 1000;
+            }
+
+            if (isNaN(ms) || ms <= 0) {
+                alert("Thời gian không hợp lệ!");
+                return;
+            }
+
+            const newSolve = {
+                id: Date.now(),
+                rawTime: ms,
+                penalty: 0,
+                scramble: scrambleDisplay.innerText
+            };
+
+            if (!allData[currentSession]) allData[currentSession] = [];
+            allData[currentSession].unshift(newSolve);
+            saveAndRender();
+            closeManualModal();
+            newScramble();
+        }
+
+        function calculateAverage(solveGroup) {
+            if (solveGroup.some(s => s.penalty === 'DNF')) {
+                const dnfCount = solveGroup.filter(s => s.penalty === 'DNF').length;
+                if (dnfCount > 1) return 'DNF';
+            }
+            let mapped = solveGroup.map(s => {
+                if (s.penalty === 'DNF') return Infinity;
+                if (s.penalty === 2) return s.rawTime + 2000;
+                return s.rawTime;
+            });
+            mapped.sort((a, b) => a - b);
+            let trimmed = mapped.slice(1, mapped.length - 1);
+            if (trimmed.includes(Infinity)) return 'DNF';
+            const sum = trimmed.reduce((acc, val) => acc + val, 0);
+            return sum / trimmed.length;
+        }
+
+        function calculateMean(solveGroup) {
+            if (solveGroup.some(s => s.penalty === 'DNF')) return 'DNF';
+            const sum = solveGroup.reduce((acc, s) => acc + s.rawTime + (s.penalty === 2 ? 2000 : 0), 0);
+            return sum / solveGroup.length;
+        }
+
+        function updateStats() {
+            let solves = allData[currentSession] || [];
+            historyTitle.innerText = `Lịch sử (${solves.length})`;
+            document.getElementById('statCount').innerText = solves.length;
+
+            const validSolves = solves.filter(s => s.penalty !== 'DNF');
+            if (validSolves.length > 0) {
+                let best = Math.min(...validSolves.map(s => s.rawTime + (s.penalty === 2 ? 2000 : 0)));
+                document.getElementById('statPB').innerText = formatTime(best);
+            } else {
+                document.getElementById('statPB').innerText = '--';
+            }
+
+            document.getElementById('statAo5').innerText = solves.length >= 5 && typeof calculateAverage(solves.slice(0, 5)) === 'number' ? formatTime(calculateAverage(solves.slice(0, 5))) : (solves.length >= 5 ? 'DNF' : '--');
+            document.getElementById('statAo12').innerText = solves.length >= 12 && typeof calculateAverage(solves.slice(0, 12)) === 'number' ? formatTime(calculateAverage(solves.slice(0, 12))) : (solves.length >= 12 ? 'DNF' : '--');
+            document.getElementById('statAo50').innerText = solves.length >= 50 && typeof calculateAverage(solves.slice(0, 50)) === 'number' ? formatTime(calculateAverage(solves.slice(0, 50))) : (solves.length >= 50 ? 'DNF' : '--');
+            document.getElementById('statMean').innerText = solves.length > 0 && typeof calculateMean(solves) === 'number' ? formatTime(calculateMean(solves)) : (solves.length > 0 ? 'DNF' : '--');
+        }
+
+        function renderHistory() {
+            solvesList.innerHTML = '';
+            let solves = allData[currentSession] || [];
+            solves.forEach((solve, index) => {
+                const item = document.createElement('div');
+                item.className = 'solve-item';
+                
+                let timeStr = formatTime(solve.rawTime, solve.penalty);
+                let penaltyClass = '';
+                if (solve.penalty === 'DNF') penaltyClass = 'dnf';
+                else if (solve.penalty === 2) penaltyClass = 'plus2';
+
+                item.innerHTML = `
+                    <span class="solve-index">#${solves.length - index}</span>
+                    <span class="solve-time ${penaltyClass}" onclick="togglePenalty(${index}, 2)">${timeStr}</span>
+                    <div class="solve-actions">
+                        <button class="action-badge ${solve.penalty === 2 ? 'active' : ''}" onclick="togglePenalty(${index}, 2)">+2</button>
+                        <button class="action-badge ${solve.penalty === 'DNF' ? 'active' : ''}" onclick="togglePenalty(${index}, 'DNF')">DNF</button>
+                        <button class="remove-solve" onclick="removeSolve(${index})">×</button>
+                    </div>
+                `;
+                solvesList.appendChild(item);
+            });
+        }
+
+        function saveAndRender() {
+            localStorage.setItem('cstimer_pro_data', JSON.stringify(allData));
+            renderHistory();
+            updateStats();
+        }
+
+        window.addEventListener('keydown', (e) => {
+            if (resultModal.classList.contains('active')) {
+                if (e.code === 'Space' || e.code === 'Enter') {
+                    e.preventDefault();
+                    closeModal();
+                }
+                return;
+            }
+
+            if (manualModal.classList.contains('active')) return;
+
+            if (e.code === 'Space' && !e.repeat) {
+                e.preventDefault();
+                handleKeyDown();
+            }
+        });
+
+        window.addEventListener('keyup', (e) => {
+            if (resultModal.classList.contains('active') || manualModal.classList.contains('active')) return;
+            if (e.code === 'Space') {
+                e.preventDefault();
+                handleKeyUp();
+            }
+        });
+
+        const timerSection = document.getElementById('timerSection');
+        timerSection.addEventListener('touchstart', (e) => {
+            if (resultModal.classList.contains('active') || manualModal.classList.contains('active')) return;
+            e.preventDefault();
+            handleKeyDown();
+        }, { passive: false });
+
+        timerSection.addEventListener('touchend', (e) => {
+            if (resultModal.classList.contains('active') || manualModal.classList.contains('active')) return;
+            e.preventDefault();
+            handleKeyUp();
+        }, { passive: false });
+
+        newScramble();
+        saveAndRender();
+    </script>
 </body>
 </html>
