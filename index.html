@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Speedcubing Pro - Kho CTH CFOP</title>
+  <title>Speedcubing Pro - Kho CTH CFOP Đầy Đủ</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -327,7 +327,6 @@
       word-break: break-word;
     }
 
-    /* Các màn hình chính (Timer & CTH) */
     .main-view-content {
       display: none;
       flex: 1;
@@ -449,7 +448,7 @@
       letter-spacing: 0.3px;
     }
 
-    /* Giao diện Kho CTH dạng Thẻ Trực quan (Card Grid) */
+    /* Giao diện Kho CTH Mở rộng (Grid Card) */
     .cth-main-container {
       flex: 1;
       background: var(--card-bg);
@@ -474,6 +473,16 @@
       align-items: center;
       border-bottom: 1px solid var(--card-border);
       padding-bottom: 0.75rem;
+    }
+
+    .cth-section-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: var(--accent);
+      margin-top: 0.5rem;
+      margin-bottom: 0.2rem;
+      border-left: 3px solid var(--accent);
+      padding-left: 0.5rem;
     }
 
     .cth-grid {
@@ -531,7 +540,7 @@
 
     .cth-formula {
       font-family: 'JetBrains Mono', monospace;
-      font-size: 0.8rem;
+      font-size: 0.78rem;
       color: var(--text-main);
       background: rgba(0, 0, 0, 0.4);
       padding: 0.3rem 0.5rem;
@@ -795,79 +804,98 @@
       </div>
     </div>
 
-    <!-- Màn hình 2: Kho CTH dạng thẻ có Ảnh minh họa, Tên & Công thức -->
+    <!-- Màn hình 2: Kho CTH Mở Rộng Đầy Đủ (F2L, OLL, PLL) -->
     <div class="main-view-content" id="cthView">
       <div class="cth-main-container">
         <div class="cth-header-title">
-          <span>📚 Kho Công thức CFOP (Gợi ý & Minh họa)</span>
-          <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: normal;">Tra cứu nhanh các trường hợp OLL / PLL</span>
+          <span>📚 Kho Công thức CFOP Mở Rộng Đầy Đủ</span>
+          <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: normal;">Hệ thống tra cứu F2L, OLL & PLL</span>
         </div>
         
+        <!-- NHÓM F2L -->
+        <div class="cth-section-title">1. F2L Cơ Bản & Nâng Cao</div>
         <div class="cth-grid">
-          <!-- OLL 21 -->
           <div class="cth-card">
-            <div class="cth-img-box">
-              <img src="https://images.unsplash.com/photo-1591991564021-056708d7d9a9?auto=format&fit=crop&w=150&q=80" alt="OLL 21">
-            </div>
-            <div class="cth-info">
-              <span class="cth-name">OLL 21 (Chữ H)</span>
-              <span class="cth-formula">R U2 R' U' R U R' U' R U' R'</span>
-            </div>
+            <div class="cth-img-box"><img src="https://images.unsplash.com/photo-1591991564021-056708d7d9a9?auto=format&fit=crop&w=150&q=80" alt="F2L"></div>
+            <div class="cth-info"><span class="cth-name">F2L Cơ bản 1</span><span class="cth-formula">R U R'</span></div>
           </div>
-
-          <!-- OLL 27 -->
           <div class="cth-card">
-            <div class="cth-img-box">
-              <img src="https://images.unsplash.com/photo-1591991564021-056708d7d9a9?auto=format&fit=crop&w=150&q=80" alt="OLL 27">
-            </div>
-            <div class="cth-info">
-              <span class="cth-name">OLL 27 (Con cá)</span>
-              <span class="cth-formula">R U2 R' U' R U' R'</span>
-            </div>
+            <div class="cth-img-box"><img src="https://images.unsplash.com/photo-1591991564021-056708d7d9a9?auto=format&fit=crop&w=150&q=80" alt="F2L"></div>
+            <div class="cth-info"><span class="cth-name">F2L Cơ bản 2</span><span class="cth-formula">U R U' R'</span></div>
           </div>
-
-          <!-- PLL T-Perm -->
           <div class="cth-card">
-            <div class="cth-img-box">
-              <img src="https://images.unsplash.com/photo-1591991564021-056708d7d9a9?auto=format&fit=crop&w=150&q=80" alt="T-Perm">
-            </div>
-            <div class="cth-info">
-              <span class="cth-name">PLL - T Perm</span>
-              <span class="cth-formula">R U R' U' R' F R2 U' R' U' R U R' F'</span>
-            </div>
+            <div class="cth-img-box"><img src="https://images.unsplash.com/photo-1591991564021-056708d7d9a9?auto=format&fit=crop&w=150&q=80" alt="F2L"></div>
+            <div class="cth-info"><span class="cth-name">F2L Match</span><span class="cth-formula">R U2 R' U' R U R'</span></div>
           </div>
-
-          <!-- PLL Ua-Perm -->
           <div class="cth-card">
-            <div class="cth-img-box">
-              <img src="https://images.unsplash.com/photo-1591991564021-056708d7d9a9?auto=format&fit=crop&w=150&q=80" alt="Ua-Perm">
-            </div>
-            <div class="cth-info">
-              <span class="cth-name">PLL - Ua Perm</span>
-              <span class="cth-formula">R U' R U R U R U' R' U' R2</span>
-            </div>
+            <div class="cth-img-box"><img src="https://images.unsplash.com/photo-1591991564021-056708d7d9a9?auto=format&fit=crop&w=150&q=80" alt="F2L"></div>
+            <div class="cth-info"><span class="cth-name">F2L Anti-Match</span><span class="cth-formula">R U R' U R U2 R'</span></div>
           </div>
+        </div>
 
-          <!-- PLL H-Perm -->
+        <!-- NHÓM OLL -->
+        <div class="cth-section-title">2. OLL (Định Hướng Tầng Cuối)</div>
+        <div class="cth-grid">
           <div class="cth-card">
-            <div class="cth-img-box">
-              <img src="https://images.unsplash.com/photo-1591991564021-056708d7d9a9?auto=format&fit=crop&w=150&q=80" alt="H-Perm">
-            </div>
-            <div class="cth-info">
-              <span class="cth-name">PLL - H Perm</span>
-              <span class="cth-formula">M2 U M2 U2 M2 U M2</span>
-            </div>
+            <div class="cth-img-box"><img src="https://images.unsplash.com/photo-1591991564021-056708d7d9a9?auto=format&fit=crop&w=150&q=80" alt="OLL"></div>
+            <div class="cth-info"><span class="cth-name">OLL 21 (Chữ H)</span><span class="cth-formula">R U2 R' U' R U R' U' R U' R'</span></div>
           </div>
-
-          <!-- PLL Z-Perm -->
           <div class="cth-card">
-            <div class="cth-img-box">
-              <img src="https://images.unsplash.com/photo-1591991564021-056708d7d9a9?auto=format&fit=crop&w=150&q=80" alt="Z-Perm">
-            </div>
-            <div class="cth-info">
-              <span class="cth-name">PLL - Z Perm</span>
-              <span class="cth-formula">M2 U M2 U M' U2 M2 U2 M'</span>
-            </div>
+            <div class="cth-img-box"><img src="https://images.unsplash.com/photo-1591991564021-056708d7d9a9?auto=format&fit=crop&w=150&q=80" alt="OLL"></div>
+            <div class="cth-info"><span class="cth-name">OLL 22 (Mặt cười / Pi)</span><span class="cth-formula">R U2 R2 U' R2 U' R2 U2 R</span></div>
+          </div>
+          <div class="cth-card">
+            <div class="cth-img-box"><img src="https://images.unsplash.com/photo-1591991564021-056708d7d9a9?auto=format&fit=crop&w=150&q=80" alt="OLL"></div>
+            <div class="cth-info"><span class="cth-name">OLL 26 (Sune)</span><span class="cth-formula">R U R' U R U2 R'</span></div>
+          </div>
+          <div class="cth-card">
+            <div class="cth-img-box"><img src="https://images.unsplash.com/photo-1591991564021-056708d7d9a9?auto=format&fit=crop&w=150&q=80" alt="OLL"></div>
+            <div class="cth-info"><span class="cth-name">OLL 27 (Con cá)</span><span class="cth-formula">R U2 R' U' R U' R'</span></div>
+          </div>
+          <div class="cth-card">
+            <div class="cth-img-box"><img src="https://images.unsplash.com/photo-1591991564021-056708d7d9a9?auto=format&fit=crop&w=150&q=80" alt="OLL"></div>
+            <div class="cth-info"><span class="cth-name">OLL 33 (T-Shape)</span><span class="cth-formula">R U R' U' R' F R F'</span></div>
+          </div>
+          <div class="cth-card">
+            <div class="cth-img-box"><img src="https://images.unsplash.com/photo-1591991564021-056708d7d9a9?auto=format&fit=crop&w=150&q=80" alt="OLL"></div>
+            <div class="cth-info"><span class="cth-name">OLL 37 (F-Shape)</span><span class="cth-formula">F R U' R' U' R U R' F'</span></div>
+          </div>
+        </div>
+
+        <!-- NHÓM PLL -->
+        <div class="cth-section-title">3. PLL (Hoán Vị Tầng Cuối)</div>
+        <div class="cth-grid">
+          <div class="cth-card">
+            <div class="cth-img-box"><img src="https://images.unsplash.com/photo-1591991564021-056708d7d9a9?auto=format&fit=crop&w=150&q=80" alt="PLL"></div>
+            <div class="cth-info"><span class="cth-name">PLL - T Perm</span><span class="cth-formula">R U R' U' R' F R2 U' R' U' R U R' F'</span></div>
+          </div>
+          <div class="cth-card">
+            <div class="cth-img-box"><img src="https://images.unsplash.com/photo-1591991564021-056708d7d9a9?auto=format&fit=crop&w=150&q=80" alt="PLL"></div>
+            <div class="cth-info"><span class="cth-name">PLL - Y Perm</span><span class="cth-formula">F R U' R' U' R U R' F' R U R' U' R' F R F'</span></div>
+          </div>
+          <div class="cth-card">
+            <div class="cth-img-box"><img src="https://images.unsplash.com/photo-1591991564021-056708d7d9a9?auto=format&fit=crop&w=150&q=80" alt="PLL"></div>
+            <div class="cth-info"><span class="cth-name">PLL - Ua Perm</span><span class="cth-formula">R U' R U R U R U' R' U' R2</span></div>
+          </div>
+          <div class="cth-card">
+            <div class="cth-img-box"><img src="https://images.unsplash.com/photo-1591991564021-056708d7d9a9?auto=format&fit=crop&w=150&q=80" alt="PLL"></div>
+            <div class="cth-info"><span class="cth-name">PLL - Ub Perm</span><span class="cth-formula">R2 U R U R' U' R' U' R' U R'</span></div>
+          </div>
+          <div class="cth-card">
+            <div class="cth-img-box"><img src="https://images.unsplash.com/photo-1591991564021-056708d7d9a9?auto=format&fit=crop&w=150&q=80" alt="PLL"></div>
+            <div class="cth-info"><span class="cth-name">PLL - H Perm</span><span class="cth-formula">M2 U M2 U2 M2 U M2</span></div>
+          </div>
+          <div class="cth-card">
+            <div class="cth-img-box"><img src="https://images.unsplash.com/photo-1591991564021-056708d7d9a9?auto=format&fit=crop&w=150&q=80" alt="PLL"></div>
+            <div class="cth-info"><span class="cth-name">PLL - Z Perm</span><span class="cth-formula">M2 U M2 U M' U2 M2 U2 M'</span></div>
+          </div>
+          <div class="cth-card">
+            <div class="cth-img-box"><img src="https://images.unsplash.com/photo-1591991564021-056708d7d9a9?auto=format&fit=crop&w=150&q=80" alt="PLL"></div>
+            <div class="cth-info"><span class="cth-name">PLL - Jb Perm</span><span class="cth-formula">R U R' F' R U R' U' R' F R2 U' R'</span></div>
+          </div>
+          <div class="cth-card">
+            <div class="cth-img-box"><img src="https://images.unsplash.com/photo-1591991564021-056708d7d9a9?auto=format&fit=crop&w=150&q=80" alt="PLL"></div>
+            <div class="cth-info"><span class="cth-name">PLL - Aa Perm</span><span class="cth-formula">x R' U R' D2 R U' R' D2 R2</span></div>
           </div>
         </div>
 
@@ -1003,7 +1031,7 @@
     let currentEvent = '333';
     let currentSession = 'Session 1';
     
-    let allData = JSON.parse(localStorage.getItem('speedcubing_pro_data_v27') || '{}');
+    let allData = JSON.parse(localStorage.getItem('speedcubing_pro_data_v28') || '{}');
     if (Object.keys(allData).length === 0) {
       allData['Session 1'] = [];
     }
@@ -1573,7 +1601,7 @@
     }
 
     function saveAndRender() {
-      localStorage.setItem('speedcubing_pro_data_v27', JSON.stringify(allData));
+      localStorage.setItem('speedcubing_pro_data_v28', JSON.stringify(allData));
       renderHistory();
       updateStats();
     }
