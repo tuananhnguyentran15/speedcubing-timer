@@ -68,6 +68,7 @@
       pointer-events: none;
     }
 
+    /* Top Bar Header Tối giản */
     header {
       display: flex;
       justify-content: space-between;
@@ -95,6 +96,7 @@
       text-shadow: 0 0 20px var(--accent-glow);
     }
 
+    /* Main Layout */
     .app-container {
       display: grid;
       grid-template-columns: 350px 1fr;
@@ -103,6 +105,7 @@
       z-index: 2;
     }
 
+    /* Left Sidebar Panel */
     .sidebar {
       background: var(--card-bg);
       backdrop-filter: blur(16px);
@@ -191,29 +194,12 @@
     }
     .clear-btn:hover { opacity: 0.8; text-decoration: underline; }
 
-    .sidebar-stats-grid {
-      display: grid;
-      grid-template-columns: repeat(2, 1fr);
-      gap: 0.4rem;
-      background: rgba(7, 9, 19, 0.4);
-      padding: 0.5rem;
-      border-radius: 6px;
-      border: 1px solid var(--card-border);
-      font-size: 0.78rem;
-    }
-    .sidebar-stat-item {
-      display: flex;
-      justify-content: space-between;
-      padding: 0.1rem 0.3rem;
-    }
-    .sidebar-stat-item span.label { color: var(--text-muted); font-weight: 600; }
-    .sidebar-stat-item span.val { color: var(--accent); font-family: 'JetBrains Mono', monospace; font-weight: 700; }
-
+    /* Lịch sử giải đã làm ngắn gọn chiều cao */
     .solves-list {
       display: flex;
       flex-direction: column;
       gap: 0.4rem;
-      flex: 1;
+      max-height: 180px;
       overflow-y: auto;
       padding-right: 2px;
     }
@@ -231,9 +217,9 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 0.45rem 0.65rem;
+      padding: 0.4rem 0.6rem;
       font-family: 'JetBrains Mono', monospace;
-      font-size: 0.82rem;
+      font-size: 0.8rem;
       cursor: pointer;
     }
     .solve-item:hover { background: rgba(30, 41, 59, 0.4); }
@@ -305,6 +291,7 @@
       word-break: break-word;
     }
 
+    /* Timer Section Main */
     .timer-section {
       display: flex;
       flex-direction: column;
@@ -413,6 +400,19 @@
       letter-spacing: 0.3px;
     }
 
+    /* ZEN MODE */
+    body.zen-mode header,
+    body.zen-mode .sidebar,
+    body.zen-mode .scramble-box,
+    body.zen-mode .stats-grid-inline,
+    body.zen-mode .timer-hint {
+      display: none !important;
+    }
+
+    body.zen-mode .app-container { grid-template-columns: 1fr; }
+    body.zen-mode .timer-section { justify-content: center; }
+    body.zen-mode .timer-display { font-size: 12rem; }
+
     /* Màn hình bảo trì */
     #maintenanceOverlay {
       display: none;
@@ -427,6 +427,153 @@
       padding: 2rem;
       font-family: 'Plus Jakarta Sans', sans-serif;
     }
+
+    /* Modals */
+    .modal-overlay {
+      position: fixed;
+      top: 0; left: 0; width: 100%; height: 100%;
+      background: rgba(0, 0, 0, 0.7);
+      backdrop-filter: blur(8px);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 1000;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .modal-overlay.active { opacity: 1; pointer-events: auto; }
+
+    .modal-card {
+      background: #0f172a;
+      border: 1px solid var(--card-border);
+      border-radius: 16px;
+      padding: 2rem;
+      width: 460px;
+      box-shadow: 0 20px 50px rgba(0,0,0,0.6);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1.25rem;
+      text-align: center;
+    }
+
+    .modal-card h3 { font-size: 1.25rem; font-weight: 700; color: var(--text-main); }
+
+    .modal-time {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 4rem;
+      font-weight: 800;
+      color: var(--accent);
+      line-height: 1;
+      text-shadow: 0 0 25px var(--accent-glow);
+    }
+
+    .modal-scramble {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.82rem;
+      color: var(--text-muted);
+      letter-spacing: 0.5px;
+    }
+
+    .modal-buttons {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.7rem;
+      width: 100%;
+    }
+
+    .modal-btn {
+      background: #1e293b;
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      padding: 0.7rem;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .modal-btn:hover { background: #334155; border-color: var(--card-border-hover); }
+
+    .modal-btn.btn-plus2.active { background: rgba(251, 191, 36, 0.25); border-color: var(--warning); color: var(--warning); }
+    .modal-btn.btn-dnf.active { background: rgba(251, 113, 133, 0.25); border-color: var(--danger); color: var(--danger); }
+    .modal-btn.btn-delete:hover { background: rgba(251, 113, 133, 0.2); border-color: var(--danger); color: var(--danger); }
+
+    .modal-ok { background: var(--accent); color: #070913; grid-column: span 3; }
+    .modal-ok:hover { opacity: 0.92; background: var(--accent); }
+
+    .manual-input {
+      background: #070913;
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 1.6rem;
+      padding: 0.6rem;
+      border-radius: 8px;
+      width: 100%;
+      text-align: center;
+      outline: none;
+    }
+    .manual-input:focus { border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
+
+    .settings-group {
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      text-align: left;
+    }
+
+    .settings-label { font-size: 0.85rem; font-weight: 600; color: var(--text-muted); }
+
+    .file-input-wrapper {
+      position: relative;
+      overflow: hidden;
+      display: inline-block;
+      width: 100%;
+    }
+
+    .file-input-wrapper input[type=file] {
+      font-size: 100px;
+      position: absolute;
+      left: 0; top: 0;
+      opacity: 0;
+      cursor: pointer;
+    }
+
+    .settings-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      width: 100%;
+      padding: 0.5rem 0;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+
+    .zoom-slider { width: 100%; accent-color: var(--accent); cursor: pointer; }
+
+    .toggle-container { position: relative; display: inline-block; width: 46px; height: 24px; }
+    .toggle-container input { opacity: 0; width: 0; height: 0; }
+    .switch {
+      position: absolute; cursor: pointer;
+      top: 0; left: 0; right: 0; bottom: 0;
+      background-color: #1e293b;
+      transition: .25s;
+      border-radius: 24px;
+      border: 1px solid var(--card-border);
+    }
+    .switch:before {
+      position: absolute; content: "";
+      height: 18px; width: 18px;
+      left: 2px; bottom: 2px;
+      background-color: white;
+      transition: .25s;
+      border-radius: 50%;
+    }
+    input:checked + .switch { background-color: var(--accent); border-color: var(--accent); }
+    input:checked + .switch:before { transform: translateX(22px); }
   </style>
 </head>
 <body>
@@ -450,6 +597,7 @@
   </header>
 
   <div class="app-container">
+    <!-- Sidebar Left -->
     <div class="sidebar">
       <div class="sidebar-controls-grid">
         <select class="select-dropdown" id="eventSelect" onchange="changeEvent()">
@@ -478,28 +626,11 @@
         <button class="clear-btn" onclick="clearHistory()">Xóa tất cả</button>
       </div>
 
-      <div class="sidebar-stats-grid">
-        <div class="sidebar-stat-item">
-          <span class="label">Lượt:</span>
-          <span class="val" id="statCount">0</span>
-        </div>
-        <div class="sidebar-stat-item">
-          <span class="label">Best:</span>
-          <span class="val" id="statPB">--</span>
-        </div>
-        <div class="sidebar-stat-item">
-          <span class="label">Mean:</span>
-          <span class="val" id="statMean">--</span>
-        </div>
-        <div class="sidebar-stat-item">
-          <span class="label">Worst:</span>
-          <span class="val" id="statWorst">--</span>
-        </div>
-      </div>
-
+      <!-- Danh sách lịch sử giải đã được thu gọn chiều cao -->
       <div class="solves-list" id="solvesList"></div>
     </div>
 
+    <!-- Timer Section Main -->
     <div class="timer-section" id="timerSection">
       <div class="scramble-box" id="scrambleDisplay" onclick="newScramble()" title="Nhấn để đổi scramble khác">---</div>
 
@@ -523,7 +654,6 @@
     </div>
   </div>
 
-  <!-- Các Modals khác giữ nguyên -->
   <div class="modal-overlay" id="resultModal">
     <div class="modal-card">
       <div class="modal-scramble" id="modalScramble">R U R' U'...</div>
@@ -593,10 +723,10 @@
 
   <script>
     // ==========================================
-    // CẤU HÌNH BẢO TRÌ (Đổi thành false khi xong việc)
+    // CẤU HÌNH BẢO TRÌ
     // ==========================================
-    const IS_MAINTENANCE = true; 
-    const ADMIN_PASSWORD = "123"; // Bạn có thể đổi mật khẩu này thành bất kỳ mã nào bạn muốn
+    const IS_MAINTENANCE = false; // Đổi thành true để khóa web đối với người chơi khác
+    const ADMIN_PASSWORD = "123";  // Mật khẩu đăng nhập Admin
 
     function adminLogin() {
       let pwd = prompt("Nhập mật khẩu Admin:");
@@ -618,7 +748,6 @@
       }
     });
 
-    // Các logic timer cũ của bạn giữ nguyên bên dưới
     let state = 'IDLE';
     let inspectionEnabled = false;
     let hideTimeSolving = false;
@@ -633,7 +762,7 @@
     let currentEvent = '333';
     let currentSession = 'Session 1';
     
-    let allData = JSON.parse(localStorage.getItem('speedcubing_pro_data_v22') || '{}');
+    let allData = JSON.parse(localStorage.getItem('speedcubing_pro_data_v24') || '{}');
     if (Object.keys(allData).length === 0) {
       allData['Session 1'] = [];
     }
@@ -1169,28 +1298,6 @@
     function updateStats() {
       let solves = allData[currentSession] || [];
       historyTitle.innerText = `Lịch sử giải (${solves.length})`;
-      document.getElementById('statCount').innerText = solves.length;
-
-      const validSolves = solves.filter(s => s.penalty !== 'DNF');
-      
-      if (validSolves.length > 0) {
-        const times = validSolves.map(s => s.rawTime + (s.penalty === 2 ? 2000 : 0));
-        const best = Math.min(...times);
-        const worst = Math.max(...times);
-        document.getElementById('statPB').innerText = formatTime(best);
-        document.getElementById('statWorst').innerText = formatTime(worst);
-      } else {
-        document.getElementById('statPB').innerText = '--';
-        document.getElementById('statWorst').innerText = '--';
-      }
-
-      if (validSolves.length > 0) {
-        const sum = validSolves.reduce((acc, s) => acc + (s.rawTime + (s.penalty === 2 ? 2000 : 0)), 0);
-        const mean = sum / validSolves.length;
-        document.getElementById('statMean').innerText = formatTime(mean);
-      } else {
-        document.getElementById('statMean').innerText = '--';
-      }
 
       document.getElementById('statAo5').innerText = solves.length >= 5 && typeof calculateAverage(solves.slice(0, 5)) === 'number' ? formatTime(calculateAverage(solves.slice(0, 5))) : (solves.length >= 5 ? 'DNF' : '--');
       document.getElementById('statAo12').innerText = solves.length >= 12 && typeof calculateAverage(solves.slice(0, 12)) === 'number' ? formatTime(calculateAverage(solves.slice(0, 12))) : (solves.length >= 12 ? 'DNF' : '--');
@@ -1223,7 +1330,7 @@
     }
 
     function saveAndRender() {
-      localStorage.setItem('speedcubing_pro_data_v22', JSON.stringify(allData));
+      localStorage.setItem('speedcubing_pro_data_v24', JSON.stringify(allData));
       renderHistory();
       updateStats();
     }
@@ -1281,7 +1388,7 @@
     }, { passive: false });
 
     timerSection.addEventListener('touchend', (e) => {
-      if (resultModal.classList.contains('active') || manualModal.classList.codes || settingsModal.classList.contains('active')) return;
+      if (resultModal.classList.contains('active') || manualModal.classList.contains('active') || settingsModal.classList.contains('active')) return;
       e.preventDefault();
       handleTimerRelease();
     }, { passive: false });
