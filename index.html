@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Speedcubing Pro - Rubik Timer & CTH</title>
+  <title>Speedcubing Pro - Kho CTH CFOP</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -102,7 +102,6 @@
       text-shadow: 0 0 20px var(--accent-glow);
     }
 
-    /* Nhóm nút chuyển tab trên Header */
     .nav-tabs {
       display: flex;
       gap: 0.5rem;
@@ -232,12 +231,11 @@
     }
     .clear-btn:hover { opacity: 0.8; text-decoration: underline; }
 
-    /* Lịch sử giải gọn gàng */
     .solves-list {
       display: flex;
       flex-direction: column;
       gap: 0.4rem;
-      max-height: 250px;
+      flex: 1;
       overflow-y: auto;
       padding-right: 2px;
     }
@@ -329,7 +327,7 @@
       word-break: break-word;
     }
 
-    /* Nội dung các màn hình chính (Timer view và CTH view) */
+    /* Các màn hình chính (Timer & CTH) */
     .main-view-content {
       display: none;
       flex: 1;
@@ -451,58 +449,95 @@
       letter-spacing: 0.3px;
     }
 
-    /* Giao diện Màn hình CTH (Công thức) chiếm trọn khung phải */
+    /* Giao diện Kho CTH dạng Thẻ Trực quan (Card Grid) */
     .cth-main-container {
       flex: 1;
       background: var(--card-bg);
       backdrop-filter: blur(16px);
       border: 1px solid var(--card-border);
-      margin: 2rem;
+      margin: 1.5rem;
       border-radius: 16px;
-      padding: 2rem;
+      padding: 1.5rem;
       display: flex;
       flex-direction: column;
       gap: 1rem;
       box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+      overflow-y: auto;
     }
 
     .cth-header-title {
-      font-size: 1.4rem;
+      font-size: 1.3rem;
       font-weight: 800;
       color: var(--text-main);
       display: flex;
       justify-content: space-between;
       align-items: center;
+      border-bottom: 1px solid var(--card-border);
+      padding-bottom: 0.75rem;
     }
 
-    .cth-textarea-main {
-      flex: 1;
-      background: rgba(7, 9, 19, 0.75);
+    .cth-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 1rem;
+    }
+
+    .cth-card {
+      background: rgba(7, 9, 19, 0.7);
       border: 1px solid var(--card-border);
-      color: var(--text-main);
-      padding: 1.25rem;
       border-radius: 10px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.95rem;
-      line-height: 1.6;
-      resize: none;
-      outline: none;
+      padding: 1rem;
+      display: flex;
+      gap: 1rem;
+      align-items: center;
+      transition: all 0.2s;
     }
-    .cth-textarea-main:focus { border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
+    .cth-card:hover {
+      border-color: var(--card-border-hover);
+      transform: translateY(-2px);
+    }
 
-    .cth-save-btn {
-      background: var(--accent);
-      color: #070913;
-      border: none;
-      padding: 0.75rem 1.5rem;
+    .cth-img-box {
+      width: 65px;
+      height: 65px;
+      background: #1e293b;
       border-radius: 8px;
-      font-weight: 700;
-      font-size: 0.95rem;
-      cursor: pointer;
-      align-self: flex-end;
-      transition: opacity 0.2s;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      overflow: hidden;
+      border: 1px solid var(--card-border);
     }
-    .cth-save-btn:hover { opacity: 0.9; }
+    .cth-img-box img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .cth-info {
+      display: flex;
+      flex-direction: column;
+      gap: 0.3rem;
+      flex: 1;
+      overflow: hidden;
+    }
+
+    .cth-name {
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: var(--accent);
+    }
+
+    .cth-formula {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--text-main);
+      background: rgba(0, 0, 0, 0.4);
+      padding: 0.3rem 0.5rem;
+      border-radius: 4px;
+      word-break: break-all;
+    }
 
     /* ZEN MODE */
     body.zen-mode header,
@@ -546,7 +581,6 @@
       pointer-events: none;
       transition: opacity 0.2s ease;
     }
-
     .modal-overlay.active { opacity: 1; pointer-events: auto; }
 
     .modal-card {
@@ -629,7 +663,6 @@
       gap: 0.5rem;
       text-align: left;
     }
-
     .settings-label { font-size: 0.85rem; font-weight: 600; color: var(--text-muted); }
 
     .file-input-wrapper {
@@ -638,7 +671,6 @@
       display: inline-block;
       width: 100%;
     }
-
     .file-input-wrapper input[type=file] {
       font-size: 100px;
       position: absolute;
@@ -655,7 +687,6 @@
       padding: 0.5rem 0;
       border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     }
-
     .zoom-slider { width: 100%; accent-color: var(--accent); cursor: pointer; }
 
     .toggle-container { position: relative; display: inline-block; width: 46px; height: 24px; }
@@ -699,7 +730,6 @@
       <div class="brand">
         ⚡ Speedcubing<span>Pro</span>
       </div>
-      <!-- Hai nút chuyển tab Timer và CTH nằm cạnh nhau -->
       <div class="nav-tabs">
         <button class="nav-tab-btn active" id="tabTimerBtn" onclick="switchView('timer')">Timer</button>
         <button class="nav-tab-btn" id="tabCthBtn" onclick="switchView('cth')">CTH</button>
@@ -708,7 +738,7 @@
   </header>
 
   <div class="app-container">
-    <!-- Sidebar Left (Chỉ hiện khi ở tab Timer để quản lý session và lịch sử) -->
+    <!-- Sidebar Left -->
     <div class="sidebar" id="sidebarSection">
       <div class="sidebar-controls-grid">
         <select class="select-dropdown" id="eventSelect" onchange="changeEvent()">
@@ -740,7 +770,7 @@
       <div class="solves-list" id="solvesList"></div>
     </div>
 
-    <!-- Màn hình 1: Giao diện Timer chính -->
+    <!-- Màn hình 1: Timer -->
     <div class="main-view-content active" id="timerView">
       <div class="timer-section" id="timerSection">
         <div class="scramble-box" id="scrambleDisplay" onclick="newScramble()" title="Nhấn để đổi scramble khác">---</div>
@@ -765,15 +795,82 @@
       </div>
     </div>
 
-    <!-- Màn hình 2: Giao diện Công thức (CTH) độc lập chuyên để chia sẻ -->
+    <!-- Màn hình 2: Kho CTH dạng thẻ có Ảnh minh họa, Tên & Công thức -->
     <div class="main-view-content" id="cthView">
       <div class="cth-main-container">
         <div class="cth-header-title">
-          <span>📚 Kho Công thức (Algorithms / CTH)</span>
-          <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: normal;">Dùng để lưu và chia sẻ với mọi người</span>
+          <span>📚 Kho Công thức CFOP (Gợi ý & Minh họa)</span>
+          <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: normal;">Tra cứu nhanh các trường hợp OLL / PLL</span>
         </div>
-        <textarea class="cth-textarea-main" id="mainCthInput" placeholder="Nhập các công thức Rubik của bạn vào đây (F2L, OLL, PLL, ZBLL...). Dữ liệu sẽ tự động lưu lại trên trình duyệt..."></textarea>
-        <button class="cth-save-btn" onclick="saveMainAlgorithms()">Lưu công thức</button>
+        
+        <div class="cth-grid">
+          <!-- OLL 21 -->
+          <div class="cth-card">
+            <div class="cth-img-box">
+              <img src="https://images.unsplash.com/photo-1591991564021-056708d7d9a9?auto=format&fit=crop&w=150&q=80" alt="OLL 21">
+            </div>
+            <div class="cth-info">
+              <span class="cth-name">OLL 21 (Chữ H)</span>
+              <span class="cth-formula">R U2 R' U' R U R' U' R U' R'</span>
+            </div>
+          </div>
+
+          <!-- OLL 27 -->
+          <div class="cth-card">
+            <div class="cth-img-box">
+              <img src="https://images.unsplash.com/photo-1591991564021-056708d7d9a9?auto=format&fit=crop&w=150&q=80" alt="OLL 27">
+            </div>
+            <div class="cth-info">
+              <span class="cth-name">OLL 27 (Con cá)</span>
+              <span class="cth-formula">R U2 R' U' R U' R'</span>
+            </div>
+          </div>
+
+          <!-- PLL T-Perm -->
+          <div class="cth-card">
+            <div class="cth-img-box">
+              <img src="https://images.unsplash.com/photo-1591991564021-056708d7d9a9?auto=format&fit=crop&w=150&q=80" alt="T-Perm">
+            </div>
+            <div class="cth-info">
+              <span class="cth-name">PLL - T Perm</span>
+              <span class="cth-formula">R U R' U' R' F R2 U' R' U' R U R' F'</span>
+            </div>
+          </div>
+
+          <!-- PLL Ua-Perm -->
+          <div class="cth-card">
+            <div class="cth-img-box">
+              <img src="https://images.unsplash.com/photo-1591991564021-056708d7d9a9?auto=format&fit=crop&w=150&q=80" alt="Ua-Perm">
+            </div>
+            <div class="cth-info">
+              <span class="cth-name">PLL - Ua Perm</span>
+              <span class="cth-formula">R U' R U R U R U' R' U' R2</span>
+            </div>
+          </div>
+
+          <!-- PLL H-Perm -->
+          <div class="cth-card">
+            <div class="cth-img-box">
+              <img src="https://images.unsplash.com/photo-1591991564021-056708d7d9a9?auto=format&fit=crop&w=150&q=80" alt="H-Perm">
+            </div>
+            <div class="cth-info">
+              <span class="cth-name">PLL - H Perm</span>
+              <span class="cth-formula">M2 U M2 U2 M2 U M2</span>
+            </div>
+          </div>
+
+          <!-- PLL Z-Perm -->
+          <div class="cth-card">
+            <div class="cth-img-box">
+              <img src="https://images.unsplash.com/photo-1591991564021-056708d7d9a9?auto=format&fit=crop&w=150&q=80" alt="Z-Perm">
+            </div>
+            <div class="cth-info">
+              <span class="cth-name">PLL - Z Perm</span>
+              <span class="cth-formula">M2 U M2 U M' U2 M2 U2 M'</span>
+            </div>
+          </div>
+        </div>
+
       </div>
     </div>
 
@@ -847,11 +944,8 @@
   </div>
 
   <script>
-    // ==========================================
-    // CẤU HÌNH BẢO TRÌ & ADMIN
-    // ==========================================
-    const IS_MAINTENANCE = false; // Đổi thành true để khóa web đối với người chơi khác
-    const ADMIN_PASSWORD = "123";  // Mật khẩu đăng nhập Admin
+    const IS_MAINTENANCE = false;
+    const ADMIN_PASSWORD = "123";
 
     function adminLogin() {
       let pwd = prompt("Nhập mật khẩu Admin:");
@@ -871,15 +965,8 @@
           document.getElementById("maintenanceOverlay").style.display = "flex";
         }
       }
-      
-      // Tải công thức đã lưu vào ô CTH
-      const savedAlgs = localStorage.getItem('speedcubing_pro_algorithms_main');
-      if (savedAlgs) {
-        document.getElementById('mainCthInput').value = savedAlgs;
-      }
     });
 
-    // Hàm chuyển đổi giữa tab Timer và CTH
     function switchView(viewName) {
       const timerView = document.getElementById('timerView');
       const cthView = document.getElementById('cthView');
@@ -896,16 +983,10 @@
       } else {
         cthView.classList.add('active');
         timerView.classList.remove('active');
-        sidebarSection.style.display = 'none'; // Ẩn sidebar bên trái khi vào mục CTH để màn hình rộng rãi hơn
+        sidebarSection.style.display = 'none';
         tabCthBtn.classList.add('active');
         tabTimerBtn.classList.remove('active');
       }
-    }
-
-    function saveMainAlgorithms() {
-      const algsText = document.getElementById('mainCthInput').value;
-      localStorage.setItem('speedcubing_pro_algorithms_main', algsText);
-      alert("Đã lưu kho công thức (CTH) thành công!");
     }
 
     let state = 'IDLE';
@@ -922,7 +1003,7 @@
     let currentEvent = '333';
     let currentSession = 'Session 1';
     
-    let allData = JSON.parse(localStorage.getItem('speedcubing_pro_data_v26') || '{}');
+    let allData = JSON.parse(localStorage.getItem('speedcubing_pro_data_v27') || '{}');
     if (Object.keys(allData).length === 0) {
       allData['Session 1'] = [];
     }
@@ -1267,7 +1348,6 @@
     }
 
     function handleTimerAction() {
-      // Nếu đang ở màn hình CTH thì không cho bấm timer
       if (!document.getElementById('timerView').classList.contains('active')) return;
       if (resultModal.classList.contains('active') || manualModal.classList.contains('active') || settingsModal.classList.contains('active')) return;
 
@@ -1493,13 +1573,12 @@
     }
 
     function saveAndRender() {
-      localStorage.setItem('speedcubing_pro_data_v26', JSON.stringify(allData));
+      localStorage.setItem('speedcubing_pro_data_v27', JSON.stringify(allData));
       renderHistory();
       updateStats();
     }
 
     window.addEventListener('keydown', (e) => {
-      // Chỉ nhận phím space bấm timer khi đang ở tab Timer
       if (!document.getElementById('timerView').classList.contains('active')) return;
 
       if (resultModal.classList.contains('active')) {
