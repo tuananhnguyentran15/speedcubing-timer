@@ -68,7 +68,7 @@
       pointer-events: none;
     }
 
-    /* Top Bar Header Tối giản */
+    /* Top Bar Header */
     header {
       display: flex;
       justify-content: space-between;
@@ -79,6 +79,12 @@
       backdrop-filter: blur(16px);
       height: 60px;
       z-index: 10;
+    }
+
+    .brand-group {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
     }
 
     .brand {
@@ -94,6 +100,14 @@
     .brand span { 
       color: var(--accent);
       text-shadow: 0 0 20px var(--accent-glow);
+    }
+
+    .brand-sub {
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--text-muted);
+      border-left: 1px solid var(--card-border);
+      padding-left: 0.75rem;
     }
 
     /* Main Layout */
@@ -194,12 +208,12 @@
     }
     .clear-btn:hover { opacity: 0.8; text-decoration: underline; }
 
-    /* Lịch sử giải đã làm ngắn gọn chiều cao */
+    /* Lịch sử giải gọn gàng */
     .solves-list {
       display: flex;
       flex-direction: column;
       gap: 0.4rem;
-      max-height: 180px;
+      max-height: 150px;
       overflow-y: auto;
       padding-right: 2px;
     }
@@ -290,6 +304,28 @@
       border-top: 1px solid var(--card-border);
       word-break: break-word;
     }
+
+    /* Khu vực Công thức (CTH) bên trái */
+    .algo-section {
+      display: flex;
+      flex-direction: column;
+      gap: 0.35rem;
+      margin-top: auto;
+    }
+
+    .algo-textarea {
+      background: rgba(7, 9, 19, 0.6);
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      padding: 0.5rem;
+      border-radius: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.78rem;
+      resize: none;
+      height: 75px;
+      outline: none;
+    }
+    .algo-textarea:focus { border-color: var(--accent); }
 
     /* Timer Section Main */
     .timer-section {
@@ -591,8 +627,11 @@
   </div>
 
   <header>
-    <div class="brand">
-      ⚡ Speedcubing<span>Pro</span>
+    <div class="brand-group">
+      <div class="brand">
+        ⚡ Speedcubing<span>Pro</span>
+      </div>
+      <div class="brand-sub">Timer</div>
     </div>
   </header>
 
@@ -626,8 +665,16 @@
         <button class="clear-btn" onclick="clearHistory()">Xóa tất cả</button>
       </div>
 
-      <!-- Danh sách lịch sử giải đã được thu gọn chiều cao -->
       <div class="solves-list" id="solvesList"></div>
+
+      <!-- Khu vực Công thức (CTH) để chia sẻ -->
+      <div class="algo-section">
+        <div class="history-header">
+          <span class="history-title">Công thức (CTH)</span>
+          <span class="clear-btn" onclick="saveAlgorithms()" style="color: var(--accent);">Lưu lại</span>
+        </div>
+        <textarea class="algo-textarea" id="algoInput" placeholder="Nhập công thức (F2L, OLL, PLL...) để chia sẻ..."></textarea>
+      </div>
     </div>
 
     <!-- Timer Section Main -->
@@ -723,9 +770,9 @@
 
   <script>
     // ==========================================
-    // CẤU HÌNH BẢO TRÌ
+    // CẤU HÌNH BẢO TRÌ & ADMIN
     // ==========================================
-    const IS_MAINTENANCE = false; // Đổi thành true để khóa web đối với người chơi khác
+    const IS_MAINTENANCE = false; // Đổi thành true để khóa web với người chơi khác
     const ADMIN_PASSWORD = "123";  // Mật khẩu đăng nhập Admin
 
     function adminLogin() {
@@ -746,7 +793,19 @@
           document.getElementById("maintenanceOverlay").style.display = "flex";
         }
       }
+      
+      // Tải công thức đã lưu
+      const savedAlgs = localStorage.getItem('speedcubing_pro_algorithms');
+      if (savedAlgs) {
+        document.getElementById('algoInput').value = savedAlgs;
+      }
     });
+
+    function saveAlgorithms() {
+      const algsText = document.getElementById('algoInput').value;
+      localStorage.setItem('speedcubing_pro_algorithms', algsText);
+      alert("Đã lưu công thức thành công!");
+    }
 
     let state = 'IDLE';
     let inspectionEnabled = false;
@@ -762,7 +821,7 @@
     let currentEvent = '333';
     let currentSession = 'Session 1';
     
-    let allData = JSON.parse(localStorage.getItem('speedcubing_pro_data_v24') || '{}');
+    let allData = JSON.parse(localStorage.getItem('speedcubing_pro_data_v25') || '{}');
     if (Object.keys(allData).length === 0) {
       allData['Session 1'] = [];
     }
@@ -1330,7 +1389,7 @@
     }
 
     function saveAndRender() {
-      localStorage.setItem('speedcubing_pro_data_v24', JSON.stringify(allData));
+      localStorage.setItem('speedcubing_pro_data_v25', JSON.stringify(allData));
       renderHistory();
       updateStats();
     }
