@@ -68,7 +68,6 @@
       pointer-events: none;
     }
 
-    /* Top Bar Header Tối giản */
     header {
       display: flex;
       justify-content: space-between;
@@ -96,7 +95,6 @@
       text-shadow: 0 0 20px var(--accent-glow);
     }
 
-    /* Main Layout */
     .app-container {
       display: grid;
       grid-template-columns: 350px 1fr;
@@ -105,7 +103,6 @@
       z-index: 2;
     }
 
-    /* Left Sidebar Panel (Chứa Session, Cài đặt, Thống kê & Lịch sử) */
     .sidebar {
       background: var(--card-bg);
       backdrop-filter: blur(16px);
@@ -194,7 +191,6 @@
     }
     .clear-btn:hover { opacity: 0.8; text-decoration: underline; }
 
-    /* Thống kê mở rộng trong Sidebar (Lượt, Best, Mean, Worst) */
     .sidebar-stats-grid {
       display: grid;
       grid-template-columns: repeat(2, 1fr);
@@ -213,7 +209,6 @@
     .sidebar-stat-item span.label { color: var(--text-muted); font-weight: 600; }
     .sidebar-stat-item span.val { color: var(--accent); font-family: 'JetBrains Mono', monospace; font-weight: 700; }
 
-    /* Lịch sử giải ngắn gọn */
     .solves-list {
       display: flex;
       flex-direction: column;
@@ -310,7 +305,6 @@
       word-break: break-word;
     }
 
-    /* Timer Section Main */
     .timer-section {
       display: flex;
       flex-direction: column;
@@ -374,7 +368,6 @@
     .timer-display.ready { color: var(--ready-color); text-shadow: 0 0 35px rgba(74, 222, 128, 0.3); }
     .timer-display.inspecting { color: var(--inspect-color); }
 
-    /* Stats Grid Cũ cho Ao5 và Ao12 */
     .stats-grid-inline {
       display: grid;
       grid-template-columns: repeat(2, minmax(130px, 160px));
@@ -420,169 +413,31 @@
       letter-spacing: 0.3px;
     }
 
-    /* ZEN MODE */
-    body.zen-mode header,
-    body.zen-mode .sidebar,
-    body.zen-mode .scramble-box,
-    body.zen-mode .stats-grid-inline,
-    body.zen-mode .timer-hint {
-      display: none !important;
-    }
-
-    body.zen-mode .app-container { grid-template-columns: 1fr; }
-    body.zen-mode .timer-section { justify-content: center; }
-    body.zen-mode .timer-display { font-size: 12rem; }
-
-    /* Modals */
-    .modal-overlay {
+    /* Màn hình bảo trì */
+    #maintenanceOverlay {
+      display: none;
       position: fixed;
       top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.7);
-      backdrop-filter: blur(8px);
-      display: flex;
+      background: rgba(7, 9, 19, 0.96);
+      z-index: 9999;
+      flex-direction: column;
       align-items: center;
       justify-content: center;
-      z-index: 1000;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.2s ease;
-    }
-
-    .modal-overlay.active { opacity: 1; pointer-events: auto; }
-
-    .modal-card {
-      background: #0f172a;
-      border: 1px solid var(--card-border);
-      border-radius: 16px;
+      text-align: center;
       padding: 2rem;
-      width: 460px;
-      box-shadow: 0 20px 50px rgba(0,0,0,0.6);
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 1.25rem;
-      text-align: center;
+      font-family: 'Plus Jakarta Sans', sans-serif;
     }
-
-    .modal-card h3 { font-size: 1.25rem; font-weight: 700; color: var(--text-main); }
-
-    .modal-time {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 4rem;
-      font-weight: 800;
-      color: var(--accent);
-      line-height: 1;
-      text-shadow: 0 0 25px var(--accent-glow);
-    }
-
-    .modal-scramble {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.82rem;
-      color: var(--text-muted);
-      letter-spacing: 0.5px;
-    }
-
-    .modal-buttons {
-      display: grid;
-      grid-template-columns: repeat(3, 1fr);
-      gap: 0.7rem;
-      width: 100%;
-    }
-
-    .modal-btn {
-      background: #1e293b;
-      border: 1px solid var(--card-border);
-      color: var(--text-main);
-      padding: 0.7rem;
-      border-radius: 8px;
-      font-weight: 700;
-      font-size: 0.9rem;
-      cursor: pointer;
-      transition: all 0.15s;
-    }
-    .modal-btn:hover { background: #334155; border-color: var(--card-border-hover); }
-
-    .modal-btn.btn-plus2.active { background: rgba(251, 191, 36, 0.25); border-color: var(--warning); color: var(--warning); }
-    .modal-btn.btn-dnf.active { background: rgba(251, 113, 133, 0.25); border-color: var(--danger); color: var(--danger); }
-    .modal-btn.btn-delete:hover { background: rgba(251, 113, 133, 0.2); border-color: var(--danger); color: var(--danger); }
-
-    .modal-ok { background: var(--accent); color: #070913; grid-column: span 3; }
-    .modal-ok:hover { opacity: 0.92; background: var(--accent); }
-
-    .manual-input {
-      background: #070913;
-      border: 1px solid var(--card-border);
-      color: var(--text-main);
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 1.6rem;
-      padding: 0.6rem;
-      border-radius: 8px;
-      width: 100%;
-      text-align: center;
-      outline: none;
-    }
-    .manual-input:focus { border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
-
-    /* Settings Styles */
-    .settings-group {
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      gap: 0.5rem;
-      text-align: left;
-    }
-
-    .settings-label { font-size: 0.85rem; font-weight: 600; color: var(--text-muted); }
-
-    .file-input-wrapper {
-      position: relative;
-      overflow: hidden;
-      display: inline-block;
-      width: 100%;
-    }
-
-    .file-input-wrapper input[type=file] {
-      font-size: 100px;
-      position: absolute;
-      left: 0; top: 0;
-      opacity: 0;
-      cursor: pointer;
-    }
-
-    .settings-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      width: 100%;
-      padding: 0.5rem 0;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-    }
-
-    .zoom-slider { width: 100%; accent-color: var(--accent); cursor: pointer; }
-
-    .toggle-container { position: relative; display: inline-block; width: 46px; height: 24px; }
-    .toggle-container input { opacity: 0; width: 0; height: 0; }
-    .switch {
-      position: absolute; cursor: pointer;
-      top: 0; left: 0; right: 0; bottom: 0;
-      background-color: #1e293b;
-      transition: .25s;
-      border-radius: 24px;
-      border: 1px solid var(--card-border);
-    }
-    .switch:before {
-      position: absolute; content: "";
-      height: 18px; width: 18px;
-      left: 2px; bottom: 2px;
-      background-color: white;
-      transition: .25s;
-      border-radius: 50%;
-    }
-    input:checked + .switch { background-color: var(--accent); border-color: var(--accent); }
-    input:checked + .switch:before { transform: translateX(22px); }
   </style>
 </head>
 <body>
+
+  <!-- Màn hình thông báo bảo trì -->
+  <div id="maintenanceOverlay">
+    <div style="font-size: 3rem; margin-bottom: 1rem;">🛠️</div>
+    <h1 style="color: #f8fafc; font-size: 2rem; margin-bottom: 0.5rem; font-weight: 800;">Hệ thống đang cập nhật</h1>
+    <p style="color: #94a3b8; font-size: 1.1rem; max-width: 500px; line-height: 1.5; margin-bottom: 1.5rem;">Speedcubing Pro đang được nâng cấp các tính năng mới. Vui lòng quay lại sau ít phút nữa nhé!</p>
+    <button onclick="adminLogin()" style="background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.3); color: var(--accent); padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-weight: 600;">Đăng nhập Admin</button>
+  </div>
 
   <div id="bgContainer">
     <img id="customBgImg" alt="">
@@ -595,7 +450,6 @@
   </header>
 
   <div class="app-container">
-    <!-- Sidebar Left: Session, Event, Thống kê mở rộng & Lịch sử giải -->
     <div class="sidebar">
       <div class="sidebar-controls-grid">
         <select class="select-dropdown" id="eventSelect" onchange="changeEvent()">
@@ -624,7 +478,6 @@
         <button class="clear-btn" onclick="clearHistory()">Xóa tất cả</button>
       </div>
 
-      <!-- Khung Thống kê Lượt, Best, Mean, Worst trong Sidebar -->
       <div class="sidebar-stats-grid">
         <div class="sidebar-stat-item">
           <span class="label">Lượt:</span>
@@ -644,11 +497,9 @@
         </div>
       </div>
 
-      <!-- Danh sách lịch sử giải ngắn gọn -->
       <div class="solves-list" id="solvesList"></div>
     </div>
 
-    <!-- Timer Section Main -->
     <div class="timer-section" id="timerSection">
       <div class="scramble-box" id="scrambleDisplay" onclick="newScramble()" title="Nhấn để đổi scramble khác">---</div>
 
@@ -656,7 +507,6 @@
         <div class="inspection-status" id="inspectionStatus"></div>
         <div class="timer-display" id="timerDisplay">0.00</div>
         
-        <!-- Ao5 & Ao12 Dạng khung chữ nhật như cũ -->
         <div class="stats-grid-inline">
           <div class="stat-card">
             <span class="stat-label">Ao5</span>
@@ -673,6 +523,7 @@
     </div>
   </div>
 
+  <!-- Các Modals khác giữ nguyên -->
   <div class="modal-overlay" id="resultModal">
     <div class="modal-card">
       <div class="modal-scramble" id="modalScramble">R U R' U'...</div>
@@ -741,6 +592,33 @@
   </div>
 
   <script>
+    // ==========================================
+    // CẤU HÌNH BẢO TRÌ (Đổi thành false khi xong việc)
+    // ==========================================
+    const IS_MAINTENANCE = true; 
+    const ADMIN_PASSWORD = "123"; // Bạn có thể đổi mật khẩu này thành bất kỳ mã nào bạn muốn
+
+    function adminLogin() {
+      let pwd = prompt("Nhập mật khẩu Admin:");
+      if (pwd === ADMIN_PASSWORD) {
+        localStorage.setItem("speedcubing_admin_bypass", "true");
+        document.getElementById("maintenanceOverlay").style.display = "none";
+        alert("Đã mở khóa quyền Admin trên trình duyệt này!");
+      } else if (pwd !== null) {
+        alert("Mật khẩu không đúng!");
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', () => {
+      if (IS_MAINTENANCE) {
+        let hasBypass = localStorage.getItem("speedcubing_admin_bypass") === "true";
+        if (!hasBypass) {
+          document.getElementById("maintenanceOverlay").style.display = "flex";
+        }
+      }
+    });
+
+    // Các logic timer cũ của bạn giữ nguyên bên dưới
     let state = 'IDLE';
     let inspectionEnabled = false;
     let hideTimeSolving = false;
@@ -755,7 +633,7 @@
     let currentEvent = '333';
     let currentSession = 'Session 1';
     
-    let allData = JSON.parse(localStorage.getItem('speedcubing_pro_data_v21') || '{}');
+    let allData = JSON.parse(localStorage.getItem('speedcubing_pro_data_v22') || '{}');
     if (Object.keys(allData).length === 0) {
       allData['Session 1'] = [];
     }
@@ -791,9 +669,7 @@
 
     if (savedBg) {
       bgImg.src = savedBg;
-      bgImg.onload = () => {
-        updateBgTransform();
-      };
+      bgImg.onload = () => { updateBgTransform(); };
     }
 
     function updateBgTransform() {
@@ -821,27 +697,6 @@
     });
 
     window.addEventListener('mouseup', () => {
-      if (isDragging) {
-        isDragging = false;
-        localStorage.setItem('speedcubing_pro_bg_x', posX);
-        localStorage.setItem('speedcubing_pro_bg_y', posY);
-      }
-    });
-
-    bgContainer.addEventListener('touchstart', (e) => {
-      isDragging = true;
-      startX = e.touches[0].clientX - posX;
-      startY = e.touches[0].clientY - posY;
-    }, {passive: true});
-
-    window.addEventListener('touchmove', (e) => {
-      if (!isDragging) return;
-      posX = e.touches[0].clientX - startX;
-      posY = e.touches[0].clientY - startY;
-      updateBgTransform();
-    }, {passive: true});
-
-    window.addEventListener('touchend', () => {
       if (isDragging) {
         isDragging = false;
         localStorage.setItem('speedcubing_pro_bg_x', posX);
@@ -1071,11 +926,7 @@
     function toggleSolveScramble(solveItemEl) {
       const preview = solveItemEl.nextElementSibling;
       if (preview) {
-        if (preview.style.display === 'block') {
-          preview.style.display = 'none';
-        } else {
-          preview.style.display = 'block';
-        }
+        preview.style.display = preview.style.display === 'block' ? 'none' : 'block';
       }
     }
 
@@ -1322,7 +1173,6 @@
 
       const validSolves = solves.filter(s => s.penalty !== 'DNF');
       
-      // Best & Worst
       if (validSolves.length > 0) {
         const times = validSolves.map(s => s.rawTime + (s.penalty === 2 ? 2000 : 0));
         const best = Math.min(...times);
@@ -1334,7 +1184,6 @@
         document.getElementById('statWorst').innerText = '--';
       }
 
-      // Mean (Trung bình tất cả lượt không DNF)
       if (validSolves.length > 0) {
         const sum = validSolves.reduce((acc, s) => acc + (s.rawTime + (s.penalty === 2 ? 2000 : 0)), 0);
         const mean = sum / validSolves.length;
@@ -1343,7 +1192,6 @@
         document.getElementById('statMean').innerText = '--';
       }
 
-      // Ao5 & Ao12
       document.getElementById('statAo5').innerText = solves.length >= 5 && typeof calculateAverage(solves.slice(0, 5)) === 'number' ? formatTime(calculateAverage(solves.slice(0, 5))) : (solves.length >= 5 ? 'DNF' : '--');
       document.getElementById('statAo12').innerText = solves.length >= 12 && typeof calculateAverage(solves.slice(0, 12)) === 'number' ? formatTime(calculateAverage(solves.slice(0, 12))) : (solves.length >= 12 ? 'DNF' : '--');
     }
@@ -1375,7 +1223,7 @@
     }
 
     function saveAndRender() {
-      localStorage.setItem('speedcubing_pro_data_v21', JSON.stringify(allData));
+      localStorage.setItem('speedcubing_pro_data_v22', JSON.stringify(allData));
       renderHistory();
       updateStats();
     }
@@ -1433,26 +1281,14 @@
     }, { passive: false });
 
     timerSection.addEventListener('touchend', (e) => {
-      if (resultModal.classList.contains('active') || manualModal.classList.contains('active') || settingsModal.classList.contains('active')) return;
+      if (resultModal.classList.contains('active') || manualModal.classList.codes || settingsModal.classList.contains('active')) return;
       e.preventDefault();
       handleTimerRelease();
     }, { passive: false });
 
-    // Khởi tạo
     updateSessionDropdown();
     newScramble();
     saveAndRender();
   </script>
-  // Bật/tắt chế độ bảo trì (Chỉ cần đổi thành true khi muốn khóa web)
-const IS_MAINTENANCE = true; 
-
-window.addEventListener('DOMContentLoaded', () => {
-  if (IS_MAINTENANCE) {
-    const overlay = document.getElementById('maintenanceOverlay');
-    if (overlay) {
-      overlay.style.display = 'flex';
-    }
-  }
-});
 </body>
 </html>
