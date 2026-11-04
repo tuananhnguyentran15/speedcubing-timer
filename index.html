@@ -1443,5 +1443,16 @@
     newScramble();
     saveAndRender();
   </script>
+  // Bật/tắt chế độ bảo trì (Chỉ cần đổi thành true khi muốn khóa web)
+const IS_MAINTENANCE = true; 
+
+window.addEventListener('DOMContentLoaded', () => {
+  if (IS_MAINTENANCE) {
+    const overlay = document.getElementById('maintenanceOverlay');
+    if (overlay) {
+      overlay.style.display = 'flex';
+    }
+  }
+});
 </body>
 </html>
