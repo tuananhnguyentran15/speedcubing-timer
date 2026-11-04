@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Speedcubing Pro - Rubik Timer</title>
+  <title>Speedcubing Pro - Rubik Timer & CTH</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -102,12 +102,36 @@
       text-shadow: 0 0 20px var(--accent-glow);
     }
 
-    .brand-sub {
-      font-size: 0.85rem;
-      font-weight: 600;
-      color: var(--text-muted);
+    /* Nhóm nút chuyển tab trên Header */
+    .nav-tabs {
+      display: flex;
+      gap: 0.5rem;
       border-left: 1px solid var(--card-border);
       padding-left: 0.75rem;
+    }
+
+    .nav-tab-btn {
+      background: transparent;
+      border: 1px solid var(--card-border);
+      color: var(--text-muted);
+      padding: 0.35rem 0.85rem;
+      border-radius: 6px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 600;
+      font-size: 0.82rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .nav-tab-btn:hover {
+      border-color: var(--card-border-hover);
+      color: var(--text-main);
+    }
+
+    .nav-tab-btn.active {
+      background: rgba(56, 189, 248, 0.15);
+      border-color: var(--accent);
+      color: var(--accent);
     }
 
     /* Main Layout */
@@ -213,7 +237,7 @@
       display: flex;
       flex-direction: column;
       gap: 0.4rem;
-      max-height: 150px;
+      max-height: 250px;
       overflow-y: auto;
       padding-right: 2px;
     }
@@ -305,27 +329,16 @@
       word-break: break-word;
     }
 
-    /* Khu vực Công thức (CTH) bên trái */
-    .algo-section {
-      display: flex;
+    /* Nội dung các màn hình chính (Timer view và CTH view) */
+    .main-view-content {
+      display: none;
+      flex: 1;
+      height: 100%;
       flex-direction: column;
-      gap: 0.35rem;
-      margin-top: auto;
     }
-
-    .algo-textarea {
-      background: rgba(7, 9, 19, 0.6);
-      border: 1px solid var(--card-border);
-      color: var(--text-main);
-      padding: 0.5rem;
-      border-radius: 6px;
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.78rem;
-      resize: none;
-      height: 75px;
-      outline: none;
+    .main-view-content.active {
+      display: flex;
     }
-    .algo-textarea:focus { border-color: var(--accent); }
 
     /* Timer Section Main */
     .timer-section {
@@ -335,6 +348,8 @@
       justify-content: space-between;
       padding: 1.5rem 2.5rem;
       position: relative;
+      flex: 1;
+      height: 100%;
     }
 
     .scramble-box {
@@ -435,6 +450,59 @@
       text-shadow: 0 2px 4px rgba(0,0,0,0.5);
       letter-spacing: 0.3px;
     }
+
+    /* Giao diện Màn hình CTH (Công thức) chiếm trọn khung phải */
+    .cth-main-container {
+      flex: 1;
+      background: var(--card-bg);
+      backdrop-filter: blur(16px);
+      border: 1px solid var(--card-border);
+      margin: 2rem;
+      border-radius: 16px;
+      padding: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+    }
+
+    .cth-header-title {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--text-main);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .cth-textarea-main {
+      flex: 1;
+      background: rgba(7, 9, 19, 0.75);
+      border: 1px solid var(--card-border);
+      color: var(--text-main);
+      padding: 1.25rem;
+      border-radius: 10px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.95rem;
+      line-height: 1.6;
+      resize: none;
+      outline: none;
+    }
+    .cth-textarea-main:focus { border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
+
+    .cth-save-btn {
+      background: var(--accent);
+      color: #070913;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 8px;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+      align-self: flex-end;
+      transition: opacity 0.2s;
+    }
+    .cth-save-btn:hover { opacity: 0.9; }
 
     /* ZEN MODE */
     body.zen-mode header,
@@ -631,13 +699,17 @@
       <div class="brand">
         ⚡ Speedcubing<span>Pro</span>
       </div>
-      <div class="brand-sub">Timer</div>
+      <!-- Hai nút chuyển tab Timer và CTH nằm cạnh nhau -->
+      <div class="nav-tabs">
+        <button class="nav-tab-btn active" id="tabTimerBtn" onclick="switchView('timer')">Timer</button>
+        <button class="nav-tab-btn" id="tabCthBtn" onclick="switchView('cth')">CTH</button>
+      </div>
     </div>
   </header>
 
   <div class="app-container">
-    <!-- Sidebar Left -->
-    <div class="sidebar">
+    <!-- Sidebar Left (Chỉ hiện khi ở tab Timer để quản lý session và lịch sử) -->
+    <div class="sidebar" id="sidebarSection">
       <div class="sidebar-controls-grid">
         <select class="select-dropdown" id="eventSelect" onchange="changeEvent()">
           <option value="333">3x3x3 Cube</option>
@@ -666,39 +738,45 @@
       </div>
 
       <div class="solves-list" id="solvesList"></div>
+    </div>
 
-      <!-- Khu vực Công thức (CTH) để chia sẻ -->
-      <div class="algo-section">
-        <div class="history-header">
-          <span class="history-title">Công thức (CTH)</span>
-          <span class="clear-btn" onclick="saveAlgorithms()" style="color: var(--accent);">Lưu lại</span>
+    <!-- Màn hình 1: Giao diện Timer chính -->
+    <div class="main-view-content active" id="timerView">
+      <div class="timer-section" id="timerSection">
+        <div class="scramble-box" id="scrambleDisplay" onclick="newScramble()" title="Nhấn để đổi scramble khác">---</div>
+
+        <div class="timer-display-wrapper">
+          <div class="inspection-status" id="inspectionStatus"></div>
+          <div class="timer-display" id="timerDisplay">0.00</div>
+          
+          <div class="stats-grid-inline">
+            <div class="stat-card">
+              <span class="stat-label">Ao5</span>
+              <span class="stat-value" id="statAo5">--</span>
+            </div>
+            <div class="stat-card">
+              <span class="stat-label">Ao12</span>
+              <span class="stat-value" id="statAo12">--</span>
+            </div>
+          </div>
+
+          <div class="timer-hint">Nhấn giữ SPACE hoặc nhấp chuột để bắt đầu</div>
         </div>
-        <textarea class="algo-textarea" id="algoInput" placeholder="Nhập công thức (F2L, OLL, PLL...) để chia sẻ..."></textarea>
       </div>
     </div>
 
-    <!-- Timer Section Main -->
-    <div class="timer-section" id="timerSection">
-      <div class="scramble-box" id="scrambleDisplay" onclick="newScramble()" title="Nhấn để đổi scramble khác">---</div>
-
-      <div class="timer-display-wrapper">
-        <div class="inspection-status" id="inspectionStatus"></div>
-        <div class="timer-display" id="timerDisplay">0.00</div>
-        
-        <div class="stats-grid-inline">
-          <div class="stat-card">
-            <span class="stat-label">Ao5</span>
-            <span class="stat-value" id="statAo5">--</span>
-          </div>
-          <div class="stat-card">
-            <span class="stat-label">Ao12</span>
-            <span class="stat-value" id="statAo12">--</span>
-          </div>
+    <!-- Màn hình 2: Giao diện Công thức (CTH) độc lập chuyên để chia sẻ -->
+    <div class="main-view-content" id="cthView">
+      <div class="cth-main-container">
+        <div class="cth-header-title">
+          <span>📚 Kho Công thức (Algorithms / CTH)</span>
+          <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: normal;">Dùng để lưu và chia sẻ với mọi người</span>
         </div>
-
-        <div class="timer-hint">Nhấn giữ SPACE hoặc nhấp chuột để bắt đầu</div>
+        <textarea class="cth-textarea-main" id="mainCthInput" placeholder="Nhập các công thức Rubik của bạn vào đây (F2L, OLL, PLL, ZBLL...). Dữ liệu sẽ tự động lưu lại trên trình duyệt..."></textarea>
+        <button class="cth-save-btn" onclick="saveMainAlgorithms()">Lưu công thức</button>
       </div>
     </div>
+
   </div>
 
   <div class="modal-overlay" id="resultModal">
@@ -772,7 +850,7 @@
     // ==========================================
     // CẤU HÌNH BẢO TRÌ & ADMIN
     // ==========================================
-    const IS_MAINTENANCE = true; // Đổi thành true để khóa web với người chơi khác
+    const IS_MAINTENANCE = false; // Đổi thành true để khóa web đối với người chơi khác
     const ADMIN_PASSWORD = "123";  // Mật khẩu đăng nhập Admin
 
     function adminLogin() {
@@ -794,17 +872,40 @@
         }
       }
       
-      // Tải công thức đã lưu
-      const savedAlgs = localStorage.getItem('speedcubing_pro_algorithms');
+      // Tải công thức đã lưu vào ô CTH
+      const savedAlgs = localStorage.getItem('speedcubing_pro_algorithms_main');
       if (savedAlgs) {
-        document.getElementById('algoInput').value = savedAlgs;
+        document.getElementById('mainCthInput').value = savedAlgs;
       }
     });
 
-    function saveAlgorithms() {
-      const algsText = document.getElementById('algoInput').value;
-      localStorage.setItem('speedcubing_pro_algorithms', algsText);
-      alert("Đã lưu công thức thành công!");
+    // Hàm chuyển đổi giữa tab Timer và CTH
+    function switchView(viewName) {
+      const timerView = document.getElementById('timerView');
+      const cthView = document.getElementById('cthView');
+      const sidebarSection = document.getElementById('sidebarSection');
+      const tabTimerBtn = document.getElementById('tabTimerBtn');
+      const tabCthBtn = document.getElementById('tabCthBtn');
+
+      if (viewName === 'timer') {
+        timerView.classList.add('active');
+        cthView.classList.remove('active');
+        sidebarSection.style.display = 'flex';
+        tabTimerBtn.classList.add('active');
+        tabCthBtn.classList.remove('active');
+      } else {
+        cthView.classList.add('active');
+        timerView.classList.remove('active');
+        sidebarSection.style.display = 'none'; // Ẩn sidebar bên trái khi vào mục CTH để màn hình rộng rãi hơn
+        tabCthBtn.classList.add('active');
+        tabTimerBtn.classList.remove('active');
+      }
+    }
+
+    function saveMainAlgorithms() {
+      const algsText = document.getElementById('mainCthInput').value;
+      localStorage.setItem('speedcubing_pro_algorithms_main', algsText);
+      alert("Đã lưu kho công thức (CTH) thành công!");
     }
 
     let state = 'IDLE';
@@ -821,7 +922,7 @@
     let currentEvent = '333';
     let currentSession = 'Session 1';
     
-    let allData = JSON.parse(localStorage.getItem('speedcubing_pro_data_v25') || '{}');
+    let allData = JSON.parse(localStorage.getItem('speedcubing_pro_data_v26') || '{}');
     if (Object.keys(allData).length === 0) {
       allData['Session 1'] = [];
     }
@@ -1166,6 +1267,8 @@
     }
 
     function handleTimerAction() {
+      // Nếu đang ở màn hình CTH thì không cho bấm timer
+      if (!document.getElementById('timerView').classList.contains('active')) return;
       if (resultModal.classList.contains('active') || manualModal.classList.contains('active') || settingsModal.classList.contains('active')) return;
 
       if (state === 'RUNNING') {
@@ -1199,6 +1302,7 @@
     }
 
     function handleTimerRelease() {
+      if (!document.getElementById('timerView').classList.contains('active')) return;
       if (resultModal.classList.contains('active') || manualModal.classList.contains('active') || settingsModal.classList.contains('active')) return;
 
       if (state === 'HOLDING') {
@@ -1389,12 +1493,15 @@
     }
 
     function saveAndRender() {
-      localStorage.setItem('speedcubing_pro_data_v25', JSON.stringify(allData));
+      localStorage.setItem('speedcubing_pro_data_v26', JSON.stringify(allData));
       renderHistory();
       updateStats();
     }
 
     window.addEventListener('keydown', (e) => {
+      // Chỉ nhận phím space bấm timer khi đang ở tab Timer
+      if (!document.getElementById('timerView').classList.contains('active')) return;
+
       if (resultModal.classList.contains('active')) {
         if (e.code === 'Space' || e.code === 'Enter') {
           e.preventDefault();
@@ -1418,6 +1525,7 @@
     });
 
     window.addEventListener('keyup', (e) => {
+      if (!document.getElementById('timerView').classList.contains('active')) return;
       if (resultModal.classList.contains('active') || manualModal.classList.contains('active') || settingsModal.classList.contains('active')) return;
       if (e.code === 'Space') {
         e.preventDefault();
