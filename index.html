@@ -1648,13 +1648,22 @@ function renderCthGrid(data = cthData) {
     updateSessionDropdown();
     newScramble();
     saveAndRender();
-    window.addEventListener('DOMContentLoaded', () => {
+   <script>
+// Ép hiển thị màn hình đăng nhập ngay lập tức khi mở trang (nếu chưa đăng nhập)
+(function() {
   const isLoggedIn = localStorage.getItem('userLoggedIn');
-  if (isLoggedIn === 'true') {
+  if (isLoggedIn !== 'true') {
     const lockScreen = document.getElementById('authLockScreen');
-    if (lockScreen) lockScreen.style.display = 'none';
+    if (lockScreen) {
+      lockScreen.style.display = 'flex';
+    }
+  } else {
+    const lockScreen = document.getElementById('authLockScreen');
+    if (lockScreen) {
+      lockScreen.style.display = 'none';
+    }
   }
-});
+})();
 
 function submitLogin() {
   const user = document.getElementById('loginUsername').value;
@@ -1671,6 +1680,7 @@ function submitLogin() {
     alert('Vui lòng nhập đầy đủ tên tài khoản và mật khẩu!');
   }
 }
+</script>
   </script>
 </body>
 </html>
