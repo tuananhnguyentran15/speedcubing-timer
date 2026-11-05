@@ -33,18 +33,18 @@
       -webkit-user-select: none;
     }
 
-    body {
-      background-color: var(--bg-color);
-      background-repeat: no-repeat;
-      background-attachment: fixed;
-      color: var(--text-main);
-      font-family: 'Plus Jakarta Sans', sans-serif;
-      height: 100vh;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-      position: relative;
-    }
+   body {
+    background-color: var(--bg-color);
+    background-repeat: no-repeat;
+    background-attachment: fixed;
+    color: var(--text-main);
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow-y: auto; /* <--- Cho phép cuộn trang mượt mà */
+    position: relative;
+}
 
     #bgContainer {
       position: absolute;
