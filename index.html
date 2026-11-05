@@ -33,6 +33,19 @@
       -webkit-user-select: none;
     }
 
+    <!-- Khung chặn bắt buộc đăng nhập khi vào trang -->
+<div id="authLockScreen" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: #0c1021; z-index: 9999; display: flex; justify-content: center; align-items: center;">
+  <div style="background: #1e2235; padding: 30px; border-radius: 12px; width: 320px; border: 1px solid #2a2f45; color: #fff; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+    <h2 style="margin-top: 0; margin-bottom: 10px;">🔒 Yêu Cầu Đăng Nhập</h2>
+    <p style="color: #94a3b8; font-size: 14px; margin-bottom: 20px;">Vui lòng đăng nhập để bắt đầu sử dụng.</p>
+    
+    <input type="text" id="loginUsername" placeholder="Tên tài khoản" style="width: 100%; padding: 10px; margin-bottom: 12px; background: rgba(255,255,255,0.05); border: 1px solid #2a2f45; border-radius: 6px; color: #fff; box-sizing: border-box;">
+    
+    <input type="password" id="loginPassword" placeholder="Mật khẩu" style="width: 100%; padding: 10px; margin-bottom: 15px; background: rgba(255,255,255,0.05); border: 1px solid #2a2f45; border-radius: 6px; color: #fff; box-sizing: border-box;">
+    
+    <button onclick="submitLogin()" style="width: 100%; padding: 11px; background: #4f46e5; color: white; border: none; border-radius: 6px; font-weight: 600; cursor: pointer;">Đăng Nhập Ngay</button>
+  </div>
+</div>
    body {
     background-color: var(--bg-color);
     background-repeat: no-repeat;
@@ -1635,6 +1648,29 @@ function renderCthGrid(data = cthData) {
     updateSessionDropdown();
     newScramble();
     saveAndRender();
+    window.addEventListener('DOMContentLoaded', () => {
+  const isLoggedIn = localStorage.getItem('userLoggedIn');
+  if (isLoggedIn === 'true') {
+    const lockScreen = document.getElementById('authLockScreen');
+    if (lockScreen) lockScreen.style.display = 'none';
+  }
+});
+
+function submitLogin() {
+  const user = document.getElementById('loginUsername').value;
+  const pass = document.getElementById('loginPassword').value;
+  
+  if (user && pass) {
+    localStorage.setItem('userLoggedIn', 'true');
+    localStorage.setItem('currentUsername', user);
+    
+    const lockScreen = document.getElementById('authLockScreen');
+    if (lockScreen) lockScreen.style.display = 'none';
+    alert('Đăng nhập thành công!');
+  } else {
+    alert('Vui lòng nhập đầy đủ tên tài khoản và mật khẩu!');
+  }
+}
   </script>
 </body>
 </html>
