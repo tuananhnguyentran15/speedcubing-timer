@@ -912,10 +912,10 @@ function changeSet(setType) {
   }
 }
 
-    function renderCthGrid() {
-      const grid = document.getElementById('cthGrid');
-      grid.innerHTML = '';
-      cthData.forEach(item => {
+function renderCthGrid(data = cthData) {
+    const grid = document.getElementById('cthGrid');
+    grid.innerHTML = '';
+    data.forEach(item => {
         const card = document.createElement('div');
         card.className = 'cth-card';
         card.innerHTML = `
@@ -929,8 +929,8 @@ function changeSet(setType) {
           <div class="cth-img-box"><img src="${item.img}" alt="${item.name}"></div>
         `;
         grid.appendChild(card);
-      });
-    }
+    });
+}
 
     window.addEventListener('DOMContentLoaded', () => {
       renderCthGrid();
