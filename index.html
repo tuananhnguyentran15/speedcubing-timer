@@ -3,15 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Speedcubing Pro - Kho CTH CFOP Đầy Đủ</title>
+  <title>Speedcubing Pro - Kho CTH Chuẩn Mẫu</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg-color: #070913;
-      --card-bg: rgba(15, 23, 42, 0.82);
-      --card-border: rgba(255, 255, 255, 0.08);
+      --bg-color: #0c1021;
+      --card-bg: #151b32;
+      --card-bg-hover: #1c2444;
+      --card-border: rgba(255, 255, 255, 0.06);
       --card-border-hover: rgba(56, 189, 248, 0.3);
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
@@ -56,10 +57,8 @@
 
     #customBgImg {
       position: absolute;
-      top: 50%;
-      left: 50%;
-      min-width: 100%;
-      min-height: 100%;
+      top: 50%; left: 50%;
+      min-width: 100%; min-height: 100%;
       object-fit: cover;
       transform: translate(-50%, -50%);
       transform-origin: center center;
@@ -68,14 +67,14 @@
       pointer-events: none;
     }
 
-    /* Top Bar Header */
+    /* Header */
     header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 0.6rem 1.75rem;
       border-bottom: 1px solid var(--card-border);
-      background: rgba(7, 9, 19, 0.82);
+      background: rgba(12, 16, 33, 0.85);
       backdrop-filter: blur(16px);
       height: 60px;
       z-index: 10;
@@ -113,11 +112,11 @@
       background: transparent;
       border: 1px solid var(--card-border);
       color: var(--text-muted);
-      padding: 0.35rem 0.85rem;
-      border-radius: 6px;
+      padding: 0.4rem 1rem;
+      border-radius: 8px;
       font-family: 'Plus Jakarta Sans', sans-serif;
-      font-weight: 600;
-      font-size: 0.82rem;
+      font-weight: 700;
+      font-size: 0.85rem;
       cursor: pointer;
       transition: all 0.2s;
     }
@@ -133,7 +132,7 @@
       color: var(--accent);
     }
 
-    /* Main Layout */
+    /* Layout */
     .app-container {
       display: grid;
       grid-template-columns: 350px 1fr;
@@ -142,9 +141,13 @@
       z-index: 2;
     }
 
-    /* Left Sidebar Panel */
+    .app-container.full-width {
+      grid-template-columns: 1fr !important;
+    }
+
+    /* Sidebar Left */
     .sidebar {
-      background: var(--card-bg);
+      background: rgba(21, 27, 50, 0.85);
       backdrop-filter: blur(16px);
       border-right: 1px solid var(--card-border);
       display: flex;
@@ -161,7 +164,7 @@
     }
 
     .select-dropdown, .btn-action-sidebar {
-      background: rgba(7, 9, 19, 0.6);
+      background: rgba(12, 16, 33, 0.6);
       border: 1px solid var(--card-border);
       color: var(--text-main);
       padding: 0.45rem 0.6rem;
@@ -186,11 +189,10 @@
     }
 
     .gear-btn-sidebar {
-      background: rgba(7, 9, 19, 0.6);
+      background: rgba(12, 16, 33, 0.6);
       border: 1px solid var(--card-border);
       color: var(--text-main);
-      width: 36px;
-      height: 36px;
+      width: 36px; height: 36px;
       border-radius: 6px;
       display: flex;
       align-items: center;
@@ -241,7 +243,7 @@
     }
 
     .solve-wrapper {
-      background: rgba(7, 9, 19, 0.5);
+      background: rgba(12, 16, 33, 0.5);
       border: 1px solid var(--card-border);
       border-radius: 6px;
       overflow: hidden;
@@ -260,16 +262,8 @@
     }
     .solve-item:hover { background: rgba(30, 41, 59, 0.4); }
 
-    .solve-index {
-      color: var(--text-muted);
-      width: 24px;
-      font-size: 0.68rem;
-    }
-
-    .solve-time {
-      font-weight: 700;
-      flex: 1;
-    }
+    .solve-index { color: var(--text-muted); width: 24px; font-size: 0.68rem; }
+    .solve-time { font-weight: 700; flex: 1; }
 
     .solve-actions {
       display: flex;
@@ -318,7 +312,7 @@
 
     .solve-scramble-preview {
       display: none;
-      background: rgba(7, 9, 19, 0.9);
+      background: rgba(12, 16, 33, 0.9);
       padding: 0.4rem 0.65rem;
       font-family: 'JetBrains Mono', monospace;
       font-size: 0.72rem;
@@ -333,11 +327,9 @@
       height: 100%;
       flex-direction: column;
     }
-    .main-view-content.active {
-      display: flex;
-    }
+    .main-view-content.active { display: flex; }
 
-    /* Timer Section Main */
+    /* Timer Section */
     .timer-section {
       display: flex;
       flex-direction: column;
@@ -448,69 +440,122 @@
       letter-spacing: 0.3px;
     }
 
-    /* Giao diện Kho CTH Mở rộng (Grid Card) */
+    /* ==========================================
+       GIAO DIỆN KHO CTH (CHUẨN MẪU GỐC)
+       ========================================== */
     .cth-main-container {
       flex: 1;
-      background: var(--card-bg);
-      backdrop-filter: blur(16px);
-      border: 1px solid var(--card-border);
-      margin: 1.5rem;
-      border-radius: 16px;
-      padding: 1.5rem;
+      background: var(--bg-color);
+      margin: 0;
+      padding: 1.5rem 2rem;
       display: flex;
       flex-direction: column;
-      gap: 1rem;
-      box-shadow: 0 15px 35px rgba(0,0,0,0.5);
+      gap: 1.25rem;
       overflow-y: auto;
+      max-width: 100%;
     }
 
-    .cth-header-title {
-      font-size: 1.3rem;
-      font-weight: 800;
+    /* Thanh bộ lọc phía trên CTH (3X3, OLL) */
+    .cth-filter-bar {
+      display: flex;
+      gap: 0.75rem;
+      align-items: center;
+      margin-bottom: 0.5rem;
+    }
+
+    .cth-filter-btn {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
       color: var(--text-main);
+      padding: 0.45rem 1rem;
+      border-radius: 8px;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+      font-weight: 700;
+      font-size: 0.85rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.4rem;
+      transition: all 0.2s;
+    }
+    .cth-filter-btn:hover { background: var(--card-bg-hover); border-color: var(--card-border-hover); }
+
+    /* Lưới danh sách thẻ CTH dạng thanh ngang (2 cột lớn) */
+    .cth-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(540px, 1fr));
+      gap: 1.25rem;
+    }
+
+    /* Thẻ CTH ngang */
+    .cth-card {
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 14px;
+      padding: 1.25rem 1.5rem;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      border-bottom: 1px solid var(--card-border);
-      padding-bottom: 0.75rem;
+      transition: all 0.2s ease;
+      position: relative;
     }
 
-    .cth-section-title {
-      font-size: 1.05rem;
-      font-weight: 700;
-      color: var(--accent);
-      margin-top: 0.5rem;
-      margin-bottom: 0.2rem;
-      border-left: 3px solid var(--accent);
-      padding-left: 0.5rem;
-    }
-
-    .cth-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-      gap: 1rem;
-    }
-
-    .cth-card {
-      background: rgba(7, 9, 19, 0.7);
-      border: 1px solid var(--card-border);
-      border-radius: 10px;
-      padding: 1rem;
-      display: flex;
-      gap: 1rem;
-      align-items: center;
-      transition: all 0.2s;
-    }
     .cth-card:hover {
+      background: var(--card-bg-hover);
       border-color: var(--card-border-hover);
-      transform: translateY(-2px);
+      box-shadow: 0 8px 25px rgba(0,0,0,0.3);
     }
 
-    .cth-img-box {
-      width: 65px;
-      height: 65px;
-      background: #1e293b;
+    .cth-content-left {
+      display: flex;
+      flex-direction: column;
+      gap: 0.6rem;
+      flex: 1;
+      padding-right: 1.25rem;
+    }
+
+    .cth-title-row {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    /* Chấm xanh trang trí trước tên */
+    .cth-dot {
+      width: 8px;
+      height: 8px;
+      background-color: var(--ready-color);
+      border-radius: 50%;
+      box-shadow: 0 0 8px var(--ready-color);
+    }
+
+    .cth-name {
+      font-size: 1.05rem;
+      font-weight: 800;
+      color: var(--text-main);
+      letter-spacing: 0.2px;
+    }
+
+    /* Khung chứa công thức dạng thanh dài */
+    .cth-formula {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: #cbd5e1;
+      background: rgba(12, 16, 33, 0.7);
+      padding: 0.75rem 1rem;
       border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.04);
+      word-break: break-all;
+      letter-spacing: 0.5px;
+    }
+
+    /* Ô ảnh minh họa ở góc phải thẻ */
+    .cth-img-box {
+      width: 75px;
+      height: 75px;
+      background: #0c1021;
+      border-radius: 10px;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -518,34 +563,11 @@
       overflow: hidden;
       border: 1px solid var(--card-border);
     }
+
     .cth-img-box img {
       width: 100%;
       height: 100%;
       object-fit: cover;
-    }
-
-    .cth-info {
-      display: flex;
-      flex-direction: column;
-      gap: 0.3rem;
-      flex: 1;
-      overflow: hidden;
-    }
-
-    .cth-name {
-      font-size: 0.9rem;
-      font-weight: 700;
-      color: var(--accent);
-    }
-
-    .cth-formula {
-      font-family: 'JetBrains Mono', monospace;
-      font-size: 0.78rem;
-      color: var(--text-main);
-      background: rgba(0, 0, 0, 0.4);
-      padding: 0.3rem 0.5rem;
-      border-radius: 4px;
-      word-break: break-all;
     }
 
     /* ZEN MODE */
@@ -560,21 +582,6 @@
     body.zen-mode .app-container { grid-template-columns: 1fr; }
     body.zen-mode .timer-section { justify-content: center; }
     body.zen-mode .timer-display { font-size: 12rem; }
-
-    /* Màn hình bảo trì */
-    #maintenanceOverlay {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(7, 9, 19, 0.96);
-      z-index: 9999;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      text-align: center;
-      padding: 2rem;
-      font-family: 'Plus Jakarta Sans', sans-serif;
-    }
 
     /* Modals */
     .modal-overlay {
@@ -593,7 +600,7 @@
     .modal-overlay.active { opacity: 1; pointer-events: auto; }
 
     .modal-card {
-      background: #0f172a;
+      background: #151b32;
       border: 1px solid var(--card-border);
       border-radius: 16px;
       padding: 2rem;
@@ -607,7 +614,6 @@
     }
 
     .modal-card h3 { font-size: 1.25rem; font-weight: 700; color: var(--text-main); }
-
     .modal-time {
       font-family: 'JetBrains Mono', monospace;
       font-size: 4rem;
@@ -616,21 +622,18 @@
       line-height: 1;
       text-shadow: 0 0 25px var(--accent-glow);
     }
-
     .modal-scramble {
       font-family: 'JetBrains Mono', monospace;
       font-size: 0.82rem;
       color: var(--text-muted);
       letter-spacing: 0.5px;
     }
-
     .modal-buttons {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       gap: 0.7rem;
       width: 100%;
     }
-
     .modal-btn {
       background: #1e293b;
       border: 1px solid var(--card-border);
@@ -643,16 +646,13 @@
       transition: all 0.15s;
     }
     .modal-btn:hover { background: #334155; border-color: var(--card-border-hover); }
-
     .modal-btn.btn-plus2.active { background: rgba(251, 191, 36, 0.25); border-color: var(--warning); color: var(--warning); }
     .modal-btn.btn-dnf.active { background: rgba(251, 113, 133, 0.25); border-color: var(--danger); color: var(--danger); }
     .modal-btn.btn-delete:hover { background: rgba(251, 113, 133, 0.2); border-color: var(--danger); color: var(--danger); }
-
-    .modal-ok { background: var(--accent); color: #070913; grid-column: span 3; }
-    .modal-ok:hover { opacity: 0.92; background: var(--accent); }
+    .modal-ok { background: var(--accent); color: #0c1021; grid-column: span 3; }
 
     .manual-input {
-      background: #070913;
+      background: #0c1021;
       border: 1px solid var(--card-border);
       color: var(--text-main);
       font-family: 'JetBrains Mono', monospace;
@@ -722,14 +722,6 @@
 </head>
 <body>
 
-  <!-- Màn hình thông báo bảo trì -->
-  <div id="maintenanceOverlay">
-    <div style="font-size: 3rem; margin-bottom: 1rem;">🛠️</div>
-    <h1 style="color: #f8fafc; font-size: 2rem; margin-bottom: 0.5rem; font-weight: 800;">Hệ thống đang cập nhật</h1>
-    <p style="color: #94a3b8; font-size: 1.1rem; max-width: 500px; line-height: 1.5; margin-bottom: 1.5rem;">Speedcubing Pro đang được nâng cấp các tính năng mới. Vui lòng quay lại sau ít phút nữa nhé!</p>
-    <button onclick="adminLogin()" style="background: rgba(56, 189, 248, 0.15); border: 1px solid rgba(56, 189, 248, 0.3); color: var(--accent); padding: 0.5rem 1rem; border-radius: 6px; cursor: pointer; font-weight: 600;">Đăng nhập Admin</button>
-  </div>
-
   <div id="bgContainer">
     <img id="customBgImg" alt="">
   </div>
@@ -741,12 +733,12 @@
       </div>
       <div class="nav-tabs">
         <button class="nav-tab-btn active" id="tabTimerBtn" onclick="switchView('timer')">Timer</button>
-        <button class="nav-tab-btn" id="tabCthBtn" onclick="switchView('cth')">CTH</button>
+        <button class="nav-tab-btn" id="tabCthBtn" onclick="switchView('cth')">Công thức</button>
       </div>
     </div>
   </header>
 
-  <div class="app-container">
+  <div class="app-container" id="appContainer">
     <!-- Sidebar Left -->
     <div class="sidebar" id="sidebarSection">
       <div class="sidebar-controls-grid">
@@ -804,101 +796,15 @@
       </div>
     </div>
 
-    <!-- Màn hình 2: Kho CTH Mở Rộng Đầy Đủ (F2L, OLL, PLL) -->
+    <!-- Màn hình 2: Kho CTH chuẩn giao diện mẫu -->
     <div class="main-view-content" id="cthView">
       <div class="cth-main-container">
-        <div class="cth-header-title">
-          <span>📚 Kho Công thức CFOP Mở Rộng Đầy Đủ</span>
-          <span style="font-size: 0.8rem; color: var(--text-muted); font-weight: normal;">Hệ thống tra cứu F2L, OLL & PLL</span>
+        <div class="cth-filter-bar">
+          <button class="cth-filter-btn">3X3 ▾</button>
+          <button class="cth-filter-btn">OLL ▾</button>
         </div>
         
-        <!-- NHÓM F2L -->
-        <div class="cth-section-title">1. F2L Cơ Bản & Nâng Cao</div>
-        <div class="cth-grid">
-          <div class="cth-card">
-            <div class="cth-img-box"><img src="https://images.unsplash.com/photo-1591991564021-056708d7d9a9?auto=format&fit=crop&w=150&q=80" alt="F2L"></div>
-            <div class="cth-info"><span class="cth-name">F2L Cơ bản 1</span><span class="cth-formula">R U R'</span></div>
-          </div>
-          <div class="cth-card">
-            <div class="cth-img-box"><img src="https://images.unsplash.com/photo-1591991564021-056708d7d9a9?auto=format&fit=crop&w=150&q=80" alt="F2L"></div>
-            <div class="cth-info"><span class="cth-name">F2L Cơ bản 2</span><span class="cth-formula">U R U' R'</span></div>
-          </div>
-          <div class="cth-card">
-            <div class="cth-img-box"><img src="https://images.unsplash.com/photo-1591991564021-056708d7d9a9?auto=format&fit=crop&w=150&q=80" alt="F2L"></div>
-            <div class="cth-info"><span class="cth-name">F2L Match</span><span class="cth-formula">R U2 R' U' R U R'</span></div>
-          </div>
-          <div class="cth-card">
-            <div class="cth-img-box"><img src="https://images.unsplash.com/photo-1591991564021-056708d7d9a9?auto=format&fit=crop&w=150&q=80" alt="F2L"></div>
-            <div class="cth-info"><span class="cth-name">F2L Anti-Match</span><span class="cth-formula">R U R' U R U2 R'</span></div>
-          </div>
-        </div>
-
-        <!-- NHÓM OLL -->
-        <div class="cth-section-title">2. OLL (Định Hướng Tầng Cuối)</div>
-        <div class="cth-grid">
-          <div class="cth-card">
-            <div class="cth-img-box"><img src="https://images.unsplash.com/photo-1591991564021-056708d7d9a9?auto=format&fit=crop&w=150&q=80" alt="OLL"></div>
-            <div class="cth-info"><span class="cth-name">OLL 21 (Chữ H)</span><span class="cth-formula">R U2 R' U' R U R' U' R U' R'</span></div>
-          </div>
-          <div class="cth-card">
-            <div class="cth-img-box"><img src="https://images.unsplash.com/photo-1591991564021-056708d7d9a9?auto=format&fit=crop&w=150&q=80" alt="OLL"></div>
-            <div class="cth-info"><span class="cth-name">OLL 22 (Mặt cười / Pi)</span><span class="cth-formula">R U2 R2 U' R2 U' R2 U2 R</span></div>
-          </div>
-          <div class="cth-card">
-            <div class="cth-img-box"><img src="https://images.unsplash.com/photo-1591991564021-056708d7d9a9?auto=format&fit=crop&w=150&q=80" alt="OLL"></div>
-            <div class="cth-info"><span class="cth-name">OLL 26 (Sune)</span><span class="cth-formula">R U R' U R U2 R'</span></div>
-          </div>
-          <div class="cth-card">
-            <div class="cth-img-box"><img src="https://images.unsplash.com/photo-1591991564021-056708d7d9a9?auto=format&fit=crop&w=150&q=80" alt="OLL"></div>
-            <div class="cth-info"><span class="cth-name">OLL 27 (Con cá)</span><span class="cth-formula">R U2 R' U' R U' R'</span></div>
-          </div>
-          <div class="cth-card">
-            <div class="cth-img-box"><img src="https://images.unsplash.com/photo-1591991564021-056708d7d9a9?auto=format&fit=crop&w=150&q=80" alt="OLL"></div>
-            <div class="cth-info"><span class="cth-name">OLL 33 (T-Shape)</span><span class="cth-formula">R U R' U' R' F R F'</span></div>
-          </div>
-          <div class="cth-card">
-            <div class="cth-img-box"><img src="https://images.unsplash.com/photo-1591991564021-056708d7d9a9?auto=format&fit=crop&w=150&q=80" alt="OLL"></div>
-            <div class="cth-info"><span class="cth-name">OLL 37 (F-Shape)</span><span class="cth-formula">F R U' R' U' R U R' F'</span></div>
-          </div>
-        </div>
-
-        <!-- NHÓM PLL -->
-        <div class="cth-section-title">3. PLL (Hoán Vị Tầng Cuối)</div>
-        <div class="cth-grid">
-          <div class="cth-card">
-            <div class="cth-img-box"><img src="https://images.unsplash.com/photo-1591991564021-056708d7d9a9?auto=format&fit=crop&w=150&q=80" alt="PLL"></div>
-            <div class="cth-info"><span class="cth-name">PLL - T Perm</span><span class="cth-formula">R U R' U' R' F R2 U' R' U' R U R' F'</span></div>
-          </div>
-          <div class="cth-card">
-            <div class="cth-img-box"><img src="https://images.unsplash.com/photo-1591991564021-056708d7d9a9?auto=format&fit=crop&w=150&q=80" alt="PLL"></div>
-            <div class="cth-info"><span class="cth-name">PLL - Y Perm</span><span class="cth-formula">F R U' R' U' R U R' F' R U R' U' R' F R F'</span></div>
-          </div>
-          <div class="cth-card">
-            <div class="cth-img-box"><img src="https://images.unsplash.com/photo-1591991564021-056708d7d9a9?auto=format&fit=crop&w=150&q=80" alt="PLL"></div>
-            <div class="cth-info"><span class="cth-name">PLL - Ua Perm</span><span class="cth-formula">R U' R U R U R U' R' U' R2</span></div>
-          </div>
-          <div class="cth-card">
-            <div class="cth-img-box"><img src="https://images.unsplash.com/photo-1591991564021-056708d7d9a9?auto=format&fit=crop&w=150&q=80" alt="PLL"></div>
-            <div class="cth-info"><span class="cth-name">PLL - Ub Perm</span><span class="cth-formula">R2 U R U R' U' R' U' R' U R'</span></div>
-          </div>
-          <div class="cth-card">
-            <div class="cth-img-box"><img src="https://images.unsplash.com/photo-1591991564021-056708d7d9a9?auto=format&fit=crop&w=150&q=80" alt="PLL"></div>
-            <div class="cth-info"><span class="cth-name">PLL - H Perm</span><span class="cth-formula">M2 U M2 U2 M2 U M2</span></div>
-          </div>
-          <div class="cth-card">
-            <div class="cth-img-box"><img src="https://images.unsplash.com/photo-1591991564021-056708d7d9a9?auto=format&fit=crop&w=150&q=80" alt="PLL"></div>
-            <div class="cth-info"><span class="cth-name">PLL - Z Perm</span><span class="cth-formula">M2 U M2 U M' U2 M2 U2 M'</span></div>
-          </div>
-          <div class="cth-card">
-            <div class="cth-img-box"><img src="https://images.unsplash.com/photo-1591991564021-056708d7d9a9?auto=format&fit=crop&w=150&q=80" alt="PLL"></div>
-            <div class="cth-info"><span class="cth-name">PLL - Jb Perm</span><span class="cth-formula">R U R' F' R U R' U' R' F R2 U' R'</span></div>
-          </div>
-          <div class="cth-card">
-            <div class="cth-img-box"><img src="https://images.unsplash.com/photo-1591991564021-056708d7d9a9?auto=format&fit=crop&w=150&q=80" alt="PLL"></div>
-            <div class="cth-info"><span class="cth-name">PLL - Aa Perm</span><span class="cth-formula">x R' U R' D2 R U' R' D2 R2</span></div>
-          </div>
-        </div>
-
+        <div class="cth-grid" id="cthGrid"></div>
       </div>
     </div>
 
@@ -972,33 +878,49 @@
   </div>
 
   <script>
-    const IS_MAINTENANCE = false;
-    const ADMIN_PASSWORD = "123";
+    // ==========================================
+    // 📚 MẢNG CHỨA CÔNG THỨC (BẠN THÊM/SỬA TẠI ĐÂY)
+    // ==========================================
+    const cthData = [
+      { name: "1. Dot", formula: "R 2U' 2R' F R F' U2 (R' F R F')", img: "https://images.unsplash.com/photo-1591991564021-056708d7d9a9?auto=format&fit=crop&w=150&q=80" },
+      { name: "2. Dot", formula: "r U r' U2 r U2 R' U2 R U' r'", img: "https://images.unsplash.com/photo-1591991564021-056708d7d9a9?auto=format&fit=crop&w=150&q=80" },
+      { name: "3. Dot", formula: "r' R2 U R' U r 2U' r' U M'", img: "https://images.unsplash.com/photo-1591991564021-056708d7d9a9?auto=format&fit=crop&w=150&q=80" },
+      { name: "4. Dot", formula: "M U' r U2 r' U' R U' R' M'", img: "https://images.unsplash.com/photo-1591991564021-056708d7d9a9?auto=format&fit=crop&w=150&q=80" },
+      { name: "5. Square", formula: "r' U2' R U R' U r", img: "https://images.unsplash.com/photo-1591991564021-056708d7d9a9?auto=format&fit=crop&w=150&q=80" },
+      { name: "6. Square", formula: "r U2' R' U' R U r'", img: "https://images.unsplash.com/photo-1591991564021-056708d7d9a9?auto=format&fit=crop&w=150&q=80" },
+      { name: "7. Lightning", formula: "R U2 R' U' R U R' U' R U' R'", img: "https://images.unsplash.com/photo-1591991564021-056708d7d9a9?auto=format&fit=crop&w=150&q=80" },
+      { name: "8. Lightning", formula: "R U R' U R U2 R'", img: "https://images.unsplash.com/photo-1591991564021-056708d7d9a9?auto=format&fit=crop&w=150&q=80" }
+    ];
 
-    function adminLogin() {
-      let pwd = prompt("Nhập mật khẩu Admin:");
-      if (pwd === ADMIN_PASSWORD) {
-        localStorage.setItem("speedcubing_admin_bypass", "true");
-        document.getElementById("maintenanceOverlay").style.display = "none";
-        alert("Đã mở khóa quyền Admin trên trình duyệt này!");
-      } else if (pwd !== null) {
-        alert("Mật khẩu không đúng!");
-      }
+    function renderCthGrid() {
+      const grid = document.getElementById('cthGrid');
+      grid.innerHTML = '';
+      cthData.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'cth-card';
+        card.innerHTML = `
+          <div class="cth-content-left">
+            <div class="cth-title-row">
+              <div class="cth-dot"></div>
+              <span class="cth-name">${item.name}</span>
+            </div>
+            <div class="cth-formula">${item.formula}</div>
+          </div>
+          <div class="cth-img-box"><img src="${item.img}" alt="${item.name}"></div>
+        `;
+        grid.appendChild(card);
+      });
     }
 
     window.addEventListener('DOMContentLoaded', () => {
-      if (IS_MAINTENANCE) {
-        let hasBypass = localStorage.getItem("speedcubing_admin_bypass") === "true";
-        if (!hasBypass) {
-          document.getElementById("maintenanceOverlay").style.display = "flex";
-        }
-      }
+      renderCthGrid();
     });
 
     function switchView(viewName) {
       const timerView = document.getElementById('timerView');
       const cthView = document.getElementById('cthView');
       const sidebarSection = document.getElementById('sidebarSection');
+      const appContainer = document.getElementById('appContainer');
       const tabTimerBtn = document.getElementById('tabTimerBtn');
       const tabCthBtn = document.getElementById('tabCthBtn');
 
@@ -1006,12 +928,14 @@
         timerView.classList.add('active');
         cthView.classList.remove('active');
         sidebarSection.style.display = 'flex';
+        appContainer.classList.remove('full-width');
         tabTimerBtn.classList.add('active');
         tabCthBtn.classList.remove('active');
       } else {
         cthView.classList.add('active');
         timerView.classList.remove('active');
         sidebarSection.style.display = 'none';
+        appContainer.classList.add('full-width');
         tabCthBtn.classList.add('active');
         tabTimerBtn.classList.remove('active');
       }
@@ -1031,7 +955,7 @@
     let currentEvent = '333';
     let currentSession = 'Session 1';
     
-    let allData = JSON.parse(localStorage.getItem('speedcubing_pro_data_v28') || '{}');
+    let allData = JSON.parse(localStorage.getItem('speedcubing_pro_data_v30') || '{}');
     if (Object.keys(allData).length === 0) {
       allData['Session 1'] = [];
     }
@@ -1601,7 +1525,7 @@
     }
 
     function saveAndRender() {
-      localStorage.setItem('speedcubing_pro_data_v28', JSON.stringify(allData));
+      localStorage.setItem('speedcubing_pro_data_v30', JSON.stringify(allData));
       renderHistory();
       updateStats();
     }
