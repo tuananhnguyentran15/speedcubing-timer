@@ -800,8 +800,11 @@
     <div class="main-view-content" id="cthView">
       <div class="cth-main-container">
         <div class="cth-filter-bar">
-          <button class="cth-filter-btn">3X3 ▾</button>
-          <button class="cth-filter-btn">OLL ▾</button>
+          <select id="setSelect" onchange="changeSet(this.value)" class="cth-filter-btn" style="background: #1e293b; color: white; border: 1px solid #334155; cursor: pointer;">
+  <option value="oll">OLL ▾</option>
+  <option value="f2l">F2L ▾</option>
+  <option value="pll">PLL ▾</option>
+</select>
         </div>
         
         <div class="cth-grid" id="cthGrid"></div>
@@ -891,6 +894,23 @@
       { name: "7. Lightning", formula: "R U2 R' U' R U R' U' R U' R'", img: "https://images.unsplash.com/photo-1591991564021-056708d7d9a9?auto=format&fit=crop&w=150&q=80" },
       { name: "8. Lightning", formula: "R U R' U R U2 R'", img: "https://images.unsplash.com/photo-1591991564021-056708d7d9a9?auto=format&fit=crop&w=150&q=80" }
     ];
+    const f2lData = [
+  { name: "F2L 1", formula: "U R U' R'", img: "f2l1.png" }
+];
+
+const pllData = [
+  { name: "Aa Perm", formula: "x R' D R' U2 R D' R' U2 R2 x'", img: "pll_aa.png" }
+];
+
+function changeSet(setType) {
+  if (setType === 'f2l') {
+    renderCthGrid(f2lData);
+  } else if (setType === 'pll') {
+    renderCthGrid(pllData);
+  } else {
+    renderCthGrid(cthData);
+  }
+}
 
     function renderCthGrid() {
       const grid = document.getElementById('cthGrid');
