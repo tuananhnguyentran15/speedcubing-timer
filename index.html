@@ -764,7 +764,7 @@
         <select class="select-dropdown" id="sessionSelect" onchange="changeSession()"></select>
       </div>
       <div class="sidebar-top-row">
-        <button class="btn-action-sidebar" onclick="promptNewSession()">+ Session mới</button>
+        <button class="btn-action-sidebar" onclick="promptNewSession()">+ Season mới</button>
         <button class="btn-action-sidebar" onclick="openManualModal()">+ Nhập tay</button>
         <button class="gear-btn-sidebar" onclick="openSettingsModal()" title="Cài đặt">⚙️</button>
       </div>
@@ -793,9 +793,24 @@
             <div class="stat-card">
               <span class="stat-label">Ao12</span>
               <span class="stat-value" id="statAo12">--</span>
+             
+</div>
             </div>
           </div>
+ <div id="modeSwitchGroup" style="display:flex;gap:8px;justify-content:center;margin-top:12px;">
+  <button type="button" id="btnModeTimer" class="active">Timer</button>
+  <button type="button" id="btnModeTyping">Typing</button>
+</div>
 
+<div id="typingInputBox" style="display:none;justify-content:center;align-items:center;gap:8px;margin-top:10px;">
+  <input
+    type="text"
+    id="typingTimeInput"
+    inputmode="decimal"
+    placeholder="Nhập số (VD: 12.34 hoặc 1:12.34)"
+    style="width:220px;padding:8px 12px;font-size:16px;"
+  />
+  <button type="button" id="btnSubmitTyping">Gửi</button>
           <div class="timer-hint">Nhấn giữ SPACE hoặc nhấp chuột để bắt đầu</div>
         </div>
       </div>
@@ -1436,7 +1451,7 @@ function renderCthGrid(data = cthData) {
       timerDisplay.innerText = '0.00';
       newScramble();
       
-      openModal(newSolve);
+      //openModal(newSolve);
     }
 
     function openModal(solve) {
@@ -1694,6 +1709,93 @@ window.addEventListener('load', () => {
     video.addEventListener('error', hideIntro);
   }
 });
+    let inputMode = 'TIMER'; // 'TIMER' | 'TYPING'
+
+const btnModeTimer = document.getElementById('btnModeTimer');
+const btnModeTyping = document.getElementById('btnModeTyping');
+const typingInputBox = document.getElementById('typingInputBox');
+const typingTimeInput = document.getElementById('typingTimeInput');
+const btnSubmitTyping = document.getElementById('btnSubmitTyping');
+
+function setInputMode(mode) {
+  inputMode = mode;
+  const isTyping = mode === 'TYPING';
+
+  if (btnModeTimer) btnModeTimer.classList.toggle('active', !isTyping);
+  if (btnModeTyping) btnModeTyping.classList.toggle('active', isTyping);
+  if (typingInputBox) typingInputBox.style.display = isTyping ? 'flex' : 'none';
+
+  if (isTyping && typingTimeInput) {
+    setTimeout(() => typingTimeInput.focus(), 0);
+  }
+}
+
+function parseTypedTimeToMs(rawStr) {
+  const cleaned = rawStr.trim().replace(',', '.');
+  if (!cleaned) return NaN;
+
+  if (cleaned.includes(':')) {
+    const parts = cleaned.split(':');
+    if (parts.length !== 2) return NaN;
+    const minutes = Number(parts[0]);
+    const seconds = Number(parts[1]);
+    if (Number.isNaN(minutes) || Number.isNaN(seconds) || minutes < 0 || seconds < 0) {
+      return NaN;
+    }
+    return (minutes * 60 + seconds) * 1000;
+  }
+
+  const seconds = Number(cleaned);
+  if (Number.isNaN(seconds) || seconds <= 0) return NaN;
+  return seconds * 1000;
+}
+
+function submitTypedSolve() {
+  if (!typingTimeInput) return;
+  const ms = parseTypedTimeToMs(typingTimeInput.value);
+  if (Number.isNaN(ms)) {
+    alert('Vui lòng nhập thời gian hợp lệ (ví dụ: 12.34 hoặc 1:12.34)');
+    typingTimeInput.focus();
+    return;
+  }
+
+  const newSolve = {
+    id: Date.now(),
+    rawTime: ms,
+    penalty: 0,
+    scramble: typeof scrambleDisplay !== 'undefined' && scrambleDisplay ? scrambleDisplay.innerText : ''
+  };
+
+  if (typeof allData !== 'undefined' && typeof currentSession !== 'undefined') {
+    if (!allData[currentSession]) allData[currentSession] = [];
+    allData[currentSession].unshift(newSolve);
+  }
+  if (typeof saveAndRender === 'function') saveAndRender();
+  if (typeof newScramble === 'function') newScramble();
+
+  typingTimeInput.value = '';
+  typingTimeInput.focus();
+}
+
+btnModeTimer?.addEventListener('click', () => setInputMode('TIMER'));
+btnModeTyping?.addEventListener('click', () => setInputMode('TYPING'));
+btnSubmitTyping?.addEventListener('click', submitTypedSolve);
+
+typingTimeInput?.addEventListener('keydown', (e) => {
+  e.stopPropagation();
+  if (e.key === 'Enter') {
+    e.preventDefault();
+    submitTypedSolve();
+  }
+});
+
+window.addEventListener('keydown', (e) => {
+  const activeTag = document.activeElement ? document.activeElement.tagName : '';
+  const isTypingField = activeTag === 'INPUT' || activeTag === 'TEXTAREA' || document.activeElement?.isContentEditable;
+  if (e.code === 'Space' && (inputMode === 'TYPING' || isTypingField)) {
+    e.stopImmediatePropagation();
+  }
+}, true);
   </script>
 </body>
 </html>
