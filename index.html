@@ -1670,20 +1670,21 @@ window.addEventListener('load', () => {
     intro.style.visibility = 'hidden';
     if (video) video.pause();
   };
-
-  const updateProgress = (now) => {
-   if (isHidden) return;
+   const updateProgress = (now) => {
+    if (isHidden) return;
     const elapsed = now - startStamp;
     const percent = Math.min(100, (elapsed / durationMs) * 100);
     if (progressBar) progressBar.style.width = `${percent}%`;
     if (elapsed < durationMs) {
-      rafId = requestAnimationFrame(updateProgress) ;
+      rafId = requestAnimationFrame(updateProgress);
     } else {
       hideIntro();
     }
+  };
 
   rafId = requestAnimationFrame(updateProgress);
   setTimeout(hideIntro, 5000);
+
   if (video && introVideos.length > 0) {
     const randomIndex = Math.floor(Math.random() * introVideos.length);
     video.src = introVideos[randomIndex];
