@@ -1683,7 +1683,7 @@ window.addEventListener('load', () => {
     }
 
   rafId = requestAnimationFrame(updateProgress);
-
+  setTimeout(hideIntro, 5000);
   if (video && introVideos.length > 0) {
     const randomIndex = Math.floor(Math.random() * introVideos.length);
     video.src = introVideos[randomIndex];
