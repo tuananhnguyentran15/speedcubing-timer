@@ -1814,15 +1814,6 @@ function setInputMode(mode) {
     setTimeout(() => typingTimeInput.focus(), 0);
   }
 }
-  
-  if (btnModeTimer) btnModeTimer.classList.toggle('active', !isTyping);
-  if (btnModeTyping) btnModeTyping.classList.toggle('active', isTyping);
-  if (typingInputBox) typingInputBox.style.display = isTyping ? 'flex' : 'none';
-
-  if (isTyping && typingTimeInput) {
-    setTimeout(() => typingTimeInput.focus(), 0);
-  }
-}
 
 function parseTypedTimeToMs(rawStr) {
   const cleaned = rawStr.trim().replace(',', '.');
