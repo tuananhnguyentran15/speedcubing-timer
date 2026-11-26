@@ -1787,16 +1787,7 @@ window.addEventListener('keydown', (e) => {
     e.stopImmediatePropagation();
   }
 }, true);
-  }
-});
 
-window.addEventListener('keydown', (e) => {
-  const activeTag = document.activeElement ? document.activeElement.tagName : '';
-  const isTypingField = activeTag === 'INPUT' || activeTag === 'TEXTAREA' || document.activeElement?.isContentEditable;
-  if (e.code === 'Space' && (inputMode === 'TYPING' || isTypingField)) {
-    e.stopImmediatePropagation();
-  }
-}, true);
   </script>
 </body>
 </html>
