@@ -664,7 +664,79 @@
       outline: none;
     }
     .manual-input:focus { border-color: var(--accent); box-shadow: 0 0 15px var(--accent-glow); }
+/* Ô nhập thời gian chế độ Typing */
+.typing-input-box {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  max-width: 420px;
+  margin-top: 1rem;
+}
 
+.typing-time-input {
+  width: 100%;
+  padding: 0.85rem 1.25rem;
+  border-radius: 12px;
+  border: 2px solid var(--card-border);
+  background: rgba(12, 16, 33, 0.88);
+  color: var(--text-main);
+  font-family: 'JetBrains Mono', monospace;
+  font-size: 2rem;
+  font-weight: 700;
+  text-align: center;
+  outline: none;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease, background-color 0.2s ease;
+}
+
+/* Viền xanh nổi bật khi nhấn vào ô typing */
+.typing-time-input:focus,
+.typing-time-input:focus-visible {
+  border-color: #38bdf8;
+  background: rgba(15, 23, 42, 0.96);
+  box-shadow: 0 0 0 4px rgba(56, 189, 248, 0.28), 0 0 24px rgba(56, 189, 248, 0.35);
+}
+
+.typing-submit-btn {
+  background: var(--accent);
+  color: #0c1021;
+  border: none;
+  border-radius: 8px;
+  padding: 0.55rem 1.4rem;
+  font-weight: 700;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: transform 0.15s ease, opacity 0.2s ease;
+}
+
+.typing-submit-btn:hover {
+  opacity: 0.92;
+  transform: translateY(-1px);
+}
+
+/* Biểu tượng đồng hồ nhỏ phía trên số giây khi bật Inspection */
+.timer-clock-wrap {
+  position: relative;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.inspection-badge-icon {
+  display: none;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  line-height: 1;
+  margin-bottom: 0.25rem;
+  color: var(--inspect-color);
+  text-shadow: 0 0 12px rgba(250, 204, 21, 0.45);
+}
+
+.inspection-badge-icon.active {
+  display: inline-flex;
+}
     .settings-group {
       width: 100%;
       display: flex;
@@ -780,9 +852,22 @@
       <div class="timer-section" id="timerSection">
         <div class="scramble-box" id="scrambleDisplay" onclick="newScramble()" title="Nhấn để đổi scramble khác">---</div>
 
-        <div class="timer-display-wrapper">
-          <div class="inspection-status" id="inspectionStatus"></div>
-          <div class="timer-display" id="timerDisplay">0.00</div>
+       <div class="timer-display-wrapper">
+  <div class="inspection-status" id="inspectionStatus"></div>
+  <div class="timer-clock-wrap">
+    <span class="inspection-badge-icon" id="inspectionClockIcon" title="Đang bật Xem đề 15 giây (Inspection)">⏱</span>
+    <div class="timer-display" id="timerDisplay">0.00</div>
+  </div>
+         <div class="typing-input-box" id="typingInputBox" style="display: none;">
+  <input
+    type="text"
+    class="typing-time-input"
+    id="typingTimeInput"
+    placeholder="Nhập thời gian (vd: 12.34)"
+    autocomplete="off"
+  />
+  <button type="button" class="typing-submit-btn" id="btnSubmitTyping">Lưu lượt giải (Enter)</button>
+</div>
           
           <div class="stats-grid-inline">
             <div class="stat-card">
@@ -1711,7 +1796,25 @@ const btnSubmitTyping = document.getElementById('btnSubmitTyping');
 function setInputMode(mode) {
   inputMode = mode;
   const isTyping = mode === 'TYPING';
+  const btnSettingTimer = document.getElementById('settingBtnModeTimer');
+  const btnSettingTyping = document.getElementById('settingBtnModeTyping');
 
+  if (btnModeTimer) btnModeTimer.classList.toggle('active', !isTyping);
+  if (btnModeTyping) btnModeTyping.classList.toggle('active', isTyping);
+  if (btnSettingTimer) btnSettingTimer.classList.toggle('active', !isTyping);
+  if (btnSettingTyping) btnSettingTyping.classList.toggle('active', isTyping);
+
+  // Hiện #typingInputBox và ẩn #timerDisplay khi chọn Typing
+  if (typingInputBox) typingInputBox.style.display = isTyping ? 'flex' : 'none';
+  if (timerDisplay) timerDisplay.style.display = isTyping ? 'none' : '';
+  if (inspectionStatus) inspectionStatus.style.display = isTyping ? 'none' : '';
+  if (typeof updateInspectionClockIcon === 'function') updateInspectionClockIcon();
+
+  if (isTyping && typingTimeInput) {
+    setTimeout(() => typingTimeInput.focus(), 0);
+  }
+}
+  
   if (btnModeTimer) btnModeTimer.classList.toggle('active', !isTyping);
   if (btnModeTyping) btnModeTyping.classList.toggle('active', isTyping);
   if (typingInputBox) typingInputBox.style.display = isTyping ? 'flex' : 'none';
