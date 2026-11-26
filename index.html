@@ -765,7 +765,6 @@
       </div>
       <div class="sidebar-top-row">
         <button class="btn-action-sidebar" onclick="promptNewSession()">+ Season mới</button>
-        <button class="btn-action-sidebar" onclick="openManualModal()">+ Nhập tay</button>
         <button class="gear-btn-sidebar" onclick="openSettingsModal()" title="Cài đặt">⚙️</button>
       </div>
       <div class="sidebar-divider"></div>
@@ -797,22 +796,7 @@
 </div>
             </div>
           </div>
- <div id="modeSwitchGroup" style="display:flex;gap:8px;justify-content:center;margin-top:12px;">
-  <button type="button" id="btnModeTimer" class="active">Timer</button>
-  <button type="button" id="btnModeTyping">Typing</button>
-</div>
 
-<div id="typingInputBox" style="display:none;justify-content:center;align-items:center;gap:8px;margin-top:10px;">
-  <input
-    type="text"
-    id="typingTimeInput"
-    inputmode="decimal"
-    placeholder="Nhập số (VD: 12.34 hoặc 1:12.34)"
-    style="width:220px;padding:8px 12px;font-size:16px;"
-  />
-  <button type="button" id="btnSubmitTyping">Gửi</button>
-          <div class="timer-hint">Nhấn giữ SPACE hoặc nhấp chuột để bắt đầu</div>
-        </div>
       </div>
     </div>
 
@@ -876,8 +860,8 @@
       <div class="setting-row">
   <span>Chế độ nhập thời gian:</span>
   <div class="mode-switch">
-    <button type="button" id="id="settingBtnModeTimer" class="active">Timer</button>
-    <button type="button" id="id="settingBtnModeTyping">Typing</button>
+    <button type="button" id="settingBtnModeTimer" class="active">Timer</button>
+   <button type="button" id="settingBtnModeTyping">Typing</button>
   </div>
 </div>
 
@@ -1784,15 +1768,25 @@ function submitTypedSolve() {
   typingTimeInput.focus();
 }
 
+document.getElementById('settingBtnModeTimer')?.addEventListener('click', () => setInputMode('TIMER'));
+document.getElementById('settingBtnModeTyping')?.addEventListener('click', () => setInputMode('TYPING'));
 btnModeTimer?.addEventListener('click', () => setInputMode('TIMER'));
 btnModeTyping?.addEventListener('click', () => setInputMode('TYPING'));
 btnSubmitTyping?.addEventListener('click', submitTypedSolve);
-
 typingTimeInput?.addEventListener('keydown', (e) => {
   e.stopPropagation();
   if (e.key === 'Enter') {
     e.preventDefault();
     submitTypedSolve();
+  }
+});
+window.addEventListener('keydown', (e) => {
+  const activeTag = document.activeElement ? document.activeElement.tagName : '';
+  const isTypingField = activeTag === 'INPUT' || activeTag === 'TEXTAREA' || document.activeElement?.isContentEditable;
+  if (e.code === 'Space' && (inputMode === 'TYPING' || isTypingField)) {
+    e.stopImmediatePropagation();
+  }
+}, true);
   }
 });
 
